@@ -53,6 +53,30 @@ export default class PalladiumItemSheet extends HandlebarsApplicationMixin(ItemS
     details: { template: `${TEMPLATE_PATH}/details-gear.hbs`, scrollable: [""] }
   };
 
+  /**
+   * A read-only view (opened from a chat card) never edits, whoever opens it.
+   * @override
+   */
+  get isEditable() {
+    return this.options.readOnly ? false : super.isEditable;
+  }
+
+  /** @override */
+  get title() {
+    return this.options.readOnly ? `${super.title} (view only)` : super.title;
+  }
+
+  /** @override */
+  async _onRender(context, options) {
+    await super._onRender(context, options);
+    if ( !this.options.readOnly ) return;
+    this.element.classList.add("pu-read-only");
+    for ( const el of this.element.querySelectorAll(".window-content input, .window-content select, .window-content textarea, .window-content button, .window-content prose-mirror") ) {
+      el.disabled = true;
+      if ( el.tagName === "PROSE-MIRROR" ) el.setAttribute("disabled", "");
+    }
+  }
+
   /** Pick the details template for this item's type. */
   /** @override */
   _configureRenderParts(options) {

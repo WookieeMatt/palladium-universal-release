@@ -1,8 +1,9 @@
-import { castSpell, newDay, rollChangeSave, rollMagicAbility, usePsionic } from "../magic.mjs";
+import { castSpell, newDay, rollChangeSave, rollMagicAbility, rollSpellDamage, usePsionic } from "../magic.mjs";
 import { operateDevice } from "../vehicle.mjs";
 import { practiceSpell, rollTemporalMishap } from "../timetravel.mjs";
 import { rollD20, rollPercent, rollSaveVsComa, rollSkill, signed } from "../dice.mjs";
 import { rollAttribute } from "../creation.mjs";
+import { rollItem } from "../item-rolls.mjs";
 import {
   FIRE_MODES, MELEE_MODES, POWDER_MODES, misfireChance, rollAttack, rollDamage, rollHorrorFactor, rollManeuver, strikeBonus
 } from "../combat.mjs";
@@ -48,6 +49,8 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
       rollComa: PalladiumCharacterSheet.#onRollComa,
       rollInfluence: PalladiumCharacterSheet.#onRollInfluence,
       rollAttribute: PalladiumCharacterSheet.#onRollAttribute,
+      rollItem: PalladiumCharacterSheet.#onRollItem,
+      rollSpellDamage: PalladiumCharacterSheet.#onRollSpellDamage,
       changeSize: PalladiumCharacterSheet.#onChangeSize,
       itemCreate: PalladiumCharacterSheet.#onItemCreate,
       itemEdit: PalladiumCharacterSheet.#onItemEdit,
@@ -196,6 +199,10 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
     const actor = this.actor;
     const system = actor.system;
     const byType = type => actor.items.filter(i => i.type === type).sort((a, b) => (a.sort - b.sort) || a.name.localeCompare(b.name));
+    const rollInfo = item => {
+      const rolls = item.system.itemRolls ?? [];
+      return { itemRolls: rolls.length, itemRollHint: rolls.map(r => r.label).join(" / ") };
+    };
 
     const skills = byType("skill").map(item => {
       const pct = system.skillPercentages(item);
@@ -214,7 +221,8 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
         : item.system.kind === "targeting" ? `Ranged Strike +${b.rangedStrike}`
           : item.system.kind === "paired" ? "Strike & parry together; no multiple-attacker penalty"
             : `Strike +${b.strike} · Parry +${b.parry}`;
-      return { id: item.id, name: item.name, img: item.img, kind: WP_KINDS[item.system.kind], group: item.system.group, text };
+      return { id: item.id, name: item.name, img: item.img, kind: WP_KINDS[item.system.kind], group: item.system.group, text,
+        ...rollInfo(item) };
     });
 
     const weapons = byType("weapon").map(item => {
@@ -239,12 +247,14 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
 
     const armor = byType("armor").map(item => ({
       id: item.id, name: item.name, img: item.img, type: item.system.armorType === "shield" ? "Shield" : "Body Armor",
-      ar: item.system.ar, sdc: item.system.sdc, parry: item.system.parryBonus, equipped: item.system.equipped
+      ar: item.system.ar, sdc: item.system.sdc, parry: item.system.parryBonus, equipped: item.system.equipped,
+      ...rollInfo(item)
     }));
 
     const simple = type => byType(type).map(item => ({
       id: item.id, name: item.name, img: item.img, bioe: item.system.bioe, quantity: item.system.quantity,
-      range: item.system.range, duration: item.system.duration, save: item.system.save
+      range: item.system.range, duration: item.system.duration, save: item.system.save,
+      ...rollInfo(item)
     }));
 
     const spells = byType("spell").map(item => {
@@ -254,14 +264,14 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
         mastered: s.mastered, successes: s.successes, needed: s.tradition === "timeLord" ? 2 : 1,
         tradition: CONFIG.PALLADIUM.SPELL_TRADITIONS[s.tradition], range: s.range, duration: s.duration,
         save: s.saveType === "dodge" ? `Dodge ${s.dodgeTarget}+` : CONFIG.PALLADIUM.SPELL_SAVES[s.saveType].split(" ")[0],
-        damage: s.damage ? s.damageFormula(system.identity.level) : ""
+        damage: s.damage ? s.damageFormula(system.identity.level) : "", ...rollInfo(item)
       };
     });
 
     const devices = byType("device").map(item => ({
       id: item.id, name: item.name, img: item.img, type: CONFIG.PALLADIUM.DEVICE_TYPES[item.system.deviceType],
       readout: item.system.deviceType === "readout", bonus: item.system.skillBonus, charged: item.system.charged,
-      recharge: item.system.recharge
+      recharge: item.system.recharge, ...rollInfo(item)
     }));
 
     return {
@@ -508,6 +518,19 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
   /** @this {PalladiumCharacterSheet} */
   static #onRollAttribute(event, target) {
     return rollAttribute(this.actor, target.dataset.key);
+  }
+
+  /** @this {PalladiumCharacterSheet} */
+  static #onRollItem(event, target) {
+    return rollItem(this.actor, this.#itemFromEvent(target));
+  }
+
+  /** @this {PalladiumCharacterSheet} */
+  static #onRollSpellDamage(event, target) {
+    const spell = this.#itemFromEvent(target);
+    if ( !spell?.system.damage ) return;
+    return rollSpellDamage(this.actor, { spell: spell.name, itemId: spell.id,
+      damage: spell.system.damageFormula(this.actor.system.identity.level) });
   }
 
   /** @this {PalladiumCharacterSheet} */

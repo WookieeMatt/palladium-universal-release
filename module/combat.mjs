@@ -3,6 +3,7 @@ import { onMagicCardButton, rollChangeSave } from "./magic.mjs";
 import { applyTeChange, rollTemporalMishap } from "./timetravel.mjs";
 import { applyVehicleDamage, rollVehicleDamage } from "./vehicle.mjs";
 import { spendActions } from "./actions.mjs";
+import { viewItemCopy } from "./item-rolls.mjs";
 
 const { DialogV2 } = foundry.applications.api;
 
@@ -181,7 +182,7 @@ export async function rollAttack(actor, weapon, mode = "aimed") {
   const mult = damageMultiplier({ crit: special.crit, deathBlow: special.deathBlow, double, leap });
   const label = special.deathBlow ? `Roll Death Blow (×${mult} to Hit Points)` : (mult > 1) ? `Roll Damage (×${mult})` : "Roll Damage";
   const message = await postAttackCard(actor, roll, {
-    title: `${weapon.name}${leap ? " (Leap Attack)" : modeLabel}`, parts, special, extra,
+    title: `${weapon.name}${leap ? " (Leap Attack)" : modeLabel}`, item: weapon, parts, special, extra,
     flags: { itemId: weapon.id, mode, ranged: !w.isMelee, weaponType: w.weaponType, deathBlow: special.deathBlow, double, leap },
     damageLabel: label
   });
@@ -215,7 +216,7 @@ export async function rollMisfire(actor, weapon) {
   if ( mishap.key === "overloaded" ) buttons.push(["1D6", "Shooter takes 1D6"]);
   if ( mishap.key === "explosion" ) buttons.push(["2D6", "Shooter takes 2D6"]);
   await postCard(actor, {
-    title: `${weapon.name}: Misfire!`, label: "Mishap", result: mishap.label, rolls: [check, table],
+    title: `${weapon.name}: Misfire!`, item: weapon, label: "Mishap", result: mishap.label, rolls: [check, table],
     lines: [["Misfire chance", `${chance}%`], ["Misfire roll", check.total], ["Mishap roll", table.total]],
     notes: [`<span class="pu-failure">${mishap.text}</span>`],
     buttons: buttons.map(([f, l]) => `<div class="pu-buttons"><button type="button" data-pu-action="self-damage" data-formula="${f}">
@@ -250,7 +251,7 @@ export function naturalSpecials(actor, natural, melee) {
  * @param {Roll} roll
  * @param {object} options
  */
-export async function postAttackCard(actor, roll, { title, parts, special, extra = [], flags = {}, damageLabel, text = "" }) {
+export async function postAttackCard(actor, roll, { title, parts, special, extra = [], flags = {}, damageLabel, text = "", item } = {}) {
   const { crit, critOrStun, deathBlow, natural } = special;
   const hit = crit || (roll.total >= 5);   // 4 or less misses (p.84)
   const notes = [];
@@ -265,7 +266,7 @@ export async function postAttackCard(actor, roll, { title, parts, special, extra
 
   const data = { card: "attack", actorUuid: actor.uuid, strike: roll.total, natural, crit, ...flags };
   return postCard(actor, {
-    title, label: "Strike", result: roll.total, rolls: [roll], notes,
+    title, item, label: "Strike", result: roll.total, rolls: [roll], notes,
     lines: [["d20", natural], ...bonusLines(parts), ["Total", roll.total]],
     body: text ? `<p class="pu-text">${text}</p>` : "",
     buttons: `${hit ? defendButtons(data) : ""}${hit && damageLabel ? `<div class="pu-buttons"><button type="button" data-pu-action="damage">
@@ -524,7 +525,7 @@ export async function rollDamage(actor, weapon, { crit = false, mode = "aimed", 
   const cardNotes = [];
   if ( deathBlow ) cardNotes.push(`<span class="hint">A Death Blow bypasses all armor: use To HP.</span>`);
   if ( notes.length ) cardNotes.push(`<span class="hint">${notes.join(" · ")}</span>`);
-  const message = await postCard(actor, { title: `${weapon.name}: ${title}`, label: "Damage", result: roll.total,
+  const message = await postCard(actor, { title: `${weapon.name}: ${title}`, item: weapon, label: "Damage", result: roll.total,
     lines: damageLines(roll, base, parts, { half, mult }), notes: cardNotes, rolls: [roll], buttons: damageButtons(), flags });
   Hooks.callAll("palladium.rollDamage", actor, weapon, roll, { crit, mode, strike, deathBlow, double, leap, message });
   return message;
@@ -652,6 +653,12 @@ function damageTargets() {
 export function onRenderChatMessage(message, html) {
   const data = message.flags?.["palladium-universal"];
   if ( !data ) return;
+  for ( const link of html.querySelectorAll(".pu-item-link") ) {
+    link.addEventListener("click", event => {
+      event.preventDefault();
+      viewItemCopy(data.itemData);
+    });
+  }
   for ( const button of html.querySelectorAll("[data-pu-action]") ) {
     button.addEventListener("click", event => onCardButton(event, message, data));
   }

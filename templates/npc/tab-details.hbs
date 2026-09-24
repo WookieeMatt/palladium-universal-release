@@ -30,6 +30,7 @@
       <li class="item-row" data-item-id="{{id}}">
         <img src="{{img}}" alt="" class="item-icon" />
         <div class="item-name"><a data-action="itemEdit">{{name}}</a></div>
+        {{> "systems/palladium-universal/templates/actor/parts/item-roll.hbs"}}
         <button type="button" class="icon-button" data-action="itemDelete" data-tooltip="Delete"><i class="fa-solid fa-trash"></i></button>
       </li>
       {{/each}}
@@ -38,6 +39,7 @@
         <img src="{{img}}" alt="" class="item-icon" />
         <div class="item-name"><a data-action="itemEdit">{{name}}</a><span class="hint">{{range}} · save: {{save}}</span></div>
         <button type="button" class="roll-button" data-action="usePsionic"><i class="fa-solid fa-brain"></i> Use</button>
+        {{> "systems/palladium-universal/templates/actor/parts/item-roll.hbs"}}
       </li>
       {{/each}}
       {{#each items.spells}}
@@ -46,6 +48,7 @@
         <div class="item-name"><a data-action="itemEdit">{{name}}</a><span class="hint">{{range}} · save: {{save}}</span></div>
         {{#if mastered}}<button type="button" class="roll-button" data-action="castSpell"><i class="fa-solid fa-wand-sparkles"></i> Cast</button>
         {{else}}<button type="button" class="roll-button" data-action="practiceSpell"><i class="fa-solid fa-flask"></i> Practice {{successes}}/{{needed}}</button>{{/if}}
+        {{> "systems/palladium-universal/templates/actor/parts/item-roll.hbs"}}
       </li>
       {{/each}}
     </ol>
@@ -73,6 +76,7 @@
         <img src="{{img}}" alt="" class="item-icon" />
         <div class="item-name"><a data-action="itemEdit">{{name}}</a></div>
         <span class="derived">×{{quantity}}</span>
+        {{> "systems/palladium-universal/templates/actor/parts/item-roll.hbs"}}
         <button type="button" class="icon-button" data-action="itemDelete" data-tooltip="Delete"><i class="fa-solid fa-trash"></i></button>
       </li>
       {{/each}}

@@ -3,6 +3,7 @@ import * as animal from "./animal.mjs";
 import * as combat from "./combat.mjs";
 import * as creation from "./creation.mjs";
 import * as dice from "./dice.mjs";
+import * as itemRolls from "./item-rolls.mjs";
 import * as magic from "./magic.mjs";
 import * as timetravel from "./timetravel.mjs";
 import * as vehicle from "./vehicle.mjs";
@@ -36,6 +37,8 @@ export function buildApi() {
     rollSaveVsComa: dice.rollSaveVsComa,
     cardHeader: dice.cardHeader,
     postCard: dice.postCard,
+    rollItem: itemRolls.rollItem,
+    viewItemCopy: itemRolls.viewItemCopy,
     resultDetails: dice.resultDetails,
     signed: dice.signed,
 

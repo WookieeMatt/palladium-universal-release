@@ -1,6 +1,13 @@
 <section class="panel">
   <div class="panel-header"><h2>Description</h2></div>
   <prose-mirror name="system.description" value="{{system.description}}" toggled="true">{{{enrichedDescription}}}</prose-mirror>
+  <div class="field item-roll-field">
+    <label data-tooltip="Adds a roll button for this item on the character sheet. Leave blank to offer the dice written in the description.">Roll</label>
+    <div class="pair">
+      <input type="text" name="system.itemRoll.formula" value="{{system.itemRoll.formula}}" placeholder="e.g. 1D6 or 2D6+6" />
+      <input type="text" name="system.itemRoll.label" value="{{system.itemRoll.label}}" placeholder="Label, e.g. Duration (melees)" />
+    </div>
+  </div>
   <div class="field source-field">
     <label>Source</label>
     <input type="text" name="system.source" value="{{system.source}}" placeholder="TMNT p.60" />

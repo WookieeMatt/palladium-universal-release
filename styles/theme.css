@@ -609,3 +609,26 @@
 }
 .pu-card .pu-results li { padding: 2px 0; }
 .pu-card .pu-details > summary + .pu-lines { border-top: 1px solid var(--pu-rule); }
+
+/* Item cards: the title opens a read-only view of the item. */
+.pu-card .pu-card-header .pu-item-link {
+  color: var(--pu-parchment);
+  cursor: pointer;
+  text-decoration: none;
+}
+.pu-card .pu-card-header .pu-item-link:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+.pu-card .pu-card-header .pu-item-link i { font-size: 0.8em; margin-right: 2px; }
+
+/* Read-only item views opened from chat. */
+.palladium-universal.item.pu-read-only .window-content input:disabled,
+.palladium-universal.item.pu-read-only .window-content select:disabled,
+.palladium-universal.item.pu-read-only .window-content textarea:disabled {
+  opacity: 1;
+  color: var(--pu-ink);
+  background: transparent;
+  border-color: transparent;
+}
+.palladium-universal.item.pu-read-only .window-content button:disabled { display: none; }

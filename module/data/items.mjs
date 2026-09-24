@@ -35,12 +35,51 @@ const effectsField = () => new ArrayField(new SchemaField({
 /*  Base                                        */
 /* -------------------------------------------- */
 
+/** Dice written in text: "2D6+6", "1D4", "3D6×$100", "1D%". */
+const DICE_PATTERN = /\d+\s*[dD]\s*(?:\d+|%)(?:\s*[×x*]\s*\$?\s*\d[\d,]*)?(?:\s*[+\-−]\s*\d+(?:\s*[dD]\s*\d+)?)*/g;
+
+/**
+ * Turn written dice into a Foundry formula: "2D6+6" → "2d6+6", "3D6×$100" → "3d6*100", "1D%" → "1d100".
+ * @param {string} text
+ * @returns {string}
+ */
+export function diceFormula(text) {
+  return String(text).replace(/\s+/g, "").replace(/[dD]%/g, "d100").replace(/[dD]/g, "d")
+    .replace(/[×x]\$?/g, "*").replace(/\$/g, "").replace(/,/g, "").replace(/−/g, "-");
+}
+
 class ItemDataBase extends foundry.abstract.TypeDataModel {
   static defineSchema() {
     return {
       description: new HTMLField({ required: true, blank: true }),
-      source: textField()   // book & page reference
+      source: textField(),   // book & page reference
+      // An optional roll for the item (e.g. a smoke grenade's 1D6 melee rounds). Blank: dice written in
+      // the description are offered instead.
+      itemRoll: new SchemaField({ formula: textField(), label: textField() })
     };
+  }
+
+  /**
+   * The rolls this item offers on the character sheet: its own Roll field, or else each dice
+   * expression in its description, labelled with the sentence it appears in.
+   * @returns {Array<{label: string, formula: string, text: string}>}
+   */
+  get itemRolls() {
+    const own = this.itemRoll;
+    if ( own?.formula?.trim() ) {
+      return [{ label: own.label || "Roll", formula: diceFormula(own.formula), text: own.formula }];
+    }
+    const plain = String(this.description ?? "").replace(/<[^>]+>/g, " ").replace(/&nbsp;/g, " ").replace(/\s+/g, " ");
+    const rolls = [];
+    for ( const match of plain.matchAll(DICE_PATTERN) ) {
+      const formula = diceFormula(match[0]);
+      if ( rolls.some(r => r.formula === formula) ) continue;
+      const start = Math.max(plain.lastIndexOf(".", match.index) + 1, match.index - 60);
+      const endDot = plain.indexOf(".", match.index + match[0].length);
+      const end = Math.min(endDot === -1 ? plain.length : endDot, match.index + match[0].length + 50);
+      rolls.push({ label: match[0].replace(/\s+/g, ""), formula, text: plain.slice(start, end).trim() });
+    }
+    return rolls;
   }
 
   /**

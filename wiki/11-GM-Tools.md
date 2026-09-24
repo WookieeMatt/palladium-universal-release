@@ -43,6 +43,7 @@ Flavor tables (time period encounters, surprise details, branch points, technolo
 | Apply / Apply ½ / To HP | Whoever owns the target (usually the GM) | Targeted tokens, else selected |
 | Save vs Magic / Dodge / Save vs Psionics / Save vs H.F. | Each target | Their selected token or assigned character |
 | Take damage (misfire, practice), Devolve / Evolve, Temporal Mishap | The actor's owner | The actor that made the roll |
+| The card's title (📖) | Anyone | Opens a read-only view of the item the card is about |
 
 ## Rules the system follows
 - **Meet or beat** everywhere: Reactions vs Strikes, Strikes vs A.R. (defenders win ties).

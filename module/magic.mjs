@@ -52,7 +52,7 @@ export async function castSpell(actor, spell) {
   if ( actionNote ) notes.push(actionNote);
   const flags = { "palladium-universal": { card: "spell", actorUuid: actor.uuid, itemId: spell.id, strength,
     saveType: s.saveType, dodgeTarget: s.dodgeTarget, saveNote: s.save, damage, spell: spell.name } };
-  const message = await postCard(actor, { title: `Casts ${spell.name}`, label: "Spell Strength", result: strength,
+  const message = await postCard(actor, { title: `Casts ${spell.name}`, item: spell, label: "Spell Strength", result: strength,
     lines: [...details, ...(damage ? [["Damage", damage]] : []), ["Spells left today", `${left} of ${caster.spellsPerDay}`]],
     notes, buttons: buttons.length ? `<div class="pu-buttons">${buttons.join("")}</div>` : "", flags });
   Hooks.callAll("palladium.castSpell", actor, spell, { strength, damage, message });
@@ -86,7 +86,7 @@ export async function rollSpellSave(actor, data) {
 export async function rollSpellDamage(actor, data) {
   const roll = await new Roll(data.damage).evaluate();
   const flags = { "palladium-universal": { card: "damage", actorUuid: actor.uuid, damage: roll.total, strike: null } };
-  return postCard(actor, { title: `${data.spell}: Damage`, label: "Damage", result: roll.total,
+  return postCard(actor, { title: `${data.spell}: Damage`, item: actor.items?.get(data.itemId), label: "Damage", result: roll.total,
     lines: damageLines(roll, data.damage), rolls: [roll], buttons: damageButtons(), flags });
 }
 
@@ -142,7 +142,7 @@ export async function usePsionic(actor, power) {
   const hasSave = p.save && !/^\s*(none|no)\b/i.test(p.save);
   const actionNote = await spendActions(actor, 1, power.name);
   const flags = { "palladium-universal": { card: "psionic", actorUuid: actor.uuid, itemId: power.id, power: power.name } };
-  return postCard(actor, { title: `Uses ${power.name}`, label: "Save", result: p.save || "None", flags,
+  return postCard(actor, { title: `Uses ${power.name}`, item: power, label: "Save", result: p.save || "None", flags,
     lines: [["Psionic power", "one action"], ...[p.range && ["Range", p.range], p.duration && ["Duration", p.duration]].filter(t => t)],
     notes: actionNote ? [actionNote] : [],
     buttons: hasSave ? `<div class="pu-buttons"><button type="button" data-pu-action="psionic-save"

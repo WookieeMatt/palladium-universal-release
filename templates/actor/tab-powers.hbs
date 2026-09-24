@@ -79,12 +79,13 @@
           <a data-action="itemEdit">{{name}}{{#if (gt selections 1)}} ({{selections}}){{/if}}{{#if offensive}}*{{/if}}</a>
           <span class="hint">{{tradition}}{{#if range}} · {{range}}{{/if}}{{#if duration}} · {{duration}}{{/if}} · save: {{save}}</span>
         </div>
-        {{#if damage}}<span class="weapon-damage" data-tooltip="Damage at this level">{{damage}}</span>{{/if}}
+        {{#if damage}}<button type="button" class="roll-button" data-action="rollSpellDamage" data-tooltip="Roll damage at this level"><i class="fa-solid fa-burst"></i> {{damage}}</button>{{/if}}
         {{#if mastered}}
         <button type="button" class="roll-button" data-action="castSpell" data-tooltip="Cast (uses one of today's spells)"><i class="fa-solid fa-wand-sparkles"></i> Cast</button>
         {{else}}
         <button type="button" class="roll-button" data-action="practiceSpell" data-tooltip="Roll the experimentation / self-taught table ({{successes}} of {{needed}} complete successes)"><i class="fa-solid fa-flask"></i> Practice {{successes}}/{{needed}}</button>
         {{/if}}
+        {{> "systems/palladium-universal/templates/actor/parts/item-roll.hbs"}}
         <button type="button" class="icon-button" data-action="itemDelete" data-tooltip="Delete"><i class="fa-solid fa-trash"></i></button>
       </li>
       {{else}}
@@ -107,6 +108,7 @@
           <span class="hint">{{range}} · {{duration}} · save: {{save}}</span>
         </div>
         <button type="button" class="roll-button" data-action="usePsionic" data-tooltip="Use this power"><i class="fa-solid fa-brain"></i> Use</button>
+        {{> "systems/palladium-universal/templates/actor/parts/item-roll.hbs"}}
       </li>
       {{else}}
       <li class="hint">No psionic powers (bought with Bio-E on the Mutation tab).</li>

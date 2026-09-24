@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.6.0
+- **Every item with a roll can roll from the sheet.** Items have a new **Roll** field (formula and label); without it, dice written in the description are offered. A 🎲 button appears on W.P.s, armor, gear, devices, abilities, natural weapons, psionics and spells (character and NPC sheets); several dice → pick one.
+- **Spell damage** rolls straight from the Powers tab.
+- **Item chat cards open a read-only view of the item:** click the card's title. It's a copy saved on the card, so everyone can view it and nothing can be changed.
+- API: `rollItem(actor, item)`, `viewItemCopy(itemData)`; `postCard` takes an `item`.
+
 ## 1.5.4
 - **Every chat card uses the same look:** the green header, then **Roll = Result** (e.g. *Strike = 17*, *Damage = 12*, *Prowl = 42*); click it to expand the dice and every bonus. Success, critical and other notes and all buttons stay visible below. Applies to attacks and maneuvers, damage, defenses, d20 checks and saves, skills and percentile rolls, Save vs Coma, Horror Factor, spells and spell saves, psionics, T.E. Change, spell practice, Temporal Mishaps, misfires, vehicles (Control, Evade, weapons) and device operation.
 - Chat cards follow the player's roll mode (public, GM, blind, self).

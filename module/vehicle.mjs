@@ -121,7 +121,7 @@ export async function rollVehicleAttack(actor, weapon) {
   const roll = await new Roll(`1d20 + ${bonus}`).evaluate();
   const natural = roll.dice[0].total;
   return postAttackCard(actor, roll, {
-    title: weapon.name, parts, special: { crit: natural === 20, natural },
+    title: weapon.name, item: weapon, parts, special: { crit: natural === 20, natural },
     flags: { vehicle: true, itemId: weapon.id, ranged: !weapon.system.isMelee, weaponType: weapon.system.weaponType },
     damageLabel: natural === 20 ? "Roll Critical Damage (×2)" : "Roll Damage"
   });
@@ -139,7 +139,7 @@ export async function rollVehicleDamage(actor, weapon, { crit = false, strike = 
   if ( crit ) formula = `(${formula}) * 2`;
   const roll = await new Roll(formula).evaluate();
   const flags = { "palladium-universal": { card: "damage", actorUuid: actor.uuid, damage: roll.total, strike, crit } };
-  return postCard(actor, { title: `${weapon.name}: Damage${crit ? " (Critical ×2)" : ""}`, label: "Damage", result: roll.total,
+  return postCard(actor, { title: `${weapon.name}: Damage${crit ? " (Critical ×2)" : ""}`, item: weapon, label: "Damage", result: roll.total,
     lines: damageLines(roll, w.damage || "0", { Weapon: w.damageBonus }, { mult: crit ? 2 : 1 }), rolls: [roll],
     buttons: damageButtons(), flags });
 }
@@ -174,7 +174,7 @@ function itemReadouts(actors) {
  * @param {string} [options.extra]    Extra card text
  * @returns {Promise<{success: boolean, malfunction: string}|null>}
  */
-async function operate({ name, data, owner, readouts = [], extra = "" }) {
+async function operate({ name, data, owner, readouts = [], extra = "", item }) {
   // The operator: a selected token's character, else the owner if it's a character.
   const selected = defendingActors().filter(a => !["vehicle", "timeMachine"].includes(a.type));
   const operator = selected[0] ?? (!["vehicle", "timeMachine"].includes(owner?.type) ? owner : null);
@@ -202,7 +202,7 @@ async function operate({ name, data, owner, readouts = [], extra = "" }) {
   const notes = [`<span class="${success ? "pu-success" : "pu-failure"}">${success ? "Works" : "Malfunction!"}</span>`];
   if ( !success && data.malfunction ) notes.push(`<span>${data.malfunction}</span>`);
   if ( table ) notes.push(table.html);
-  await postCard(speaker, { title: `Operates ${name}`, label: "Operate", result: roll.total,
+  await postCard(speaker, { title: `Operates ${name}`, item, label: "Operate", result: roll.total,
     rolls: [roll, ...(table?.rolls ?? [])],
     lines: [[skillLabel, `${skill}%`], ...(readout ? [[readout.name, `+${bonus}%`]] : []), ["Chance", `${target}%`], ["d100", roll.total],
       ...(table?.rolls ?? []).map(r => ["Malfunction roll", r.total])],
@@ -218,7 +218,7 @@ async function operate({ name, data, owner, readouts = [], extra = "" }) {
 export async function operateDevice(device) {
   const d = device.system;
   if ( !d.charged ) return ui.notifications.warn(`${device.name} needs recharging (${d.recharge || "see its description"}).`);
-  const result = await operate({ name: device.name, data: d, owner: device.parent });
+  const result = await operate({ name: device.name, data: d, owner: device.parent, item: device });
   if ( result && device.isOwner ) await device.update({ "system.charged": false });
   return result?.success ?? null;
 }

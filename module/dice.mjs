@@ -11,13 +11,13 @@ export const signed = n => (n >= 0 ? `+${n}` : `−${Math.abs(n)}`);
  * @param {string} title
  * @param {string} [subtitle]
  */
-export function cardHeader(actor, title, subtitle = "") {
+export function cardHeader(actor, title, subtitle = "", linked = false) {
   const parts = subtitle ? subtitle.split(" · ") : [];
   const lines = parts.length > 1
     ? `<ul class="pu-bonuses">${parts.map(p => `<li>${p}</li>`).join("")}</ul>` : "";
   return `<header class="pu-card-header">
     <img src="${actor.img}" alt="" width="36" height="36">
-    <div><h3>${title}</h3>${parts.length === 1 ? `<span>${subtitle}</span>` : ""}</div>
+    <div><h3>${linked ? `<a class="pu-item-link" data-tooltip="View the item"><i class="fa-solid fa-book-open"></i> ${title}</a>` : title}</h3>${parts.length === 1 ? `<span>${subtitle}</span>` : ""}</div>
   </header>${lines}`;
 }
 
@@ -62,10 +62,14 @@ export function bonusLines(parts = {}) {
  * @param {Roll[]} [card.rolls]
  * @param {object} [card.flags]                Message flags
  * @param {object} [card.speaker]
+ * @param {Item} [card.item]                   The item the card is about: its title opens a read-only view
  */
 export async function postCard(actor, { title, label, result, lines = [], caption = "", notes = [], body = "",
-  buttons = "", rolls = [], flags, speaker } = {}) {
-  const content = `<div class="pu-card">${cardHeader(actor, title)}
+  buttons = "", rolls = [], flags, speaker, item } = {}) {
+  if ( item ) {
+    flags = foundry.utils.mergeObject(flags ?? {}, { "palladium-universal": { itemData: item.toObject() } }, { inplace: false });
+  }
+  const content = `<div class="pu-card">${cardHeader(actor, title, "", !!item)}
     ${label !== undefined ? resultDetails(label, result, lines, caption) : ""}
     ${notes.length ? `<p class="pu-notes">${notes.join(" ")}</p>` : ""}${body}${buttons}</div>`;
   const data = { speaker: speaker ?? ChatMessage.getSpeaker({ actor }), content, rolls };
@@ -115,13 +119,13 @@ export async function rollD20(actor, { label, bonus = 0, breakdown, target, crit
  * @param {number} options.target        Percentage chance
  * @param {boolean} [options.skill=true] Apply the 95% skill cap
  */
-export async function rollPercent(actor, { label, target, skill = true }) {
+export async function rollPercent(actor, { label, target, skill = true, item } = {}) {
   const chance = skill ? Math.min(target, 95) : target;
   const roll = await new Roll("1d100").evaluate();
   const success = (roll.total <= chance) && !(skill && (roll.total >= 96));
   const lines = [["Chance", `${chance}%`], ["d100", roll.total]];
   if ( skill && (target > 95) ) lines.splice(1, 0, ["Skill cap", "95%"]);
-  return postCard(actor, { title: label, label, result: roll.total, lines, rolls: [roll],
+  return postCard(actor, { title: label, item, label, result: roll.total, lines, rolls: [roll],
     notes: [`<span class="${success ? "pu-success" : "pu-failure"}">${success ? "Success" : "Failure"} (${chance}% or under)</span>`] });
 }
 
@@ -139,7 +143,7 @@ export async function rollSkill(actor, skill, secondary = false) {
   const label = secondary && skill.system.label2 ? `${skill.name}: ${skill.system.label2}` : skill.name;
   const hookData = { label, target, secondary };
   if ( Hooks.call("palladium.preRollSkill", actor, skill, hookData) === false ) return null;
-  const result = await rollPercent(actor, { label: hookData.label, target: hookData.target, skill: true });
+  const result = await rollPercent(actor, { label: hookData.label, target: hookData.target, skill: true, item: skill });
   Hooks.callAll("palladium.rollSkill", actor, skill, { ...hookData, result });
   return result;
 }

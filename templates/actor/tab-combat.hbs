@@ -173,6 +173,7 @@
           <span class="hint">{{kind}}{{#if group}} · group: {{group}}{{/if}}</span>
         </div>
         <span class="derived">{{text}}</span>
+        {{> "systems/palladium-universal/templates/actor/parts/item-roll.hbs"}}
         <button type="button" class="icon-button" data-action="itemDelete" data-tooltip="Delete"><i class="fa-solid fa-trash"></i></button>
       </li>
       {{else}}
@@ -198,6 +199,7 @@
           <span class="hint">{{type}}{{#if parry}} · Parry +{{parry}}{{/if}}</span>
         </div>
         <span class="derived">A.R. {{ar}} · S.D.C. {{sdc.value}}/{{sdc.max}}</span>
+        {{> "systems/palladium-universal/templates/actor/parts/item-roll.hbs"}}
         <button type="button" class="icon-button {{#if equipped}}active{{/if}}" data-action="itemEquip" data-tooltip="{{#if equipped}}Worn{{else}}Not worn{{/if}}"><i class="fa-solid fa-shield-halved"></i></button>
         <button type="button" class="icon-button" data-action="itemDelete" data-tooltip="Delete"><i class="fa-solid fa-trash"></i></button>
       </li>
