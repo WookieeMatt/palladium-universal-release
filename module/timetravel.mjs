@@ -1,4 +1,4 @@
-import { cardHeader } from "./dice.mjs";
+import { postCard } from "./dice.mjs";
 
 /**
  * Time travel tables (Transdimensional TMNT p.33, p.41, p.49, p.53–54, p.86–87).
@@ -33,9 +33,9 @@ export async function temporalMishap() {
  * @param {string} [title]
  */
 export async function rollTemporalMishap(actor, title = "Temporal Mishap") {
-  const { html, rolls } = await temporalMishap();
-  const content = `<div class="pu-card">${cardHeader(actor, title)}<p class="pu-notes">${html}</p></div>`;
-  return ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content, rolls });
+  const { html, rolls, row } = await temporalMishap();
+  return postCard(actor, { title, label: "Mishap", result: row?.label ?? rolls[0].total, rolls,
+    lines: rolls.map((r, i) => [i ? "Follow-up d100" : "d100", r.total]), notes: [html] });
 }
 
 /**
@@ -80,11 +80,11 @@ export async function practiceSpell(actor, spell) {
   if ( row.change ) buttons.push(`<button type="button" data-pu-action="change-save"><i class="fa-solid fa-hourglass-half"></i> Save vs T.E. Change</button>`);
   if ( row.mishap ) buttons.push(`<button type="button" data-pu-action="temporal-mishap"><i class="fa-solid fa-clock-rotate-left"></i> Temporal Mishap</button>`);
   const title = tradition === "timeLord" ? "Temporal Spell Experimentation" : "Self-Taught Spell Attempt";
-  const content = `<div class="pu-card">${cardHeader(actor, `${title}: ${spell.name}`, `Roll ${roll.total}`)}
-    <p class="pu-notes"><span class="${row.success ? "pu-success" : "pu-failure"}">${row.text}</span> ${status}</p>
-    ${buttons.length ? `<div class="pu-buttons">${buttons.join("")}</div>` : ""}</div>`;
   const flags = { "palladium-universal": { card: "practice", actorUuid: actor.uuid } };
-  return ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content, rolls: [roll], flags });
+  return postCard(actor, { title: `${title}: ${spell.name}`, label: "d100", result: roll.total, rolls: [roll], flags,
+    lines: [["d100", roll.total], ["Complete successes needed", needed]],
+    notes: [`<span class="${row.success ? "pu-success" : "pu-failure"}">${row.text}</span>`, status].filter(t => t),
+    buttons: buttons.length ? `<div class="pu-buttons">${buttons.join("")}</div>` : "" });
 }
 
 /* -------------------------------------------- */

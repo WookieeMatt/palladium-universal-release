@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.5.4
+- **Every chat card uses the same look:** the green header, then **Roll = Result** (e.g. *Strike = 17*, *Damage = 12*, *Prowl = 42*); click it to expand the dice and every bonus. Success, critical and other notes and all buttons stay visible below. Applies to attacks and maneuvers, damage, defenses, d20 checks and saves, skills and percentile rolls, Save vs Coma, Horror Factor, spells and spell saves, psionics, T.E. Change, spell practice, Temporal Mishaps, misfires, vehicles (Control, Evade, weapons) and device operation.
+- Chat cards follow the player's roll mode (public, GM, blind, self).
+- API: `postCard(actor, {title, label, result, lines, notes, buttons, rolls, flags})` and `resultDetails()` for modules that want matching cards.
+
 ## 1.5.3
 - Attribute generation card: green header with the portrait, the result as **I.Q. = 21**, and a click to expand the full calculation (Base 3D6, Exceptional 1D6, Species, Size, Physical Skills, Final Total) in neat rows.
 - Result lists on chat cards no longer show stray bullet marks.

@@ -15,7 +15,7 @@ Updates then come through Foundry's normal *Update* button.
 
 ## Features
 - **Characters**: attributes with automatic bonuses, animals and Bio-E (size levels 1–25, Human Features with per-level effects, abilities and natural weapons), backgrounds, skills, W.P.s, Combat Training progressions, saves including automated Save vs Coma.
-- **Combat**: line-by-line bonus breakdowns, circumstantial modifiers, conditions as token status effects, maneuvers (Hold, Entangle, Tackle, Throw, Jump Kick), Leap Attacks, **Defend buttons** on attack cards (meet or beat; natural-critical rule), armor resolution by Strike roll, damage application, actions per round.
+- **Combat**: chat cards showing **Roll = Result** that expand to the dice and every bonus, circumstantial modifiers, conditions as token status effects, maneuvers (Hold, Entangle, Tackle, Throw, Jump Kick), Leap Attacks, **Defend buttons** on attack cards (meet or beat; natural-critical rule), armor resolution by Strike roll, damage application, actions per round.
 - **Powers**: Wizard and Time Lord magic (spells per day, spell strength, practice tables), psionics, Horror Factor, T.E. change.
 - **Black powder**: misfires and mishaps, GM weather setting, W.P. families, range bands, deliberate overloading.
 - **NPCs** on a compact sheet, **Vehicles** with armor locations and piloting, **Time Machines** with device, support-device and installation drop zones.

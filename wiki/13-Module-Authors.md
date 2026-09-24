@@ -59,7 +59,7 @@ Follow the shape of the existing entries: log `CONFIG.PALLADIUM.CONDITIONS` in t
 | Time travel | `temporalMishap()`, `rollTemporalMishap(actor)`, `deviceMalfunction(key)`, `practiceSpell(actor, spell)` |
 | Vehicles | `applyVehicleDamage(actor, amount, options)`, `rollControl(actor)`, `rollEvade(actor)`, `operateDevice(device)`, `operateTimeMachine(actor)` |
 | Building | `applyAnimal(actor, data)`, `removeAnimal(actor)`, `applyBackground(actor, data)`, `rollAttribute(actor, key)` |
-| Chat cards | `cardHeader(actor, title, subtitle)`, `damageButtons()`, `signed(n)` |
+| Chat cards | `postCard(actor, {title, label, result, lines, caption, notes, body, buttons, rolls, flags})` (the standard card: header, *Label = Result* expanding to `lines` rows), `resultDetails(label, result, lines)`, `cardHeader(actor, title)`, `damageButtons()`, `signed(n)` |
 
 `game.palladium.config` is the same object as `CONFIG.PALLADIUM`. The `apiVersion` number goes up if the API changes in a way that breaks existing code.
 

@@ -1,5 +1,5 @@
-import { rollD20, rollPercent, signed } from "./dice.mjs";
-import { cardHeader, damageButtons, defendingActors } from "./combat.mjs";
+import { postCard, rollD20, rollPercent, signed } from "./dice.mjs";
+import { damageButtons, damageLines, defendingActors } from "./combat.mjs";
 import { spendActions } from "./actions.mjs";
 
 /**
@@ -30,9 +30,9 @@ export async function castSpell(actor, spell) {
   const level = actor.system.identity.level;
   const damage = s.damage ? s.damageFormula(level) : "";
   const strength = caster.strength;
-  const details = [s.range && `Range ${s.range}`, s.duration && `Duration ${s.duration}`,
-    `Save: ${s.saveType === "dodge" ? `Dodge ${s.dodgeTarget}+` : CONFIG.PALLADIUM.SPELL_SAVES[s.saveType]}${s.save ? ` (${s.save})` : ""}`]
-    .filter(t => t).join(" · ");
+  const details = [s.range && ["Range", s.range], s.duration && ["Duration", s.duration],
+    ["Save", `${s.saveType === "dodge" ? `Dodge ${s.dodgeTarget}+` : CONFIG.PALLADIUM.SPELL_SAVES[s.saveType]}${s.save ? ` (${s.save})` : ""}`]]
+    .filter(t => t);
   const buttons = [];
   if ( ["standard", "special"].includes(s.saveType) ) {
     buttons.push(`<button type="button" data-pu-action="spell-save" data-tooltip="Selected tokens save vs Magic">
@@ -47,16 +47,14 @@ export async function castSpell(actor, spell) {
   }
 
   const left = caster.remaining - 1;
-  const content = `<div class="pu-card">${cardHeader(actor, `Casts ${spell.name}`,
-    `Spell strength ${strength} · ${left} of ${caster.spellsPerDay} spells left today`)}
-    <p class="pu-text">${details}</p>
-    ${s.offensive ? `<p class="pu-notes"><span class="hint">Magic attacks hit automatically; parry and dodge usually impossible.</span></p>` : ""}
-    ${actionNote ? `<p class="pu-notes">${actionNote}</p>` : ""}
-    ${buttons.length ? `<div class="pu-buttons">${buttons.join("")}</div>` : ""}
-  </div>`;
+  const notes = [];
+  if ( s.offensive ) notes.push(`<span class="hint">Magic attacks hit automatically; parry and dodge usually impossible.</span>`);
+  if ( actionNote ) notes.push(actionNote);
   const flags = { "palladium-universal": { card: "spell", actorUuid: actor.uuid, itemId: spell.id, strength,
     saveType: s.saveType, dodgeTarget: s.dodgeTarget, saveNote: s.save, damage, spell: spell.name } };
-  const message = await ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content, flags });
+  const message = await postCard(actor, { title: `Casts ${spell.name}`, label: "Spell Strength", result: strength,
+    lines: [...details, ...(damage ? [["Damage", damage]] : []), ["Spells left today", `${left} of ${caster.spellsPerDay}`]],
+    notes, buttons: buttons.length ? `<div class="pu-buttons">${buttons.join("")}</div>` : "", flags });
   Hooks.callAll("palladium.castSpell", actor, spell, { strength, damage, message });
   return message;
 }
@@ -88,8 +86,8 @@ export async function rollSpellSave(actor, data) {
 export async function rollSpellDamage(actor, data) {
   const roll = await new Roll(data.damage).evaluate();
   const flags = { "palladium-universal": { card: "damage", actorUuid: actor.uuid, damage: roll.total, strike: null } };
-  const flavor = `<div class="pu-card">${cardHeader(actor, `${data.spell}: Damage`, data.damage)}${damageButtons()}</div>`;
-  return roll.toMessage({ speaker: ChatMessage.getSpeaker({ actor }), flavor, flags });
+  return postCard(actor, { title: `${data.spell}: Damage`, label: "Damage", result: roll.total,
+    lines: damageLines(roll, data.damage), rolls: [roll], buttons: damageButtons(), flags });
 }
 
 /**
@@ -123,11 +121,10 @@ export async function rollChangeSave(actor) {
   const buttons = success ? "" : `<div class="pu-buttons">
     <button type="button" data-pu-action="te-change" data-direction="-1" data-tooltip="Travelled into the past"><i class="fa-solid fa-backward"></i> Devolve −5 Bio-E</button>
     <button type="button" data-pu-action="te-change" data-direction="1" data-tooltip="Travelled into the future"><i class="fa-solid fa-forward"></i> Evolve +5 Bio-E</button></div>`;
-  const flavor = `<div class="pu-card">${cardHeader(actor, "Save vs T.E. Change", `P.E. and training ${signed(save.bonus)}%`)}
-    <p class="pu-notes"><span class="${success ? "pu-success" : "pu-failure"}">${success ? "Resists the Change"
-      : "Fails: 5 Bio-E points of T.E. change"}</span> (needs ${save.target}+)</p>${buttons}</div>`;
   const flags = { "palladium-universal": { card: "change", actorUuid: actor.uuid } };
-  return roll.toMessage({ speaker: ChatMessage.getSpeaker({ actor }), flavor, flags });
+  return postCard(actor, { title: "Save vs T.E. Change", label: "Save", result: roll.total, rolls: [roll], buttons, flags,
+    lines: [["d100", roll.dice[0].total], ["P.E. and training", `${signed(save.bonus)}%`], ["Total", roll.total], ["Needs", `${save.target}+`]],
+    notes: [`<span class="${success ? "pu-success" : "pu-failure"}">${success ? "Resists the Change" : "Fails: 5 Bio-E points of T.E. change"}</span>`] });
 }
 
 /* -------------------------------------------- */
@@ -144,16 +141,12 @@ export async function usePsionic(actor, power) {
   const p = power.system;
   const hasSave = p.save && !/^\s*(none|no)\b/i.test(p.save);
   const actionNote = await spendActions(actor, 1, power.name);
-  const details = [p.range && `Range ${p.range}`, p.duration && `Duration ${p.duration}`, `Save: ${p.save || "None"}`]
-    .filter(t => t).join(" · ");
-  const content = `<div class="pu-card">${cardHeader(actor, `Uses ${power.name}`, "Psionic power · one action")}
-    <p class="pu-text">${details}</p>
-    ${actionNote ? `<p class="pu-notes">${actionNote}</p>` : ""}
-    ${hasSave ? `<div class="pu-buttons"><button type="button" data-pu-action="psionic-save"
-      data-tooltip="Selected tokens save vs Psionics"><i class="fa-solid fa-brain"></i> Save vs Psionics</button></div>` : ""}
-  </div>`;
   const flags = { "palladium-universal": { card: "psionic", actorUuid: actor.uuid, itemId: power.id, power: power.name } };
-  return ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content, flags });
+  return postCard(actor, { title: `Uses ${power.name}`, label: "Save", result: p.save || "None", flags,
+    lines: [["Psionic power", "one action"], ...[p.range && ["Range", p.range], p.duration && ["Duration", p.duration]].filter(t => t)],
+    notes: actionNote ? [actionNote] : [],
+    buttons: hasSave ? `<div class="pu-buttons"><button type="button" data-pu-action="psionic-save"
+      data-tooltip="Selected tokens save vs Psionics"><i class="fa-solid fa-brain"></i> Save vs Psionics</button></div>` : "" });
 }
 
 /**

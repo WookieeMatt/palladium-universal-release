@@ -1,4 +1,4 @@
-import { cardHeader, resultDetails, signed } from "./dice.mjs";
+import { postCard, signed } from "./dice.mjs";
 
 /**
  * Attribute generation (p.12). Clicking an attribute abbreviation on the character sheet runs the
@@ -92,17 +92,16 @@ export async function rollAttribute(actor, key) {
   const result = { key, base: base.total, exceptional, exceptionalDie, species, size, physical, total };
 
   // Step 6: chat log, then discard.
-  const content = `<div class="pu-card">${cardHeader(actor, `Rolls ${label}`)}
-    ${resultDetails(label, total, [
+  await postCard(actor, {
+    title: `Rolls ${label}`, label, result: total, caption: `Generating ${label}`, rolls,
+    lines: [
       ["Base 3D6", base.total],
       ["Exceptional 1D6", exceptionalText],
       ["Species Bonus", signed(species)],
       ["Size Modifier", size === null ? "N/A" : signed(size)],
       ["Physical Skill Bonus", physical === null ? "N/A" : signed(physical)],
       ["Final Total", total]
-    ], `Generating ${label}`)}</div>`;
-  await ChatMessage.create({
-    speaker: ChatMessage.getSpeaker({ actor }), rolls, content,
+    ],
     flags: { "palladium-universal": { card: "attributeGeneration", actorUuid: actor.uuid, key, exceptionalDie } }
   });
   Hooks.callAll("palladium.rollAttribute", actor, key, result);

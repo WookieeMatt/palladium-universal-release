@@ -20,7 +20,7 @@ This guide ships with the system: in Foundry, open the **Compendium Packs** side
 13. **For Module Authors**: building content modules, the rules tables, the `game.palladium` API and hooks.
 
 ## The ten-second tour
-- **Everything rolls from the sheet.** Click a d20 icon or a named button; results go to chat with a line-by-line bonus breakdown.
+- **Everything rolls from the sheet.** Click a d20 icon or a named button; results go to chat as **Roll = Result** (e.g. *Strike = 17*); click the result to see the dice and every bonus.
 - **Chat cards have buttons.** Attack cards have *Defend* buttons for the target's player and a *Roll Damage* button for the attacker; damage cards have *Apply / Apply ½ / To HP* buttons.
 - **Select or target tokens first.** Defend, save and apply buttons act on the tokens you have selected (or targeted, for damage).
 - **Drag and drop.** Animals, backgrounds, items and devices are dropped onto sheets; the sheet sets itself up.

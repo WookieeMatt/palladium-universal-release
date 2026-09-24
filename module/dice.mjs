@@ -4,17 +4,6 @@ const { DialogV2 } = foundry.applications.api;
 /** Format a signed bonus, e.g. +3 / −2. */
 export const signed = n => (n >= 0 ? `+${n}` : `−${Math.abs(n)}`);
 
-/** Render a bonus breakdown as "Training +3 · Attribute +2". */
-function breakdownText(breakdown = {}) {
-  const labels = { training: "Training", attribute: "Attribute", skills: "Skills", mod: "Misc", treatment: "Treatment",
-    circ: "Circumstance", conditions: "Conditions" };
-  if ( breakdown.stunned ) return "Stunned: no combat bonuses";
-  return Object.entries(breakdown)
-    .filter(([, v]) => v)
-    .map(([k, v]) => `${labels[k] ?? k} ${signed(v)}`)
-    .join(" · ");
-}
-
 /**
  * Build the header of a chat card: a green strip with the portrait and title. A subtitle made of
  * several " · "-separated parts (a bonus breakdown) is listed line by line under the header.
@@ -48,6 +37,43 @@ export function resultDetails(label, result, lines, caption = "") {
   </details>`;
 }
 
+/** Bonus parts as detail rows, skipping zeros: [["Training", "+3"], ...]. */
+export function bonusLines(parts = {}) {
+  const labels = { training: "Training", attribute: "Attribute", skills: "Skills", mod: "Misc", treatment: "Treatment",
+    circ: "Circumstance", conditions: "Conditions" };
+  if ( parts.stunned ) return [["Stunned", "no combat bonuses"]];
+  return Object.entries(parts).filter(([, v]) => v).map(([k, v]) => [labels[k] ?? k, signed(v)]);
+}
+
+/**
+ * Post a system chat card: the green header, then "Label = Result" (click to expand the details),
+ * then notes, any extra body and buttons. Rolls are attached (Dice So Nice shows them) and the
+ * user's roll mode applies.
+ * @param {Actor} actor
+ * @param {object} card
+ * @param {string} card.title                  Header title
+ * @param {string} [card.label]                Short name of the roll ("Strike")
+ * @param {string|number} [card.result]        The result
+ * @param {Array} [card.lines]                 Detail rows [label, value]
+ * @param {string} [card.caption]              Small heading above the detail rows
+ * @param {string[]} [card.notes]              Always-visible notes (success, critical...)
+ * @param {string} [card.body]                 Extra HTML (lists, text)
+ * @param {string} [card.buttons]              Button HTML
+ * @param {Roll[]} [card.rolls]
+ * @param {object} [card.flags]                Message flags
+ * @param {object} [card.speaker]
+ */
+export async function postCard(actor, { title, label, result, lines = [], caption = "", notes = [], body = "",
+  buttons = "", rolls = [], flags, speaker } = {}) {
+  const content = `<div class="pu-card">${cardHeader(actor, title)}
+    ${label !== undefined ? resultDetails(label, result, lines, caption) : ""}
+    ${notes.length ? `<p class="pu-notes">${notes.join(" ")}</p>` : ""}${body}${buttons}</div>`;
+  const data = { speaker: speaker ?? ChatMessage.getSpeaker({ actor }), content, rolls };
+  if ( flags ) data.flags = flags;
+  try { ChatMessage.applyRollMode?.(data, game.settings.get("core", "rollMode")); } catch(err) { /* default mode */ }
+  return ChatMessage.create(data);
+}
+
 /* -------------------------------------------- */
 
 /**
@@ -74,9 +100,8 @@ export async function rollD20(actor, { label, bonus = 0, breakdown, target, crit
     notes.push(`<span class="${success ? "pu-success" : "pu-failure"}">${success ? "Success" : "Failure"} (${needs})</span>`);
   }
   if ( note ) notes.push(note);
-  const flavor = `<div class="pu-card">${cardHeader(actor, label, breakdownText(breakdown))}
-    ${notes.length ? `<p class="pu-notes">${notes.join(" ")}</p>` : ""}</div>`;
-  await roll.toMessage({ speaker: ChatMessage.getSpeaker({ actor }), flavor });
+  const lines = [["d20", natural], ...bonusLines(breakdown ?? { Bonus: bonus }), ["Total", roll.total]];
+  await postCard(actor, { title: label, label, result: roll.total, lines, notes, rolls: [roll] });
   return { roll, natural, success };
 }
 
@@ -94,9 +119,10 @@ export async function rollPercent(actor, { label, target, skill = true }) {
   const chance = skill ? Math.min(target, 95) : target;
   const roll = await new Roll("1d100").evaluate();
   const success = (roll.total <= chance) && !(skill && (roll.total >= 96));
-  const flavor = `<div class="pu-card">${cardHeader(actor, label, `${chance}%`)}
-    <p class="pu-notes"><span class="${success ? "pu-success" : "pu-failure"}">${success ? "Success" : "Failure"}</span></p></div>`;
-  return roll.toMessage({ speaker: ChatMessage.getSpeaker({ actor }), flavor });
+  const lines = [["Chance", `${chance}%`], ["d100", roll.total]];
+  if ( skill && (target > 95) ) lines.splice(1, 0, ["Skill cap", "95%"]);
+  return postCard(actor, { title: label, label, result: roll.total, lines, rolls: [roll],
+    notes: [`<span class="${success ? "pu-success" : "pu-failure"}">${success ? "Success" : "Failure"} (${chance}% or under)</span>`] });
 }
 
 /* -------------------------------------------- */
@@ -144,19 +170,14 @@ export async function rollSaveVsComa(actor) {
   const successes = rolls.filter(r => r.total >= save.target).length;
   const recovered = successes >= 2;
 
-  const list = rolls.map((r, i) => {
-    const ok = r.total >= save.target;
-    return `<li>Try ${i + 1}: ${r.dice[0].total} ${signed(bonus)} = <strong>${r.total}</strong>
-      <span class="${ok ? "pu-success" : "pu-failure"}">${ok ? "✔" : "✘"}</span></li>`;
-  }).join("");
-  const breakdown = breakdownText({ attribute: save.bonus - actor.system.saves.mod.coma,
-    mod: actor.system.saves.mod.coma, treatment });
-  const content = `<div class="pu-card">${cardHeader(actor, "Save vs Coma", breakdown)}
-    <ol class="pu-coma">${list}</ol>
-    <p class="pu-notes"><span class="${recovered ? "pu-success" : "pu-failure"}">
-      ${recovered ? "Recovers: stabilised at 1 HP." : "Still in a coma."}</span>
-      (${successes} of 3 at ${save.target}+)</p></div>`;
+  const lines = [
+    ...bonusLines({ attribute: save.bonus - actor.system.saves.mod.coma, mod: actor.system.saves.mod.coma, treatment }),
+    ...rolls.map((r, i) => [`Try ${i + 1}: d20 ${r.dice[0].total} ${signed(bonus)}`,
+      `${r.total} ${r.total >= save.target ? "✔" : "✘"}`])
+  ];
 
   if ( recovered && (actor.system.health.hp.value < 1) ) await actor.update({ "system.health.hp.value": 1 });
-  return ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content, rolls });
+  return postCard(actor, { title: "Save vs Coma", label: "Successes", result: `${successes} of 3`, lines, rolls,
+    caption: `Three tries at ${save.target}+`,
+    notes: [`<span class="${recovered ? "pu-success" : "pu-failure"}">${recovered ? "Recovers: stabilised at 1 HP." : "Still in a coma."}</span>`] });
 }

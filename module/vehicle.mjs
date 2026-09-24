@@ -1,5 +1,5 @@
-import { cardHeader, damageButtons, defendingActors, postAttackCard } from "./combat.mjs";
-import { signed } from "./dice.mjs";
+import { damageButtons, damageLines, defendingActors, postAttackCard } from "./combat.mjs";
+import { postCard, signed } from "./dice.mjs";
 import { deviceMalfunction } from "./timetravel.mjs";
 
 const { DialogV2 } = foundry.applications.api;
@@ -92,10 +92,10 @@ export async function rollControl(actor) {
   const target = sys.controlTarget;
   const roll = await new Roll("1d100").evaluate();
   const success = roll.total <= target;
-  const flavor = `<div class="pu-card">${cardHeader(actor, "Control Roll", `${sys.pilot || "Pilot"} · ${target}%`)}
-    <p class="pu-notes"><span class="${success ? "pu-success" : "pu-failure"}">${success ? "In control" : "Loses control"}</span>
-    <span class="hint">One maneuver per round (an action); Control Rolls are free.</span></p></div>`;
-  return roll.toMessage({ speaker: ChatMessage.getSpeaker({ actor }), flavor });
+  return postCard(actor, { title: "Control Roll", label: "Control", result: roll.total, rolls: [roll],
+    lines: [["Pilot", sys.pilot || "—"], ["Chance", `${target}%`], ["d100", roll.total]],
+    notes: [`<span class="${success ? "pu-success" : "pu-failure"}">${success ? "In control" : "Loses control"}</span>`,
+      `<span class="hint">One maneuver per round (an action); Control Rolls are free.</span>`] });
 }
 
 /**
@@ -105,9 +105,9 @@ export async function rollControl(actor) {
 export async function rollEvade(actor) {
   const bonus = actor.system.evadeBonus;
   const roll = await new Roll(`1d20 + ${bonus}`).evaluate();
-  const flavor = `<div class="pu-card">${cardHeader(actor, "Evade", `Pilot ${signed(bonus)}`)}
-    <p class="pu-notes"><strong>Strikes must meet or beat ${roll.total}</strong> until the vehicle's next maneuver.</p></div>`;
-  return roll.toMessage({ speaker: ChatMessage.getSpeaker({ actor }), flavor });
+  return postCard(actor, { title: "Evade", label: "Evade", result: roll.total, rolls: [roll],
+    lines: [["d20", roll.dice[0].total], ["Pilot", signed(bonus)], ["Total", roll.total]],
+    notes: [`<strong>Strikes must meet or beat ${roll.total}</strong> until the vehicle's next maneuver.`] });
 }
 
 /**
@@ -139,8 +139,9 @@ export async function rollVehicleDamage(actor, weapon, { crit = false, strike = 
   if ( crit ) formula = `(${formula}) * 2`;
   const roll = await new Roll(formula).evaluate();
   const flags = { "palladium-universal": { card: "damage", actorUuid: actor.uuid, damage: roll.total, strike, crit } };
-  const flavor = `<div class="pu-card">${cardHeader(actor, `${weapon.name}: Damage${crit ? " (Critical ×2)" : ""}`)}${damageButtons()}</div>`;
-  return roll.toMessage({ speaker: ChatMessage.getSpeaker({ actor }), flavor, flags });
+  return postCard(actor, { title: `${weapon.name}: Damage${crit ? " (Critical ×2)" : ""}`, label: "Damage", result: roll.total,
+    lines: damageLines(roll, w.damage || "0", { Weapon: w.damageBonus }, { mult: crit ? 2 : 1 }), rolls: [roll],
+    buttons: damageButtons(), flags });
 }
 
 /* -------------------------------------------- */
@@ -198,14 +199,15 @@ async function operate({ name, data, owner, readouts = [], extra = "" }) {
   const success = roll.total <= target;
   const speaker = operator ?? owner;
   const table = success ? null : await deviceMalfunction(data.malfunctionTable);
-  const flavor = `<div class="pu-card">${cardHeader(speaker, `Operates ${name}`,
-    `${skillLabel} ${skill}%${readout ? ` · ${readout.name} +${bonus}%` : ""} → ${target}%`)}
-    <p class="pu-notes"><span class="${success ? "pu-success" : "pu-failure"}">${success ? "Works" : "Malfunction!"}</span>
-    ${!success && data.malfunction ? `<span>${data.malfunction}</span>` : ""}</p>
-    ${table ? `<p class="pu-notes">${table.html}</p>` : ""}
-    ${extra ? `<p class="pu-text">${extra}</p>` : ""}
-    ${data.maxArea ? `<p class="pu-text">Max area: ${data.maxArea} · Recharge: ${data.recharge || "—"}</p>` : ""}</div>`;
-  await roll.toMessage({ speaker: ChatMessage.getSpeaker({ actor: speaker }), flavor });
+  const notes = [`<span class="${success ? "pu-success" : "pu-failure"}">${success ? "Works" : "Malfunction!"}</span>`];
+  if ( !success && data.malfunction ) notes.push(`<span>${data.malfunction}</span>`);
+  if ( table ) notes.push(table.html);
+  await postCard(speaker, { title: `Operates ${name}`, label: "Operate", result: roll.total,
+    rolls: [roll, ...(table?.rolls ?? [])],
+    lines: [[skillLabel, `${skill}%`], ...(readout ? [[readout.name, `+${bonus}%`]] : []), ["Chance", `${target}%`], ["d100", roll.total],
+      ...(table?.rolls ?? []).map(r => ["Malfunction roll", r.total])],
+    notes,
+    body: `${extra ? `<p class="pu-text">${extra}</p>` : ""}${data.maxArea ? `<p class="pu-text">Max area: ${data.maxArea} · Recharge: ${data.recharge || "—"}</p>` : ""}` });
   return { success, malfunction: table?.html.replace(/<[^>]+>/g, "") ?? "" };
 }
 

@@ -1,4 +1,4 @@
-import { cardHeader, signed } from "./dice.mjs";
+import { bonusLines, cardHeader, postCard, signed } from "./dice.mjs";
 import { onMagicCardButton, rollChangeSave } from "./magic.mjs";
 import { applyTeChange, rollTemporalMishap } from "./timetravel.mjs";
 import { applyVehicleDamage, rollVehicleDamage } from "./vehicle.mjs";
@@ -52,8 +52,22 @@ export function misfireChance(weapon) {
 
 export { cardHeader };
 
-function breakdownText(parts) {
-  return Object.entries(parts).filter(([, v]) => v).map(([k, v]) => `${k} ${signed(v)}`).join(" · ");
+/**
+ * Detail rows for a damage roll: the weapon's dice, each bonus, halving and multipliers, the total.
+ * @param {Roll} roll
+ * @param {string} base      The weapon's dice formula
+ * @param {object} parts     Labelled bonuses
+ * @param {object} [opts]    {half, mult}
+ */
+export function damageLines(roll, base, parts = {}, { half = false, mult = 1 } = {}) {
+  const dice = (roll.dice ?? []).reduce((n, d) => n + d.total, 0);
+  return [
+    [`Dice ${String(base).toUpperCase()}`, dice],
+    ...bonusLines(parts),
+    ...(half ? [["Beyond range", "½"]] : []),
+    ...(mult > 1 ? [["Multiplier", `×${mult}`]] : []),
+    ["Total", roll.total]
+  ];
 }
 
 /* -------------------------------------------- */
@@ -200,13 +214,14 @@ export async function rollMisfire(actor, weapon) {
   const buttons = [];
   if ( mishap.key === "overloaded" ) buttons.push(["1D6", "Shooter takes 1D6"]);
   if ( mishap.key === "explosion" ) buttons.push(["2D6", "Shooter takes 2D6"]);
-  const content = `<div class="pu-card">${cardHeader(actor, `${weapon.name}: ${mishap.label}`,
-    `Misfire ${check.total} ≤ ${chance}% · Mishap ${table.total}`)}
-    <p class="pu-notes"><span class="pu-failure">${mishap.text}</span></p>
-    ${buttons.map(([f, l]) => `<div class="pu-buttons"><button type="button" data-pu-action="self-damage" data-formula="${f}">
-      <i class="fa-solid fa-burst"></i> ${l}</button></div>`).join("")}</div>`;
-  await ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content, rolls: [check, table],
-    flags: { "palladium-universal": { card: "mishap", actorUuid: actor.uuid } } });
+  await postCard(actor, {
+    title: `${weapon.name}: Misfire!`, label: "Mishap", result: mishap.label, rolls: [check, table],
+    lines: [["Misfire chance", `${chance}%`], ["Misfire roll", check.total], ["Mishap roll", table.total]],
+    notes: [`<span class="pu-failure">${mishap.text}</span>`],
+    buttons: buttons.map(([f, l]) => `<div class="pu-buttons"><button type="button" data-pu-action="self-damage" data-formula="${f}">
+      <i class="fa-solid fa-burst"></i> ${l}</button></div>`).join(""),
+    flags: { "palladium-universal": { card: "mishap", actorUuid: actor.uuid } }
+  });
   if ( ["overloaded", "explosion"].includes(mishap.key) && actor.isOwner ) {
     await weapon.update({ "system.equipped": false, name: `${weapon.name} (destroyed)` });
   }
@@ -249,14 +264,14 @@ export async function postAttackCard(actor, roll, { title, parts, special, extra
   notes.push(...extra);
 
   const data = { card: "attack", actorUuid: actor.uuid, strike: roll.total, natural, crit, ...flags };
-  const flavor = `<div class="pu-card">${cardHeader(actor, title, breakdownText(parts))}
-    ${text ? `<p class="pu-text">${text}</p>` : ""}
-    <p class="pu-notes">${notes.join(" ")}</p>
-    ${hit ? defendButtons(data) : ""}
-    ${hit && damageLabel ? `<div class="pu-buttons"><button type="button" data-pu-action="damage">
-      <i class="fa-solid fa-burst"></i> ${damageLabel}</button></div>` : ""}
-  </div>`;
-  return roll.toMessage({ speaker: ChatMessage.getSpeaker({ actor }), flavor, flags: { "palladium-universal": data } });
+  return postCard(actor, {
+    title, label: "Strike", result: roll.total, rolls: [roll], notes,
+    lines: [["d20", natural], ...bonusLines(parts), ["Total", roll.total]],
+    body: text ? `<p class="pu-text">${text}</p>` : "",
+    buttons: `${hit ? defendButtons(data) : ""}${hit && damageLabel ? `<div class="pu-buttons"><button type="button" data-pu-action="damage">
+      <i class="fa-solid fa-burst"></i> ${damageLabel}</button></div>` : ""}`,
+    flags: { "palladium-universal": data }
+  });
 }
 
 /** Reaction buttons for an attack card. Ranged attacks can't be entangled, disarmed or thrown. */
@@ -318,9 +333,8 @@ export async function rollUnarmedDamage(actor, { crit = false, strike = null, la
   if ( mult > 1 ) formula = `(${formula}) * ${mult}`;
   const roll = await new Roll(formula).evaluate();
   const flags = { "palladium-universal": { card: "damage", actorUuid: actor.uuid, damage: roll.total, strike, crit } };
-  const flavor = `<div class="pu-card">${cardHeader(actor, `${label}: Damage${mult > 1 ? ` (×${mult})` : ""}`,
-    breakdownText(parts))}${damageButtons()}</div>`;
-  return roll.toMessage({ speaker: ChatMessage.getSpeaker({ actor }), flavor, flags });
+  return postCard(actor, { title: `${label}: Damage${mult > 1 ? ` (×${mult})` : ""}`, label: "Damage", result: roll.total,
+    lines: damageLines(roll, UNARMED_DAMAGE, parts, { mult }), rolls: [roll], buttons: damageButtons(), flags });
 }
 
 /* -------------------------------------------- */
@@ -388,20 +402,12 @@ export async function rollDefense(defender, key, attack, attackerName = "the att
     notes.push(`<span class="hint">Horrified: can't Parry or Dodge the first attack this round.</span>`);
   }
 
-  const flavor = `<div class="pu-card">${cardHeader(defender, `${r.label} vs ${attackerName}`,
-    breakdownText(c.rollBreakdown[r.total] ? labelledBreakdown(c.rollBreakdown[r.total]) : {}))}
-    <p class="pu-notes">${notes.join(" ")}</p></div>`;
-  const message = await roll.toMessage({ speaker: ChatMessage.getSpeaker({ actor: defender }), flavor });
+  const message = await postCard(defender, {
+    title: `${r.label} vs ${attackerName}`, label: r.label, result: roll.total, rolls: [roll], notes,
+    lines: [["d20", natural], ...bonusLines(c.rollBreakdown[r.total] ?? { Bonus: bonus }), ["Total", roll.total]]
+  });
   Hooks.callAll("palladium.rollDefense", defender, key, roll, { attack, success, natural, message });
   return success;
-}
-
-/** Turn a combat breakdown into card labels. */
-function labelledBreakdown(b) {
-  if ( b.stunned ) return { Stunned: 0 };
-  const labels = { training: "Training", attribute: "Attribute", skills: "Skills", mod: "Misc", circ: "Circumstance",
-    conditions: "Conditions" };
-  return Object.fromEntries(Object.entries(b).map(([k, v]) => [labels[k] ?? k, v]));
 }
 
 /* -------------------------------------------- */
@@ -433,9 +439,9 @@ export async function rollHorrorFactor(actor, hf = null, source = "") {
   const notes = [`<span class="${saved ? "pu-success" : "pu-failure"}">${saved ? "Keeps their nerve" : "Horrified!"}
     (needs over ${hf})</span>`];
   if ( !saved ) notes.push(`<span>${CONFIG.PALLADIUM.CONDITIONS.shocked.text}</span>`);
-  const flavor = `<div class="pu-card">${cardHeader(actor, `Horror Factor ${hf}${source ? `: ${source}` : ""}`,
-    `Save vs Strangeness ${signed(save.bonus)}`)}<p class="pu-notes">${notes.join(" ")}</p></div>`;
-  await roll.toMessage({ speaker: ChatMessage.getSpeaker({ actor }), flavor });
+  await postCard(actor, { title: `Horror Factor ${hf}${source ? `: ${source}` : ""}`, label: "Save", result: roll.total,
+    lines: [["d20", roll.dice[0].total], ["Save vs Strangeness", signed(save.bonus)], ["Total", roll.total], ["Needs over", hf]],
+    notes, rolls: [roll] });
   if ( !saved ) await applyHorrified(actor);
   return saved;
 }
@@ -446,12 +452,10 @@ export async function rollHorrorFactor(actor, hf = null, source = "") {
  */
 export function requestHorrorSaves(actor) {
   const hf = actor.system.horrorFactor;
-  const content = `<div class="pu-card">${cardHeader(actor, `Horror Factor ${hf}`, actor.name)}
-    <p class="pu-text">Everyone who sees it must roll above ${hf} (d20 + save vs Strangeness) or be Horrified for one round.</p>
-    <div class="pu-buttons"><button type="button" data-pu-action="horror-save"><i class="fa-solid fa-ghost"></i> Save vs H.F. ${hf}</button></div>
-  </div>`;
   const flags = { "palladium-universal": { card: "horror", actorUuid: actor.uuid, hf, source: actor.name } };
-  return ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content, flags });
+  return postCard(actor, { title: `Horror Factor ${hf}`, flags,
+    body: `<p class="pu-text">Everyone who sees ${actor.name} must roll above ${hf} (d20 + save vs Strangeness) or be Horrified for one round.</p>`,
+    buttons: `<div class="pu-buttons"><button type="button" data-pu-action="horror-save"><i class="fa-solid fa-ghost"></i> Save vs H.F. ${hf}</button></div>` });
 }
 
 /** Apply the Horrified condition and drop the actor to the bottom of the Initiative order. */
@@ -517,12 +521,11 @@ export async function rollDamage(actor, weapon, { crit = false, mode = "aimed", 
     damage: roll.total, strike, crit, deathBlow } };
   const title = deathBlow ? `Death Blow (×${mult}, to Hit Points)` : leap ? `Leap Attack Damage (×${mult})`
     : crit ? "Damage (Critical ×2)" : double ? "Damage (×2)" : "Damage";
-  const flavor = `<div class="pu-card">${cardHeader(actor, `${weapon.name}: ${title}`,
-    breakdownText(parts))}
-    ${deathBlow ? `<p class="pu-notes"><span class="hint">A Death Blow bypasses all armor: use To HP.</span></p>` : ""}
-    ${notes.length ? `<p class="pu-notes"><span class="hint">${notes.join(" · ")}</span></p>` : ""}
-    ${damageButtons()}</div>`;
-  const message = await roll.toMessage({ speaker: ChatMessage.getSpeaker({ actor }), flavor, flags });
+  const cardNotes = [];
+  if ( deathBlow ) cardNotes.push(`<span class="hint">A Death Blow bypasses all armor: use To HP.</span>`);
+  if ( notes.length ) cardNotes.push(`<span class="hint">${notes.join(" · ")}</span>`);
+  const message = await postCard(actor, { title: `${weapon.name}: ${title}`, label: "Damage", result: roll.total,
+    lines: damageLines(roll, base, parts, { half, mult }), notes: cardNotes, rolls: [roll], buttons: damageButtons(), flags });
   Hooks.callAll("palladium.rollDamage", actor, weapon, roll, { crit, mode, strike, deathBlow, double, leap, message });
   return message;
 }
@@ -689,8 +692,8 @@ async function onCardButton(event, message, data) {
     if ( !actor?.isOwner ) return ui.notifications.warn("Only the shooter's owner can roll this.");
     const roll = await new Roll(event.currentTarget.dataset.formula).evaluate();
     const flags = { "palladium-universal": { card: "damage", actorUuid: actor.uuid, damage: roll.total, strike: null } };
-    const flavor = `<div class="pu-card">${cardHeader(actor, "Misfire: Damage to the Shooter")}${damageButtons()}</div>`;
-    return roll.toMessage({ speaker: ChatMessage.getSpeaker({ actor }), flavor, flags });
+    return postCard(actor, { title: "Misfire: Damage to the Shooter", label: "Damage", result: roll.total,
+      lines: damageLines(roll, event.currentTarget.dataset.formula), rolls: [roll], buttons: damageButtons(), flags });
   }
 
   if ( (action === "damage") && data.vehicle ) {

@@ -28,7 +28,7 @@ Each weapon row shows its type, range, proficiency status ("no WP" warning), dam
 Strike bonuses: melee = your Strike total + W.P. + weapon bonus + skill effects; modern = the W.P. mode bonus (untrained: Burst −3, Wild −6); thrown/bows = P.P. + W.P.; hand-held weapons also take Human Feature penalties.
 
 ## Attack cards
-An attack posts a card with the Strike total, breakdown, natural-roll specials and:
+An attack posts a card with **Strike = total** (click it for the d20 and each bonus), natural-roll specials and:
 - **4 or less misses.**
 - **Critical Strike** on your crit range; **Critical or Stun** and **Death Blow** from advanced training (melee only). Against a natural critical, the defender needs a **natural roll equal or higher**.
 - **Defend buttons** (Parry, Dodge, Roll with Impact, Entangle, Disarm, Throw) for the defending player.

@@ -608,3 +608,4 @@
   padding: 0 10px;
 }
 .pu-card .pu-results li { padding: 2px 0; }
+.pu-card .pu-details > summary + .pu-lines { border-top: 1px solid var(--pu-rule); }

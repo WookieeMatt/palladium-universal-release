@@ -35,6 +35,8 @@ export function buildApi() {
     rollSkill: dice.rollSkill,
     rollSaveVsComa: dice.rollSaveVsComa,
     cardHeader: dice.cardHeader,
+    postCard: dice.postCard,
+    resultDetails: dice.resultDetails,
     signed: dice.signed,
 
     // Combat
