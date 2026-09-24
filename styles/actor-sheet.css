@@ -486,6 +486,11 @@
   align-items: end;
 }
 
+/* Combat Training: line the labels up along the top (the select is taller than the inputs). */
+.palladium-universal .training-grid {
+  align-items: start;
+}
+
 .palladium-universal .stepper {
   display: flex;
   align-items: center;

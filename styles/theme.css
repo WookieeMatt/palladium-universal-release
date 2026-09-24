@@ -58,8 +58,6 @@
 .palladium-universal.sheet .window-header {
   background: var(--pu-green);
   color: var(--pu-parchment);
-  font-family: var(--pu-heading);
-  letter-spacing: 0.04em;
   border-bottom: 2px solid #16301d;
 }
 
@@ -74,8 +72,10 @@
   background: var(--pu-green-light);
 }
 
+/* Only the title uses the comic font: the header control buttons keep Foundry's icon font. */
 .palladium-universal.sheet .window-header .window-title {
   font-family: var(--pu-heading);
+  letter-spacing: 0.04em;
   font-size: 1.15rem;
 }
 
@@ -235,12 +235,14 @@
   border-color: var(--pu-red);
 }
 
-/* Pill tabs */
+/* Pill tabs: spread evenly across the bar */
 .palladium-universal .sheet-tabs {
   background: var(--pu-green);
-  padding: 6px 10px;
-  gap: 6px;
+  padding: 8px 12px;
+  gap: 8px;
   border-bottom: 2px solid #16301d;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .palladium-universal .sheet-tabs > a {
@@ -251,7 +253,10 @@
   letter-spacing: 0.06em;
   font-size: 1rem;
   text-transform: uppercase;
-  padding: 4px 14px;
+  padding: 5px 12px;
+  flex: 1 1 auto;
+  text-align: center;
+  white-space: nowrap;
 }
 
 .palladium-universal .sheet-tabs > a:hover {

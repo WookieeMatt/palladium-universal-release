@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.5.2
+- Sheet tabs spread evenly across the tab bar.
+- Combat Training fields line up (the Training dropdown no longer sits higher than the others).
+- Window header buttons show their icons again (only the title uses the comic font).
+
 ## 1.5.1
 - The attribute table shows the generation modifiers worked out before rolling: **Species**, **Size** (I.Q., P.S., P.E., Spd), **Physical Skills** (P.S., P.P., P.E., Spd) and the total **Modifier**. Clicking an attribute rolls 3D6 (+1D6 on 16–18) and adds exactly those modifiers in chat. Nothing is typed or saved; the Misc, Total and Bonus columns and the carry line were removed from the table.
 
