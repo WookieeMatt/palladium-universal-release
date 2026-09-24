@@ -216,7 +216,7 @@ export async function rollMisfire(actor, weapon) {
   if ( mishap.key === "overloaded" ) buttons.push(["1D6", "Shooter takes 1D6"]);
   if ( mishap.key === "explosion" ) buttons.push(["2D6", "Shooter takes 2D6"]);
   await postCard(actor, {
-    title: `${weapon.name}: Misfire!`, item: weapon, label: "Mishap", result: mishap.label, rolls: [check, table],
+    title: `${weapon.name}: Misfire!`, item: weapon, label: "Mishap", inlineRolls: true, result: mishap.label, rolls: [check, table],
     lines: [["Misfire chance", `${chance}%`], ["Misfire roll", check.total], ["Mishap roll", table.total]],
     notes: [`<span class="pu-failure">${mishap.text}</span>`],
     buttons: buttons.map(([f, l]) => `<div class="pu-buttons"><button type="button" data-pu-action="self-damage" data-formula="${f}">

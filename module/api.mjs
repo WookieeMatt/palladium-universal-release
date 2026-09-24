@@ -37,6 +37,7 @@ export function buildApi() {
     rollSaveVsComa: dice.rollSaveVsComa,
     cardHeader: dice.cardHeader,
     postCard: dice.postCard,
+    enrichDice: dice.enrichDice,
     rollItem: itemRolls.rollItem,
     viewItemCopy: itemRolls.viewItemCopy,
     resultDetails: dice.resultDetails,

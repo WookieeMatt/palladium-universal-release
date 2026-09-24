@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.6.1
+- **Clickable dice in text:** dice written in table results on chat cards (misfire mishaps, device malfunctions, Temporal Mishaps, spell practice) and in item descriptions (item sheet and read-only view) are Foundry inline rolls: click *2D6 melee rounds* to roll it. Roll results on the cards stay plain.
+- API: `postCard({inlineRolls: true})`, `enrichDice(html)`.
+
 ## 1.6.0
 - **Every item with a roll can roll from the sheet.** Items have a new **Roll** field (formula and label); without it, dice written in the description are offered. A 🎲 button appears on W.P.s, armor, gear, devices, abilities, natural weapons, psionics and spells (character and NPC sheets); several dice → pick one.
 - **Spell damage** rolls straight from the Powers tab.

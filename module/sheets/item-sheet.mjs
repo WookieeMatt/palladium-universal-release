@@ -1,4 +1,4 @@
-import { BACKGROUND_KINDS, SKILL_CATEGORIES, WEAPON_TYPES, WP_KINDS } from "../data/items.mjs";
+import { BACKGROUND_KINDS, SKILL_CATEGORIES, WEAPON_TYPES, WP_KINDS, inlineDice } from "../data/items.mjs";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ItemSheetV2 } = foundry.applications.sheets;
@@ -93,8 +93,9 @@ export default class PalladiumItemSheet extends HandlebarsApplicationMixin(ItemS
       item,
       system: item.system,
       typeLabel: game.i18n.localize(CONFIG.Item.typeLabels[item.type]),
+      // Dice written in the description ("2D6+6 minutes") show as clickable rolls.
       enrichedDescription: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-        item.system.description, { relativeTo: item }
+        inlineDice(item.system.description), { relativeTo: item }
       ),
       skillCategories: SKILL_CATEGORIES,
       trainingChoices: { professional: "Professional", amateur: "Amateur" },

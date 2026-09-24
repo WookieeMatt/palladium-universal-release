@@ -37,6 +37,20 @@ export function resultDetails(label, result, lines, caption = "") {
   </details>`;
 }
 
+/**
+ * Turn written dice in some HTML into clickable inline rolls (Foundry's enricher makes the links).
+ * @param {string} html
+ * @returns {Promise<string>}
+ */
+export async function enrichDice(html) {
+  if ( !html ) return html;
+  const { inlineDice } = await import("./data/items.mjs");
+  const marked = inlineDice(html);
+  if ( marked === html ) return html;
+  const TextEditor = foundry.applications?.ux?.TextEditor?.implementation;
+  return TextEditor ? TextEditor.enrichHTML(marked) : marked;
+}
+
 /** Bonus parts as detail rows, skipping zeros: [["Training", "+3"], ...]. */
 export function bonusLines(parts = {}) {
   const labels = { training: "Training", attribute: "Attribute", skills: "Skills", mod: "Misc", treatment: "Treatment",
@@ -63,9 +77,15 @@ export function bonusLines(parts = {}) {
  * @param {object} [card.flags]                Message flags
  * @param {object} [card.speaker]
  * @param {Item} [card.item]                   The item the card is about: its title opens a read-only view
+ * @param {boolean} [card.inlineRolls]         Make dice written in the notes and body clickable (table results
+ *                                             that call for another roll, e.g. "2D6 melee rounds")
  */
 export async function postCard(actor, { title, label, result, lines = [], caption = "", notes = [], body = "",
-  buttons = "", rolls = [], flags, speaker, item } = {}) {
+  buttons = "", rolls = [], flags, speaker, item, inlineRolls = false } = {}) {
+  if ( inlineRolls ) {
+    notes = await Promise.all(notes.map(enrichDice));
+    body = await enrichDice(body);
+  }
   if ( item ) {
     flags = foundry.utils.mergeObject(flags ?? {}, { "palladium-universal": { itemData: item.toObject() } }, { inplace: false });
   }

@@ -48,6 +48,19 @@ export function diceFormula(text) {
     .replace(/[×x]\$?/g, "*").replace(/\$/g, "").replace(/,/g, "").replace(/−/g, "-");
 }
 
+/**
+ * Mark the dice written in some HTML as Foundry inline rolls ("2D6+6" → "[[/r 2d6+6]]{2D6+6}"), so
+ * enriching the HTML turns them into clickable dice. Tags and existing inline rolls are left alone.
+ * @param {string} html
+ * @returns {string}
+ */
+export function inlineDice(html) {
+  return String(html ?? "").split(/(<[^>]+>|\[\[.*?\]\](?:\{[^}]*\})?)/g).map((part, i) => {
+    if ( i % 2 ) return part;   // a tag or an existing inline roll
+    return part.replace(DICE_PATTERN, match => `[[/r ${diceFormula(match)}]]{${match.trim()}}`);
+  }).join("");
+}
+
 class ItemDataBase extends foundry.abstract.TypeDataModel {
   static defineSchema() {
     return {

@@ -5,6 +5,8 @@ Every item has a **Description** (rich text) and **Source** (book and page). Ite
 ## Rolls on every item
 Every item has a **Roll** field (formula and label) under its description, e.g. *1D6*, *Duration (melee rounds)*. An item with a roll gets a 🎲 button on the character sheet. When the field is blank, dice written in the description (such as "2D6+6 minutes" or "4D6 damage") are offered instead; if there are several, the 🎲 asks which one. Weapons (attack and damage), skills, spells (Cast, Practice and damage), psionics (Use) and devices (Operate) keep their own buttons as well.
 
+Dice written in a description also show as **clickable rolls** on the item sheet and in the read-only view: click *2D6+6* to roll it.
+
 The title of any chat card made from an item (attacks, damage, spells, psionics, skills, devices, item rolls) opens a **read-only view** of that item, for everyone at the table, even if they can't see the owner.
 
 ## Skill

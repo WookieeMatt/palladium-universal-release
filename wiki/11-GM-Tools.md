@@ -44,6 +44,7 @@ Flavor tables (time period encounters, surprise details, branch points, technolo
 | Save vs Magic / Dodge / Save vs Psionics / Save vs H.F. | Each target | Their selected token or assigned character |
 | Take damage (misfire, practice), Devolve / Evolve, Temporal Mishap | The actor's owner | The actor that made the roll |
 | The card's title (📖) | Anyone | Opens a read-only view of the item the card is about |
+| Dice in a table result (misfire, malfunction, Temporal Mishap, spell practice), e.g. *2D6* melee rounds | Anyone | Rolls those dice to chat |
 
 ## Rules the system follows
 - **Meet or beat** everywhere: Reactions vs Strikes, Strikes vs A.R. (defenders win ties).

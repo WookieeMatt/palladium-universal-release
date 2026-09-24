@@ -34,7 +34,7 @@ export async function temporalMishap() {
  */
 export async function rollTemporalMishap(actor, title = "Temporal Mishap") {
   const { html, rolls, row } = await temporalMishap();
-  return postCard(actor, { title, label: "Mishap", result: row?.label ?? rolls[0].total, rolls,
+  return postCard(actor, { title, label: "Mishap", result: row?.label ?? rolls[0].total, rolls, inlineRolls: true,
     lines: rolls.map((r, i) => [i ? "Follow-up d100" : "d100", r.total]), notes: [html] });
 }
 
@@ -81,7 +81,7 @@ export async function practiceSpell(actor, spell) {
   if ( row.mishap ) buttons.push(`<button type="button" data-pu-action="temporal-mishap"><i class="fa-solid fa-clock-rotate-left"></i> Temporal Mishap</button>`);
   const title = tradition === "timeLord" ? "Temporal Spell Experimentation" : "Self-Taught Spell Attempt";
   const flags = { "palladium-universal": { card: "practice", actorUuid: actor.uuid } };
-  return postCard(actor, { title: `${title}: ${spell.name}`, item: spell, label: "d100", result: roll.total, rolls: [roll], flags,
+  return postCard(actor, { title: `${title}: ${spell.name}`, item: spell, label: "d100", inlineRolls: true, result: roll.total, rolls: [roll], flags,
     lines: [["d100", roll.total], ["Complete successes needed", needed]],
     notes: [`<span class="${row.success ? "pu-success" : "pu-failure"}">${row.text}</span>`, status].filter(t => t),
     buttons: buttons.length ? `<div class="pu-buttons">${buttons.join("")}</div>` : "" });
