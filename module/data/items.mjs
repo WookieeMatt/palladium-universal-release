@@ -1,4 +1,3 @@
-import { PENETRATION, POWDER_LOCKS, POWDER_WPS } from "../config.mjs";
 
 const {
   ArrayField, BooleanField, HTMLField, NumberField, SchemaField, StringField
@@ -138,7 +137,7 @@ export class WeaponProficiencyData extends ItemDataBase {
       ...super.defineSchema(),
       kind: choiceField(Object.keys(WP_KINDS), "ancient"),
       group: textField(),               // e.g. "Sword", "Knife", "Handgun"; matched against weapons
-      powderLock: choiceField(Object.keys(POWDER_WPS), "general"),   // Black Powder W.P. family
+      powderLock: choiceField(Object.keys(CONFIG.PALLADIUM.POWDER_WPS), "general"),   // Black Powder W.P. family
       levelAcquired: intField(1, { min: 1, max: 15 }),
       bonusLevels: intField(0, { min: 0 })
     };
@@ -162,7 +161,7 @@ export class WeaponProficiencyData extends ItemDataBase {
         return { aimed: 3 + Math.max(0, steps - 1), burst: 1 + Math.max(0, steps - 1), wild: Math.max(0, steps - 1) };
       case "blackPowder":
         // Aimed bonus by weapon family, +1 at levels 4, 7, 10, 13; Wild: no bonus (Transdimensional p.67).
-        return { aimed: (POWDER_WPS[this.powderLock]?.aimed ?? 0) + Math.max(0, steps - 1), wild: 0 };
+        return { aimed: (CONFIG.PALLADIUM.POWDER_WPS[this.powderLock]?.aimed ?? 0) + Math.max(0, steps - 1), wild: 0 };
       default:
         return {};
     }
@@ -196,9 +195,9 @@ export class WeaponData extends ItemDataBase {
       reload: textField(),
       // Black powder weapons (Transdimensional p.61–69).
       powder: new SchemaField({
-        lock: choiceField(Object.keys(POWDER_LOCKS), "flintlock"),
+        lock: choiceField(Object.keys(CONFIG.PALLADIUM.POWDER_LOCKS), "flintlock"),
         misfire: intField(10, { min: 0, max: 100 }),
-        penetration: choiceField(Object.keys(PENETRATION), "fair"),
+        penetration: choiceField(Object.keys(CONFIG.PALLADIUM.PENETRATION), "fair"),
         longarm: new BooleanField({ initial: true }),    // rifle/musket (else pistol)
         overload: new BooleanField()                     // deliberately overloaded with powder
       }),

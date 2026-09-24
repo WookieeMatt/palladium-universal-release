@@ -1,4 +1,3 @@
-import { COMA_TREATMENT } from "./config.mjs";
 
 const { DialogV2 } = foundry.applications.api;
 
@@ -96,7 +95,11 @@ export async function rollSkill(actor, skill, secondary = false) {
   const pct = actor.system.skillPercentages(skill);
   const target = secondary ? pct.secondary : pct.primary;
   const label = secondary && skill.system.label2 ? `${skill.name}: ${skill.system.label2}` : skill.name;
-  return rollPercent(actor, { label, target, skill: true });
+  const hookData = { label, target, secondary };
+  if ( Hooks.call("palladium.preRollSkill", actor, skill, hookData) === false ) return null;
+  const result = await rollPercent(actor, { label: hookData.label, target: hookData.target, skill: true });
+  Hooks.callAll("palladium.rollSkill", actor, skill, { ...hookData, result });
+  return result;
 }
 
 /* -------------------------------------------- */
@@ -107,7 +110,7 @@ export async function rollSkill(actor, skill, secondary = false) {
  * @param {Actor} actor
  */
 export async function rollSaveVsComa(actor) {
-  const options = Object.entries(COMA_TREATMENT)
+  const options = Object.entries(CONFIG.PALLADIUM.COMA_TREATMENT)
     .map(([value, label]) => `<option value="${value}">${label}</option>`).join("");
   const treatment = await DialogV2.prompt({
     window: { title: `${actor.name}: Save vs Coma` },

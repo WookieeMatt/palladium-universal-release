@@ -1,4 +1,3 @@
-import { SPELL_SAVES } from "./config.mjs";
 import { rollD20, rollPercent, signed } from "./dice.mjs";
 import { cardHeader, damageButtons, defendingActors } from "./combat.mjs";
 import { spendActions } from "./actions.mjs";
@@ -24,6 +23,7 @@ export async function castSpell(actor, spell) {
   if ( caster.remaining <= 0 ) {
     return ui.notifications.warn(`${actor.name} has cast all ${caster.spellsPerDay} spells for today. Use New Day to reset.`);
   }
+  if ( Hooks.call("palladium.preCastSpell", actor, spell) === false ) return null;
   await actor.update({ "system.magic.spellsUsed": m.spellsUsed + 1 });
   const actionNote = await spendActions(actor, 1, spell.name);
 
@@ -31,7 +31,7 @@ export async function castSpell(actor, spell) {
   const damage = s.damage ? s.damageFormula(level) : "";
   const strength = caster.strength;
   const details = [s.range && `Range ${s.range}`, s.duration && `Duration ${s.duration}`,
-    `Save: ${s.saveType === "dodge" ? `Dodge ${s.dodgeTarget}+` : SPELL_SAVES[s.saveType]}${s.save ? ` (${s.save})` : ""}`]
+    `Save: ${s.saveType === "dodge" ? `Dodge ${s.dodgeTarget}+` : CONFIG.PALLADIUM.SPELL_SAVES[s.saveType]}${s.save ? ` (${s.save})` : ""}`]
     .filter(t => t).join(" · ");
   const buttons = [];
   if ( ["standard", "special"].includes(s.saveType) ) {
@@ -56,7 +56,9 @@ export async function castSpell(actor, spell) {
   </div>`;
   const flags = { "palladium-universal": { card: "spell", actorUuid: actor.uuid, itemId: spell.id, strength,
     saveType: s.saveType, dodgeTarget: s.dodgeTarget, saveNote: s.save, damage, spell: spell.name } };
-  return ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content, flags });
+  const message = await ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content, flags });
+  Hooks.callAll("palladium.castSpell", actor, spell, { strength, damage, message });
+  return message;
 }
 
 /**

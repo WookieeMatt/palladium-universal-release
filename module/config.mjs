@@ -1,7 +1,14 @@
 /**
  * Rules data for TMNT & Other Strangeness (new edition).
  * Page references are to the printed book. See "TMNT rules digest (Claude).md".
+ *
+ * Every export is copied into CONFIG.PALLADIUM at init. The system reads the tables and helpers from
+ * there, so modules can add to or replace them in their own "init" hook (see the wiki, "For Module Authors").
  */
+import * as DEFAULTS from "./config.mjs";
+
+/** The live rules tables: CONFIG.PALLADIUM once the system has initialized, these defaults before that. */
+const cfg = () => globalThis.CONFIG?.PALLADIUM ?? DEFAULTS;
 
 /* -------------------------------------------- */
 /*  Attributes (p.12)                           */
@@ -135,7 +142,7 @@ export const XP_LEVELS = [0, 2001, 4001, 8001, 14001, 22001, 34001, 50001, 70001
 
 export function levelForXP(xp) {
   let level = 1;
-  XP_LEVELS.forEach((min, i) => { if ( xp >= min ) level = i + 1; });
+  cfg().XP_LEVELS.forEach((min, i) => { if ( xp >= min ) level = i + 1; });
   return level;
 }
 
@@ -255,7 +262,7 @@ export const CONDITIONS = {
 
 /** Token status effects: the conditions plus Foundry's "dead" (used to mark defeated combatants). */
 export function statusEffects() {
-  const effects = Object.entries(CONDITIONS).map(([id, c]) => ({ id, name: c.label, img: c.img, description: c.text }));
+  const effects = Object.entries(cfg().CONDITIONS).map(([id, c]) => ({ id, name: c.label, img: c.img, description: c.text }));
   effects.push({ id: "dead", name: "Dead", img: "icons/svg/skull.svg" });
   return effects;
 }
@@ -405,11 +412,11 @@ export const COMBAT_TRAINING = {
 export function combatTrainingAt(type, level) {
   const result = {
     strike: 0, parry: 0, dodge: 0, damage: 0, init: 0, rwi: 0,
-    actions: BASELINE_COMBAT.actions,
-    autoParry: false, unlocks: [], critAll: BASELINE_COMBAT.critAll,
+    actions: cfg().BASELINE_COMBAT.actions,
+    autoParry: false, unlocks: [], critAll: cfg().BASELINE_COMBAT.critAll,
     critOrStun: null, sneak: false, deathBlow: null
   };
-  const table = COMBAT_TRAINING[type]?.levels ?? [];
+  const table = cfg().COMBAT_TRAINING[type]?.levels ?? [];
   for ( const gain of table.slice(0, Math.clamp(level, 0, 15)) ) {
     for ( const key of ["strike", "parry", "dodge", "damage", "init", "rwi", "actions"] ) {
       result[key] += gain[key] ?? 0;
@@ -491,13 +498,13 @@ export const MAGIC_ABILITIES = {
  * @param {number} level
  */
 export function magicAt(tradition, level) {
-  const t = MAGIC_TRADITIONS[tradition] ?? MAGIC_TRADITIONS.none;
+  const t = cfg().MAGIC_TRADITIONS[tradition] ?? cfg().MAGIC_TRADITIONS.none;
   const result = { spellsPerDay: t.spellsPerDay?.(level) ?? 0, spellsPerMelee: 0, strength: 0,
     saveSpell: 0, saveCircle: 0, savePsionics: 0, saveChange: 0 };
   for ( const gain of t.levels.slice(0, Math.clamp(level, 0, 15)) ) {
     for ( const key of Object.keys(gain) ) result[key] += gain[key];
   }
-  result.abilities = (MAGIC_ABILITIES[tradition] ?? []).filter(a => level >= a.level).map(a => ({
+  result.abilities = (cfg().MAGIC_ABILITIES[tradition] ?? []).filter(a => level >= a.level).map(a => ({
     ...a, chance: a.pct ? Math.min(98, a.pct[0] + (a.pct[1] * level)) : null
   }));
   return result;
@@ -557,7 +564,7 @@ export const OVERLOAD = { pistol: "2D6", rifle: "3D6", misfire: 25 };
  * Other rifles: −5 Strike / −3 damage per extra 25 ft.
  */
 export function powderLongRange(lock, longarm) {
-  if ( POWDER_LOCKS[lock]?.shortRange ) return { strike: -8, half: true, text: "Only 20 ft beyond range; half damage." };
+  if ( cfg().POWDER_LOCKS[lock]?.shortRange ) return { strike: -8, half: true, text: "Only 20 ft beyond range; half damage." };
   if ( !longarm ) return { strike: -5, damage: -4, text: "Next 25 ft: −12 Strike, −10 damage; then ineffective." };
   return { strike: -5, damage: -3, text: "Another −5 Strike and −3 damage for every further 25 ft." };
 }
@@ -573,7 +580,7 @@ export const MISFIRE_MISHAPS = [
   { max: 100, key: "explosion", label: "Explosion!", text: "The weapon blows up: 2D6 damage to the shooter, weapon destroyed, target unhurt." }
 ];
 
-export const mishapFor = roll => MISFIRE_MISHAPS.find(m => roll <= m.max);
+export const mishapFor = roll => cfg().MISFIRE_MISHAPS.find(m => roll <= m.max);
 
 /* -------------------------------------------- */
 /*  Vehicles & Devices                          */

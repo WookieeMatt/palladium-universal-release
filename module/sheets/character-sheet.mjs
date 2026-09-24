@@ -1,8 +1,3 @@
-import {
-  ACTION_LABELS, ALIGNMENTS, ATTRIBUTES, BASELINE_COMBAT, BASELINE_UNLOCKS, CIRCUMSTANCES, COMBAT_TRAINING,
-  COMBAT_UNLOCKS, CONDITIONS, FEATURE_LEVELS, HUMAN_FEATURES, MAGIC_TRADITIONS, MANEUVERS, MAX_SIZE_LEVEL,
-  DEVICE_TYPES, PULL_PUNCH_TARGET, SIZE_LEVELS, SPELL_SAVES, SPELL_TRADITIONS
-} from "../config.mjs";
 import { castSpell, newDay, rollChangeSave, rollMagicAbility, usePsionic } from "../magic.mjs";
 import { operateDevice } from "../vehicle.mjs";
 import { practiceSpell, rollTemporalMishap } from "../timetravel.mjs";
@@ -120,30 +115,30 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
       system,
       systemFields: system.schema.fields,
       attributes: this.#prepareAttributes(),
-      alignments: ALIGNMENTS,
-      trainingChoices: Object.fromEntries(Object.entries(COMBAT_TRAINING).map(([k, v]) => [k, v.label])),
-      featureLevels: FEATURE_LEVELS,
+      alignments: CONFIG.PALLADIUM.ALIGNMENTS,
+      trainingChoices: Object.fromEntries(Object.entries(CONFIG.PALLADIUM.COMBAT_TRAINING).map(([k, v]) => [k, v.label])),
+      featureLevels: CONFIG.PALLADIUM.FEATURE_LEVELS,
       buildChoices: { short: "Short", medium: "Medium", long: "Long" },
-      features: Object.entries(HUMAN_FEATURES).map(([key, label]) => {
+      features: Object.entries(CONFIG.PALLADIUM.HUMAN_FEATURES).map(([key, label]) => {
         const f = system.mutation.features[key];
-        const levels = f.fullAvailable ? FEATURE_LEVELS : { none: FEATURE_LEVELS.none, partial: FEATURE_LEVELS.partial };
+        const levels = f.fullAvailable ? CONFIG.PALLADIUM.FEATURE_LEVELS : { none: CONFIG.PALLADIUM.FEATURE_LEVELS.none, partial: CONFIG.PALLADIUM.FEATURE_LEVELS.partial };
         return { key, label, ...f, levels };
       }),
-      sizeTable: Object.entries(SIZE_LEVELS).map(([level, row]) => ({
+      sizeTable: Object.entries(CONFIG.PALLADIUM.SIZE_LEVELS).map(([level, row]) => ({
         level: Number(level), ...row, current: Number(level) === system.mutation.sizeLevel
       })),
       combatRolls: this.#prepareCombatRolls(),
       combatInfo: this.#prepareCombatInfo(),
       maneuvers: this.#prepareManeuvers(),
-      conditions: Object.entries(CONDITIONS).map(([id, c]) => ({
+      conditions: Object.entries(CONFIG.PALLADIUM.CONDITIONS).map(([id, c]) => ({
         id, label: c.label, img: c.img, text: c.text, active: system.combat.conditions.active.includes(id)
       })),
-      circumstances: ["actions", "critical"].map(key => ({ key, label: CIRCUMSTANCES[key], value: system.combat.circ[key] })),
+      circumstances: ["actions", "critical"].map(key => ({ key, label: CONFIG.PALLADIUM.CIRCUMSTANCES[key], value: system.combat.circ[key] })),
       saves: Object.entries(system.saves.totals).map(([key, s]) => ({
         key, ...s, bonusText: signed(s.bonus), mod: system.saves.mod[key]
       })),
       magic: system.magic.caster,
-      magicTraditions: Object.fromEntries(Object.entries(MAGIC_TRADITIONS).map(([k, v]) => [k, v.label])),
+      magicTraditions: Object.fromEntries(Object.entries(CONFIG.PALLADIUM.MAGIC_TRADITIONS).map(([k, v]) => [k, v.label])),
       saveMagic: signed(system.saves.totals.magic.bonus),
       saveCircle: signed(system.saves.totals.circle.bonus),
       saveChange: signed(system.saves.change.bonus),
@@ -182,7 +177,7 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
         f.auto === "none" ? `partial ${f.partial}` : (f.auto === "full") && (f.partial < 0) ? `partial ${f.partial}` : "",
         f.auto !== "full" && f.fullAvailable ? `full ${f.full}` : "",
         f.fullAvailable ? "" : "full n/a"].filter(t => t);
-      return `${HUMAN_FEATURES[key]}: ${[auto, ...costs].filter(t => t).join(", ")}`;
+      return `${CONFIG.PALLADIUM.HUMAN_FEATURES[key]}: ${[auto, ...costs].filter(t => t).join(", ")}`;
     });
     return {
       id: animal.id, name: animal.name, img: animal.img, bioe: a.bioe, sizeLevel: a.sizeLevel, build: a.build,
@@ -255,14 +250,14 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
       return {
         id: item.id, name: item.name, img: item.img, selections: s.selections, offensive: s.offensive,
         mastered: s.mastered, successes: s.successes, needed: s.tradition === "timeLord" ? 2 : 1,
-        tradition: SPELL_TRADITIONS[s.tradition], range: s.range, duration: s.duration,
-        save: s.saveType === "dodge" ? `Dodge ${s.dodgeTarget}+` : SPELL_SAVES[s.saveType].split(" ")[0],
+        tradition: CONFIG.PALLADIUM.SPELL_TRADITIONS[s.tradition], range: s.range, duration: s.duration,
+        save: s.saveType === "dodge" ? `Dodge ${s.dodgeTarget}+` : CONFIG.PALLADIUM.SPELL_SAVES[s.saveType].split(" ")[0],
         damage: s.damage ? s.damageFormula(system.identity.level) : ""
       };
     });
 
     const devices = byType("device").map(item => ({
-      id: item.id, name: item.name, img: item.img, type: DEVICE_TYPES[item.system.deviceType],
+      id: item.id, name: item.name, img: item.img, type: CONFIG.PALLADIUM.DEVICE_TYPES[item.system.deviceType],
       readout: item.system.deviceType === "readout", bonus: item.system.skillBonus, charged: item.system.charged,
       recharge: item.system.recharge
     }));
@@ -286,7 +281,7 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
   #prepareAttributes() {
     const system = this.actor.system;
     const b = system.bonuses;
-    return Object.entries(ATTRIBUTES).map(([key, label]) => {
+    return Object.entries(CONFIG.PALLADIUM.ATTRIBUTES).map(([key, label]) => {
       const attr = system.attributes[key];
       let bonus = "";
       let influence = null;
@@ -348,7 +343,7 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
   /** Maneuver buttons: the baseline ones plus any unlocked by Combat Training. */
   #prepareManeuvers() {
     const c = this.actor.system.combat;
-    return Object.entries(MANEUVERS)
+    return Object.entries(CONFIG.PALLADIUM.MANEUVERS)
       .filter(([, m]) => !m.requires || c.trainingData.unlocks.includes(m.requires))
       .map(([key, m]) => ({ key, label: m.label, text: m.text, strike: signed(c.totals.strike) }));
   }
@@ -364,13 +359,13 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
     if ( t.sneak ) crits.push("Critical Strike or Stun with a melee Sneak Attack");
     if ( t.deathBlow ) crits.push(`Death Blow with melee attacks on a Natural ${t.deathBlow === 20 ? "20" : `${t.deathBlow}–20`}`);
     if ( c.critRange !== t.critAll ) crits[0] = `Critical Strike on a Natural ${c.critRange === 20 ? "20" : `${c.critRange}–20`} (circumstance)`;
-    const unlocks = [...new Set(t.unlocks)].filter(u => !BASELINE_UNLOCKS.includes(u));
+    const unlocks = [...new Set(t.unlocks)].filter(u => !CONFIG.PALLADIUM.BASELINE_UNLOCKS.includes(u));
     return {
       effectiveLevel: c.effectiveLevel,
       autoParry: t.autoParry,
-      actions: BASELINE_COMBAT.attackActions.map(a => ACTION_LABELS[a] ?? a),
-      reactions: BASELINE_COMBAT.reactions.map(a => ACTION_LABELS[a] ?? a),
-      unlocks: unlocks.map(u => COMBAT_UNLOCKS[u] ?? u),
+      actions: CONFIG.PALLADIUM.BASELINE_COMBAT.attackActions.map(a => CONFIG.PALLADIUM.ACTION_LABELS[a] ?? a),
+      reactions: CONFIG.PALLADIUM.BASELINE_COMBAT.reactions.map(a => CONFIG.PALLADIUM.ACTION_LABELS[a] ?? a),
+      unlocks: unlocks.map(u => CONFIG.PALLADIUM.COMBAT_UNLOCKS[u] ?? u),
       crits,
       stunned: c.conditions.stunned,
       featureNotes: (this.actor.system.itemEffects.features ?? [])
@@ -398,7 +393,7 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
     const c = this.actor.system.combat;
     const options = { label: COMBAT_ROLLS[key], bonus: c.totals[key], breakdown: c.rollBreakdown[key] };
     if ( ["strike", "disarm"].includes(key) ) options.critRange = c.critRange;
-    if ( key === "pullPunch" ) options.target = PULL_PUNCH_TARGET;   // 10+ (Errata 2026)
+    if ( key === "pullPunch" ) options.target = CONFIG.PALLADIUM.PULL_PUNCH_TARGET;   // 10+ (Errata 2026)
     return rollD20(this.actor, options);
   }
 
@@ -414,7 +409,7 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
 
   /** @this {PalladiumCharacterSheet} */
   static #onClearCircumstances() {
-    const update = Object.fromEntries(Object.keys(CIRCUMSTANCES).map(k => [`system.combat.circ.${k}`, 0]));
+    const update = Object.fromEntries(Object.keys(CONFIG.PALLADIUM.CIRCUMSTANCES).map(k => [`system.combat.circ.${k}`, 0]));
     return this.actor.update(update);
   }
 
@@ -588,7 +583,7 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
   /** @this {PalladiumCharacterSheet} */
   static #onChangeSize(event, target) {
     const delta = Number(target.dataset.delta);
-    const size = Math.clamp(this.actor.system.mutation.sizeLevel + delta, 1, MAX_SIZE_LEVEL);
+    const size = Math.clamp(this.actor.system.mutation.sizeLevel + delta, 1, CONFIG.PALLADIUM.MAX_SIZE_LEVEL);
     return this.actor.update({ "system.mutation.sizeLevel": size });
   }
 }

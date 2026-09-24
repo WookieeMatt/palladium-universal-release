@@ -16,6 +16,7 @@ export async function spendActions(actor, count = 1, what = "that") {
   if ( c.actionsLeft < count ) {
     ui.notifications.warn(`${actor.name} has ${c.actionsLeft} action${c.actionsLeft === 1 ? "" : "s"} left this round for ${what}.`);
   }
+  if ( Hooks.call("palladium.preSpendActions", actor, count, what) === false ) return "";
   const used = c.actionsUsed + count;
   if ( actor.isOwner ) await actor.update({ "system.combat.actionsUsed": used });
   const left = Math.max(0, c.totals.actions - used);

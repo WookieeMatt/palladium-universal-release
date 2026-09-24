@@ -1,4 +1,3 @@
-import { VEHICLE_LOCATIONS, VEHICLE_TYPES } from "../config.mjs";
 
 const { HTMLField, NumberField, SchemaField, StringField } = foundry.data.fields;
 
@@ -17,10 +16,10 @@ export default class VehicleData extends foundry.abstract.TypeDataModel {
   /** @override */
   static defineSchema() {
     return {
-      vehicleType: new StringField({ required: true, initial: "land", choices: Object.keys(VEHICLE_TYPES) }),
+      vehicleType: new StringField({ required: true, initial: "land", choices: Object.keys(CONFIG.PALLADIUM.VEHICLE_TYPES) }),
       health: new SchemaField({ sdc: pool() }),
       ar: intField(0, { min: 0 }),               // the vehicle's own A.R. (1st-edition stats): lower Strikes do nothing
-      locations: new SchemaField(Object.fromEntries(Object.keys(VEHICLE_LOCATIONS).map(key => [key, new SchemaField({
+      locations: new SchemaField(Object.fromEntries(Object.keys(CONFIG.PALLADIUM.VEHICLE_LOCATIONS).map(key => [key, new SchemaField({
         ar: intField(0, { min: 0 }),
         sdc: pool()
       })]))),

@@ -1,8 +1,4 @@
 import { cardHeader, signed } from "./dice.mjs";
-import {
-  CONDITIONS, MANEUVERS, NO_ROLL_WITH_IMPACT, OVERLOAD, PENETRATION, POWDER_LOCKS, POWDER_WEATHER, REACTIONS,
-  horrorSaved, mishapFor, powderLongRange
-} from "./config.mjs";
 import { onMagicCardButton, rollChangeSave } from "./magic.mjs";
 import { applyTeChange, rollTemporalMishap } from "./timetravel.mjs";
 import { applyVehicleDamage, rollVehicleDamage } from "./vehicle.mjs";
@@ -37,8 +33,8 @@ export const MELEE_MODES = {
 
 /** The GM's weather setting for black powder misfires. */
 export function powderWeather() {
-  try { return POWDER_WEATHER[game.settings.get("palladium-universal", "powderWeather")] ?? POWDER_WEATHER.dry; }
-  catch { return POWDER_WEATHER.dry; }
+  try { return CONFIG.PALLADIUM.POWDER_WEATHER[game.settings.get("palladium-universal", "powderWeather")] ?? CONFIG.PALLADIUM.POWDER_WEATHER.dry; }
+  catch { return CONFIG.PALLADIUM.POWDER_WEATHER.dry; }
 }
 
 /**
@@ -47,7 +43,7 @@ export function powderWeather() {
  */
 export function misfireChance(weapon) {
   const p = weapon.system.powder;
-  return p.misfire + powderWeather().misfire + (p.overload ? OVERLOAD.misfire : 0);
+  return p.misfire + powderWeather().misfire + (p.overload ? CONFIG.PALLADIUM.OVERLOAD.misfire : 0);
 }
 
 /* -------------------------------------------- */
@@ -87,10 +83,10 @@ export function strikeBonus(actor, weapon, mode = "aimed") {
   }
   else if ( w.isPowder ) {
     // Black powder (Transdimensional p.67): Aimed bonus by W.P. family; no P.P. bonus.
-    const lock = POWDER_LOCKS[w.powder.lock] ?? {};
+    const lock = CONFIG.PALLADIUM.POWDER_LOCKS[w.powder.lock] ?? {};
     if ( mode === "wild" ) parts["Wild"] = wp ? 0 : (lock.clumsy ? -8 : -6);
     else parts["Aimed (WP)"] = wp ? (stunned ? 0 : (wpBonus.aimed ?? 0)) : (lock.clumsy ? -3 : 0);
-    if ( mode === "long" ) parts["Beyond range"] = powderLongRange(w.powder.lock, w.powder.longarm).strike;
+    if ( mode === "long" ) parts["Beyond range"] = CONFIG.PALLADIUM.powderLongRange(w.powder.lock, w.powder.longarm).strike;
   }
   else if ( w.isModern ) {
     // Modern: WP mode bonus only; untrained penalties otherwise (p.61).
@@ -115,6 +111,7 @@ export function strikeBonus(actor, weapon, mode = "aimed") {
   }
   parts["Weapon"] = stunned ? Math.min(0, w.strikeBonus) : w.strikeBonus;
   parts["Skills"] = stunned ? 0 : effects.strike;
+  Hooks.callAll("palladium.strikeBonus", actor, weapon, { mode, parts });
 
   const bonus = Object.values(parts).reduce((a, b) => a + b, 0);
   return { bonus, parts, proficient: !!wp };
@@ -133,6 +130,9 @@ export async function rollAttack(actor, weapon, mode = "aimed") {
   if ( (mode === "leap") && (!w.isMelee || !actor.system.combat.trainingData.unlocks.includes("leapAttack")) ) {
     return ui.notifications.warn(`${actor.name}'s Combat Training hasn't unlocked Leap Attack.`);
   }
+  const hookOptions = { mode };
+  if ( Hooks.call("palladium.preRollAttack", actor, weapon, hookOptions) === false ) return null;
+  mode = hookOptions.mode;
 
   // Actions: Leap Attack uses two; a black powder Aimed shot without the W.P. counts as two attacks.
   const wp = actor.system.proficiencyFor(weapon);
@@ -147,7 +147,7 @@ export async function rollAttack(actor, weapon, mode = "aimed") {
     if ( mishap && (mishap.key !== "overloaded") ) return null;
     if ( mishap ) double = true;
     if ( !wp && (mode !== "wild") ) extra.push(`<span class="hint">No W.P.: a careful Aimed shot counts as two attacks.</span>`);
-    if ( mode === "long" ) extra.push(`<span class="hint">${powderLongRange(w.powder.lock, w.powder.longarm).text}</span>`);
+    if ( mode === "long" ) extra.push(`<span class="hint">${CONFIG.PALLADIUM.powderLongRange(w.powder.lock, w.powder.longarm).text}</span>`);
     if ( w.powder.overload && (!wp || (wp.system.powderLock === "general")) ) {
       extra.push(`<span class="hint">Deliberate overloading needs the weapon's own W.P.</span>`);
     }
@@ -166,11 +166,13 @@ export async function rollAttack(actor, weapon, mode = "aimed") {
   if ( actionNote ) extra.push(actionNote);
   const mult = damageMultiplier({ crit: special.crit, deathBlow: special.deathBlow, double, leap });
   const label = special.deathBlow ? `Roll Death Blow (×${mult} to Hit Points)` : (mult > 1) ? `Roll Damage (×${mult})` : "Roll Damage";
-  return postAttackCard(actor, roll, {
+  const message = await postAttackCard(actor, roll, {
     title: `${weapon.name}${leap ? " (Leap Attack)" : modeLabel}`, parts, special, extra,
     flags: { itemId: weapon.id, mode, ranged: !w.isMelee, weaponType: w.weaponType, deathBlow: special.deathBlow, double, leap },
     damageLabel: label
   });
+  Hooks.callAll("palladium.rollAttack", actor, weapon, roll, { mode, natural, special, double, leap, message });
+  return message;
 }
 
 /**
@@ -194,7 +196,7 @@ export async function rollMisfire(actor, weapon) {
   const check = await new Roll("1d100").evaluate();
   if ( check.total > chance ) return null;
   const table = await new Roll("1d100").evaluate();
-  const mishap = mishapFor(table.total);
+  const mishap = CONFIG.PALLADIUM.mishapFor(table.total);
   const buttons = [];
   if ( mishap.key === "overloaded" ) buttons.push(["1D6", "Shooter takes 1D6"]);
   if ( mishap.key === "explosion" ) buttons.push(["2D6", "Shooter takes 2D6"]);
@@ -259,9 +261,9 @@ export async function postAttackCard(actor, roll, { title, parts, special, extra
 
 /** Reaction buttons for an attack card. Ranged attacks can't be entangled, disarmed or thrown. */
 function defendButtons(data) {
-  const buttons = Object.entries(REACTIONS).filter(([key, r]) => {
+  const buttons = Object.entries(CONFIG.PALLADIUM.REACTIONS).filter(([key, r]) => {
     if ( r.melee && data.ranged ) return false;
-    if ( (key === "rollImpact") && NO_ROLL_WITH_IMPACT.includes(data.weaponType) ) return false;
+    if ( (key === "rollImpact") && CONFIG.PALLADIUM.NO_ROLL_WITH_IMPACT.includes(data.weaponType) ) return false;
     return true;
   }).map(([key, r]) => `<button type="button" data-pu-action="defend" data-reaction="${key}"
     data-tooltip="Defend with the selected token">
@@ -279,10 +281,10 @@ export const UNARMED_DAMAGE = "1D4";
 /**
  * Roll a combat maneuver (Hold, Entangle, Tackle, Throw) with the melee Strike bonus.
  * @param {Actor} actor
- * @param {string} key   A MANEUVERS key
+ * @param {string} key   A CONFIG.PALLADIUM.MANEUVERS key
  */
 export async function rollManeuver(actor, key) {
-  const m = MANEUVERS[key];
+  const m = CONFIG.PALLADIUM.MANEUVERS[key];
   if ( !m ) return;
   const c = actor.system.combat;
   if ( m.requires && !c.trainingData.unlocks.includes(m.requires) ) {
@@ -329,12 +331,12 @@ export async function rollUnarmedDamage(actor, { crit = false, strike = null, la
  * Roll a Reaction against an attack card (p.84, p.87–89; Errata 2026): success = meet or beat the
  * Strike roll; against a natural critical (or Death Blow, Stun), a natural equal or higher is needed.
  * @param {Actor} defender
- * @param {string} key          A REACTIONS key
+ * @param {string} key          A CONFIG.PALLADIUM.REACTIONS key
  * @param {object} attack       The attack card's flags
  * @param {string} attackerName
  */
 export async function rollDefense(defender, key, attack, attackerName = "the attacker") {
-  const r = REACTIONS[key];
+  const r = CONFIG.PALLADIUM.REACTIONS[key];
   const sys = defender.system;
   const c = sys.combat;
   if ( !c ) return ui.notifications.warn(`${defender.name} can't react.`);
@@ -347,10 +349,12 @@ export async function rollDefense(defender, key, attack, attackerName = "the att
   if ( (key === "parry") && attack.ranged && !sys.health.shield ) {
     return ui.notifications.warn("Ranged attacks can't be Parried without a shield: Dodge instead.");
   }
-  if ( (key === "rollImpact") && NO_ROLL_WITH_IMPACT.includes(attack.weaponType) ) {
+  if ( (key === "rollImpact") && CONFIG.PALLADIUM.NO_ROLL_WITH_IMPACT.includes(attack.weaponType) ) {
     return ui.notifications.warn("You can't Roll with Impact against bullets or energy blasts.");
   }
 
+  const hookOptions = { attack, attackerName };
+  if ( Hooks.call("palladium.preRollDefense", defender, key, hookOptions) === false ) return null;
   const bonus = c.totals[r.total];
   const roll = await new Roll(`1d20 + ${bonus}`).evaluate();
   const natural = roll.dice[0].total;
@@ -387,7 +391,8 @@ export async function rollDefense(defender, key, attack, attackerName = "the att
   const flavor = `<div class="pu-card">${cardHeader(defender, `${r.label} vs ${attackerName}`,
     breakdownText(c.rollBreakdown[r.total] ? labelledBreakdown(c.rollBreakdown[r.total]) : {}))}
     <p class="pu-notes">${notes.join(" ")}</p></div>`;
-  await roll.toMessage({ speaker: ChatMessage.getSpeaker({ actor: defender }), flavor });
+  const message = await roll.toMessage({ speaker: ChatMessage.getSpeaker({ actor: defender }), flavor });
+  Hooks.callAll("palladium.rollDefense", defender, key, roll, { attack, success, natural, message });
   return success;
 }
 
@@ -424,10 +429,10 @@ export async function rollHorrorFactor(actor, hf = null, source = "") {
   }
   const save = actor.system.saves.totals.strangeness;
   const roll = await new Roll(`1d20 + ${save.bonus}`).evaluate();
-  const saved = horrorSaved(roll.total, hf);
+  const saved = CONFIG.PALLADIUM.horrorSaved(roll.total, hf);
   const notes = [`<span class="${saved ? "pu-success" : "pu-failure"}">${saved ? "Keeps their nerve" : "Horrified!"}
     (needs over ${hf})</span>`];
-  if ( !saved ) notes.push(`<span>${CONDITIONS.shocked.text}</span>`);
+  if ( !saved ) notes.push(`<span>${CONFIG.PALLADIUM.CONDITIONS.shocked.text}</span>`);
   const flavor = `<div class="pu-card">${cardHeader(actor, `Horror Factor ${hf}${source ? `: ${source}` : ""}`,
     `Save vs Strangeness ${signed(save.bonus)}`)}<p class="pu-notes">${notes.join(" ")}</p></div>`;
   await roll.toMessage({ speaker: ChatMessage.getSpeaker({ actor }), flavor });
@@ -488,14 +493,17 @@ export async function rollDamage(actor, weapon, { crit = false, mode = "aimed", 
   let half = false;
   if ( w.isPowder ) {
     // Deliberate Overloading: +2D6 pistol / +3D6 rifle (p.68).
-    if ( w.powder.overload ) base = `${base} + ${w.powder.longarm ? OVERLOAD.rifle : OVERLOAD.pistol}`;
+    if ( w.powder.overload ) base = `${base} + ${w.powder.longarm ? CONFIG.PALLADIUM.OVERLOAD.rifle : CONFIG.PALLADIUM.OVERLOAD.pistol}`;
     if ( mode === "long" ) {
-      const long = powderLongRange(w.powder.lock, w.powder.longarm);
+      const long = CONFIG.PALLADIUM.powderLongRange(w.powder.lock, w.powder.longarm);
       if ( long.damage ) parts["Beyond range"] = long.damage;
       half = !!long.half;
     }
-    notes.push(`Penetration ${PENETRATION[w.powder.penetration]}`);
+    notes.push(`Penetration ${CONFIG.PALLADIUM.PENETRATION[w.powder.penetration]}`);
   }
+  const hookData = { base, parts, notes, crit, mode, strike, deathBlow, double, leap };
+  if ( Hooks.call("palladium.preRollDamage", actor, weapon, hookData) === false ) return null;
+  base = hookData.base;
   const bonus = Object.values(parts).reduce((a, b) => a + b, 0);
 
   let formula = bonus ? `${base} + ${bonus}` : base;
@@ -514,7 +522,9 @@ export async function rollDamage(actor, weapon, { crit = false, mode = "aimed", 
     ${deathBlow ? `<p class="pu-notes"><span class="hint">A Death Blow bypasses all armor: use To HP.</span></p>` : ""}
     ${notes.length ? `<p class="pu-notes"><span class="hint">${notes.join(" · ")}</span></p>` : ""}
     ${damageButtons()}</div>`;
-  return roll.toMessage({ speaker: ChatMessage.getSpeaker({ actor }), flavor, flags });
+  const message = await roll.toMessage({ speaker: ChatMessage.getSpeaker({ actor }), flavor, flags });
+  Hooks.callAll("palladium.rollDamage", actor, weapon, roll, { crit, mode, strike, deathBlow, double, leap, message });
+  return message;
 }
 
 /** Buttons that apply a damage card to the targeted or selected tokens. */
@@ -547,7 +557,17 @@ export function damageButtons() {
  * @returns {Promise<string>}  A description of what absorbed the damage
  */
 export async function applyDamage(actor, amount, { strike = null, mode = "normal" } = {}) {
-  if ( actor.type === "vehicle" ) return applyVehicleDamage(actor, amount, { strike, mode });
+  const hookData = { amount, strike, mode };
+  if ( Hooks.call("palladium.preApplyDamage", actor, hookData) === false ) return "Damage cancelled.";
+  ({ amount, strike, mode } = hookData);
+  const result = await resolveDamage(actor, amount, { strike, mode });
+  Hooks.callAll("palladium.applyDamage", actor, { amount, strike, mode, result });
+  return result;
+}
+
+/** Resolve damage against armor, S.D.C. and Hit Points (see applyDamage). */
+async function resolveDamage(actor, amount, { strike, mode }) {
+  if ( ["vehicle", "timeMachine"].includes(actor.type) ) return applyVehicleDamage(actor, amount, { strike, mode });
   const sys = actor.system;
   const h = sys.health;
   if ( mode === "half" ) amount = Math.floor(amount / 2);
@@ -684,7 +704,7 @@ async function onCardButton(event, message, data) {
   if ( (action === "damage") && data.maneuver ) {
     const actor = await fromUuid(data.actorUuid);
     if ( !actor?.isOwner ) return ui.notifications.warn("Only the attacker's owner can roll its damage.");
-    return rollUnarmedDamage(actor, { crit: data.crit, strike: data.strike, label: MANEUVERS[data.maneuver]?.label,
+    return rollUnarmedDamage(actor, { crit: data.crit, strike: data.strike, label: CONFIG.PALLADIUM.MANEUVERS[data.maneuver]?.label,
       deathBlow: data.deathBlow, leap: data.leap });
   }
 

@@ -1,9 +1,4 @@
 import { BACKGROUND_KINDS, SKILL_CATEGORIES, WEAPON_TYPES, WP_KINDS } from "../data/items.mjs";
-import {
-  ATTRIBUTES, COMBAT_TRAINING, DEVICE_MALFUNCTIONS, DEVICE_TYPES, VEHICLE_CLASSES, VEHICLE_LOCATIONS,
-  VEHICLE_MOD_CATEGORIES, FEATURE_LEVELS, HUMAN_FEATURES, PENETRATION, POWDER_LOCKS, POWDER_WPS, SPELL_SAVES,
-  SPELL_TRADITIONS
-} from "../config.mjs";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ItemSheetV2 } = foundry.applications.sheets;
@@ -13,8 +8,8 @@ const TEMPLATE_PATH = "systems/palladium-universal/templates/item";
 /** Choices for the target of an item effect. */
 function effectTargets() {
   const targets = {};
-  for ( const [k, v] of Object.entries(ATTRIBUTES) ) targets[`attributes.${k}`] = `Attribute: ${v}`;
-  for ( const [k, v] of Object.entries(ATTRIBUTES) ) targets[`attributes.${k}.halve`] = `Attribute: ${v} halved (any value)`;
+  for ( const [k, v] of Object.entries(CONFIG.PALLADIUM.ATTRIBUTES) ) targets[`attributes.${k}`] = `Attribute: ${v}`;
+  for ( const [k, v] of Object.entries(CONFIG.PALLADIUM.ATTRIBUTES) ) targets[`attributes.${k}.halve`] = `Attribute: ${v} halved (any value)`;
   targets.bioe = "Bio-E: bonus points";
   targets.sdc = "S.D.C.";
   targets["sdc.doubleSize"] = "S.D.C.: double Size Level S.D.C. (Extraordinary P.E.)";
@@ -85,28 +80,28 @@ export default class PalladiumItemSheet extends HandlebarsApplicationMixin(ItemS
       effectTargets: effectTargets(),
       hasEffects: "effects" in item.system,
       buildChoices: { short: "Short", medium: "Medium", long: "Long" },
-      featureLevels: FEATURE_LEVELS,
+      featureLevels: CONFIG.PALLADIUM.FEATURE_LEVELS,
       featureRows: item.type === "animal"
-        ? Object.entries(HUMAN_FEATURES).map(([key, label]) => ({ key, label, ...item.system.features[key] })) : [],
+        ? Object.entries(CONFIG.PALLADIUM.HUMAN_FEATURES).map(([key, label]) => ({ key, label, ...item.system.features[key] })) : [],
       featureEffectRows: item.type === "animal"
-        ? Object.entries(HUMAN_FEATURES).flatMap(([key, label]) => ["partial", "none"].map(level => ({
-          key, level, label: `${label}: ${FEATURE_LEVELS[level]}`,
+        ? Object.entries(CONFIG.PALLADIUM.HUMAN_FEATURES).flatMap(([key, label]) => ["partial", "none"].map(level => ({
+          key, level, label: `${label}: ${CONFIG.PALLADIUM.FEATURE_LEVELS[level]}`,
           effects: item.system.features[key][`${level}Effects`]
         }))) : [],
       optionKinds: { ability: "Ability", weapon: "Natural Weapon" },
       backgroundKinds: BACKGROUND_KINDS,
-      spellTraditions: SPELL_TRADITIONS,
-      deviceTypes: DEVICE_TYPES,
-      vehicleClasses: VEHICLE_CLASSES,
-      modCategories: VEHICLE_MOD_CATEGORIES,
-      modLocations: { none: "None", ...Object.fromEntries(Object.entries(VEHICLE_LOCATIONS).map(([k, v]) => [k, v.label])) },
-      malfunctionTables: { none: "None (text only)", ...Object.fromEntries(Object.entries(DEVICE_MALFUNCTIONS).map(([k, v]) => [k, v.label])) },
-      assistTypes: { timeMachine: DEVICE_TYPES.timeMachine, crossDimensional: DEVICE_TYPES.crossDimensional },
-      powderLocks: Object.fromEntries(Object.entries(POWDER_LOCKS).map(([k, v]) => [k, v.label])),
-      powderWPs: Object.fromEntries(Object.entries(POWDER_WPS).map(([k, v]) => [k, `${v.label} (+${v.aimed} Aimed)`])),
-      penetrationChoices: Object.fromEntries(Object.entries(PENETRATION).map(([k, v]) => [k, v.split(":")[0]])),
-      spellSaves: SPELL_SAVES,
-      trainingChoices2: Object.fromEntries(Object.entries(COMBAT_TRAINING).filter(([k]) => k !== "none")
+      spellTraditions: CONFIG.PALLADIUM.SPELL_TRADITIONS,
+      deviceTypes: CONFIG.PALLADIUM.DEVICE_TYPES,
+      vehicleClasses: CONFIG.PALLADIUM.VEHICLE_CLASSES,
+      modCategories: CONFIG.PALLADIUM.VEHICLE_MOD_CATEGORIES,
+      modLocations: { none: "None", ...Object.fromEntries(Object.entries(CONFIG.PALLADIUM.VEHICLE_LOCATIONS).map(([k, v]) => [k, v.label])) },
+      malfunctionTables: { none: "None (text only)", ...Object.fromEntries(Object.entries(CONFIG.PALLADIUM.DEVICE_MALFUNCTIONS).map(([k, v]) => [k, v.label])) },
+      assistTypes: { timeMachine: CONFIG.PALLADIUM.DEVICE_TYPES.timeMachine, crossDimensional: CONFIG.PALLADIUM.DEVICE_TYPES.crossDimensional },
+      powderLocks: Object.fromEntries(Object.entries(CONFIG.PALLADIUM.POWDER_LOCKS).map(([k, v]) => [k, v.label])),
+      powderWPs: Object.fromEntries(Object.entries(CONFIG.PALLADIUM.POWDER_WPS).map(([k, v]) => [k, `${v.label} (+${v.aimed} Aimed)`])),
+      penetrationChoices: Object.fromEntries(Object.entries(CONFIG.PALLADIUM.PENETRATION).map(([k, v]) => [k, v.split(":")[0]])),
+      spellSaves: CONFIG.PALLADIUM.SPELL_SAVES,
+      trainingChoices2: Object.fromEntries(Object.entries(CONFIG.PALLADIUM.COMBAT_TRAINING).filter(([k]) => k !== "none")
         .map(([k, v]) => [k, v.label]))
     });
   }

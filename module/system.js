@@ -11,11 +11,14 @@ import PalladiumVehicleSheet from "./sheets/vehicle-sheet.mjs";
 import PalladiumTimeMachineSheet from "./sheets/time-machine-sheet.mjs";
 import { onRenderChatMessage } from "./combat.mjs";
 import { onDeleteCombat, onUpdateCombat } from "./actions.mjs";
+import { buildApi } from "./api.mjs";
 
 Hooks.once("init", function () {
   console.log("Palladium Universal | Initializing system");
 
-  CONFIG.PALLADIUM = PU;
+  // An editable copy of the rules tables: modules change them in their own "init" hook.
+  CONFIG.PALLADIUM = { ...PU };
+  game.palladium = buildApi();
 
   // Data models
   CONFIG.Actor.dataModels.character = CharacterData;
@@ -43,18 +46,7 @@ Hooks.once("init", function () {
   };
 
   // Token status effects are this system's conditions (plus "dead" for defeated combatants).
-  CONFIG.statusEffects = PU.statusEffects();
-
-  // Black powder misfire weather (Transdimensional p.68), set by the GM.
-  game.settings.register("palladium-universal", "powderWeather", {
-    name: "Black Powder Weather",
-    hint: "Adds to black powder misfire chances: humid +5%, rain +15%, downpour or dunking +35%.",
-    scope: "world",
-    config: true,
-    type: String,
-    choices: Object.fromEntries(Object.entries(PU.POWDER_WEATHER).map(([k, v]) => [k, v.label])),
-    default: "dry"
-  });
+  CONFIG.statusEffects = CONFIG.PALLADIUM.statusEffects();
 
   // Initiative: d20 + Initiative bonus, highest first (p.84)
   CONFIG.Combat.initiative = { formula: "1d20 + @combat.totals.initiative", decimals: 0 };
@@ -91,6 +83,25 @@ Hooks.once("init", function () {
     "systems/palladium-universal/templates/item/parts/description.hbs",
     "systems/palladium-universal/templates/vehicle/time-machine.hbs"
   ]);
+});
+
+// After every module's "init": pick up conditions and weather that modules added to CONFIG.PALLADIUM.
+Hooks.once("setup", function () {
+  const known = new Set(CONFIG.statusEffects.map(e => e.id));
+  for ( const effect of CONFIG.PALLADIUM.statusEffects() ) {
+    if ( !known.has(effect.id) ) CONFIG.statusEffects.push(effect);
+  }
+
+  // Black powder misfire weather (Transdimensional p.68), set by the GM.
+  game.settings.register("palladium-universal", "powderWeather", {
+    name: "Black Powder Weather",
+    hint: "Adds to black powder misfire chances: humid +5%, rain +15%, downpour or dunking +35%.",
+    scope: "world",
+    config: true,
+    type: String,
+    choices: Object.fromEntries(Object.entries(CONFIG.PALLADIUM.POWDER_WEATHER).map(([k, v]) => [k, v.label])),
+    default: "dry"
+  });
 });
 
 // Actions per Round reset each new round

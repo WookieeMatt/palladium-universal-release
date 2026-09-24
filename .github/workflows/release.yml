@@ -29,7 +29,7 @@ jobs:
 
       - name: Package
         run: |
-          zip -r palladium-universal.zip system.json README.md lang module templates styles assets packs \
+          zip -r palladium-universal.zip system.json README.md LICENSE CHANGELOG.md lang module templates styles assets packs \
             -x "packs/*/LOCK" "packs/*/LOG" "packs/*/LOG.old"
           unzip -l palladium-universal.zip | tail -1
 
@@ -42,6 +42,8 @@ jobs:
           body: |
             Install or update in Foundry VTT v14 with the manifest URL:
             https://github.com/${{ github.repository }}/releases/latest/download/system.json
+
+            What's new: see [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md).
           files: |
             system.json
             palladium-universal.zip

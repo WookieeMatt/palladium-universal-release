@@ -1,5 +1,4 @@
 import PalladiumVehicleSheet from "./vehicle-sheet.mjs";
-import { DEVICE_TYPES, VEHICLE_CLASSES } from "../config.mjs";
 import { operateTimeMachine } from "../vehicle.mjs";
 import { rollTemporalMishap } from "../timetravel.mjs";
 
@@ -47,11 +46,11 @@ export default class PalladiumTimeMachineSheet extends PalladiumVehicleSheet {
     const entry = { id: foundry.utils.randomID(), name: item.name, img: item.img, sourceUuid: item.uuid, cost: s.cost ?? "" };
     if ( item.type === "installation" ) {
       return { ...entry, kind: "installation",
-        details: [s.device, VEHICLE_CLASSES[s.vehicleClass], s.available ? "" : "not available"].filter(t => t).join(" · ") };
+        details: [s.device, CONFIG.PALLADIUM.VEHICLE_CLASSES[s.vehicleClass], s.available ? "" : "not available"].filter(t => t).join(" · ") };
     }
     return { ...entry, kind: s.deviceType, skill: s.skill, skillBonus: s.skillBonus, assists: s.assists,
       recharge: s.recharge, maxArea: s.maxArea, malfunction: s.malfunction, malfunctionTable: s.malfunctionTable,
-      details: [DEVICE_TYPES[s.deviceType], s.deviceType === "readout" ? `+${s.skillBonus}% to ${DEVICE_TYPES[s.assists]}` : "",
+      details: [CONFIG.PALLADIUM.DEVICE_TYPES[s.deviceType], s.deviceType === "readout" ? `+${s.skillBonus}% to ${CONFIG.PALLADIUM.DEVICE_TYPES[s.assists]}` : "",
         s.maxArea && `max area ${s.maxArea}`, s.recharge && `recharge ${s.recharge}`].filter(t => t).join(" · ") };
   }
 

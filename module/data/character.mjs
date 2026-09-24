@@ -1,8 +1,3 @@
-import {
-  ATTRIBUTES, BASE_SPELL_STRENGTH, DEFAULT_FEATURE_EFFECTS, BIOE_PER_SIZE_LEVEL, CHANGE_SAVE_TARGET, CIRCUMSTANCES, CONDITIONS, HUMAN_FEATURES,
-  MAGIC_TRADITIONS, MAX_SIZE_LEVEL, POWDER_LOCKS, SAVES, SIZE_LEVELS,
-  attributeBonuses, carryLift, combatTrainingAt, levelForXP, magicAt, movement
-} from "../config.mjs";
 
 const {
   BooleanField, HTMLField, NumberField, SchemaField, StringField
@@ -95,17 +90,17 @@ export default class CharacterData extends foundry.abstract.TypeDataModel {
       }),
 
       attributes: new SchemaField(Object.fromEntries(
-        Object.keys(ATTRIBUTES).map(key => [key, attributeField()])
+        Object.keys(CONFIG.PALLADIUM.ATTRIBUTES).map(key => [key, attributeField()])
       )),
 
       mutation: new SchemaField({
         bioeTotal: intField(0, { min: 0 }),
-        originalSizeLevel: intField(6, { min: 1, max: MAX_SIZE_LEVEL }),
-        sizeLevel: intField(6, { min: 1, max: MAX_SIZE_LEVEL }),
+        originalSizeLevel: intField(6, { min: 1, max: CONFIG.PALLADIUM.MAX_SIZE_LEVEL }),
+        sizeLevel: intField(6, { min: 1, max: CONFIG.PALLADIUM.MAX_SIZE_LEVEL }),
         applySizeModifiers: new BooleanField({ initial: true }),
         build: new StringField({ required: true, initial: "medium", choices: ["short", "medium", "long"] }),
         features: new SchemaField(Object.fromEntries(
-          Object.keys(HUMAN_FEATURES).map(key => [key, featureField()])
+          Object.keys(CONFIG.PALLADIUM.HUMAN_FEATURES).map(key => [key, featureField()])
         )),
         // Bio-E spent on purchases not yet tracked as items.
         spentAbilities: intField(0, { min: 0 }),
@@ -142,12 +137,12 @@ export default class CharacterData extends foundry.abstract.TypeDataModel {
         mod: combatMods(),
         actionsUsed: intField(0, { min: 0 }),   // actions spent this round (reset each round)
         // Temporary situational modifiers (cover, darkness, a +5 Hold after a Tackle...).
-        circ: new SchemaField(Object.fromEntries(Object.keys(CIRCUMSTANCES).map(key => [key, intField()])))
+        circ: new SchemaField(Object.fromEntries(Object.keys(CONFIG.PALLADIUM.CIRCUMSTANCES).map(key => [key, intField()])))
       }),
 
       saves: new SchemaField({
         isPsychic: new BooleanField(),
-        mod: new SchemaField(Object.fromEntries([...Object.keys(SAVES), "change"].map(key => [key, intField()])))
+        mod: new SchemaField(Object.fromEntries([...Object.keys(CONFIG.PALLADIUM.SAVES), "change"].map(key => [key, intField()])))
       }),
 
       skills: textField(),
@@ -164,7 +159,7 @@ export default class CharacterData extends foundry.abstract.TypeDataModel {
       }),
 
       magic: new SchemaField({
-        tradition: new StringField({ required: true, initial: "none", choices: Object.keys(MAGIC_TRADITIONS) }),
+        tradition: new StringField({ required: true, initial: "none", choices: Object.keys(CONFIG.PALLADIUM.MAGIC_TRADITIONS) }),
         payBioE: new BooleanField({ initial: true }),   // the tradition was bought as a background option
         spellsUsed: intField(0, { min: 0 }),            // spells cast since the last new day
         mod: new SchemaField({ strength: intField(), spellsPerDay: intField(), spellsPerMelee: intField() }),
@@ -324,8 +319,8 @@ export default class CharacterData extends foundry.abstract.TypeDataModel {
     for ( const [key, f] of Object.entries(this.mutation.features) ) {
       if ( f.level === "full" ) continue;
       const listed = animal?.system.features[key]?.[`${f.level}Effects`] ?? [];
-      const effects = listed.length ? listed : (DEFAULT_FEATURE_EFFECTS[key]?.[f.level] ?? []);
-      const source = `${HUMAN_FEATURES[key]} (${f.level})`;
+      const effects = listed.length ? listed : (CONFIG.PALLADIUM.DEFAULT_FEATURE_EFFECTS[key]?.[f.level] ?? []);
+      const source = `${CONFIG.PALLADIUM.HUMAN_FEATURES[key]} (${f.level})`;
       for ( const effect of effects ) {
         add(effect, source);
         if ( effect.target ) featureEffects.push({ source, target: effect.target, value: effectValue(effect) });
@@ -343,7 +338,7 @@ export default class CharacterData extends foundry.abstract.TypeDataModel {
 
   #prepareSize() {
     const m = this.mutation;
-    m.size = SIZE_LEVELS[m.sizeLevel] ?? SIZE_LEVELS[6];
+    m.size = CONFIG.PALLADIUM.SIZE_LEVELS[m.sizeLevel] ?? CONFIG.PALLADIUM.SIZE_LEVELS[6];
   }
 
   /* -------------------------------------------- */
@@ -360,23 +355,23 @@ export default class CharacterData extends foundry.abstract.TypeDataModel {
     }
     const a = this.attributes;
     this.bonuses = {
-      iq: attributeBonuses(a.iq.total),
-      me: attributeBonuses(a.me.total),
-      ma: attributeBonuses(a.ma.total),
-      ps: attributeBonuses(a.ps.total),
-      pp: attributeBonuses(a.pp.total),
-      pe: attributeBonuses(a.pe.total),
-      pb: attributeBonuses(a.pb.total)
+      iq: CONFIG.PALLADIUM.attributeBonuses(a.iq.total),
+      me: CONFIG.PALLADIUM.attributeBonuses(a.me.total),
+      ma: CONFIG.PALLADIUM.attributeBonuses(a.ma.total),
+      ps: CONFIG.PALLADIUM.attributeBonuses(a.ps.total),
+      pp: CONFIG.PALLADIUM.attributeBonuses(a.pp.total),
+      pe: CONFIG.PALLADIUM.attributeBonuses(a.pe.total),
+      pb: CONFIG.PALLADIUM.attributeBonuses(a.pb.total)
     };
-    this.movement = movement(a.spd.total);
-    this.carry = carryLift(a.ps.total);
+    this.movement = CONFIG.PALLADIUM.movement(a.spd.total);
+    this.carry = CONFIG.PALLADIUM.carryLift(a.ps.total);
   }
 
   /* -------------------------------------------- */
 
   #prepareBioE() {
     const m = this.mutation;
-    const sizeCost = (m.sizeLevel - m.originalSizeLevel) * BIOE_PER_SIZE_LEVEL;
+    const sizeCost = (m.sizeLevel - m.originalSizeLevel) * CONFIG.PALLADIUM.BIOE_PER_SIZE_LEVEL;
     let featureCost = 0;
     for ( const f of Object.values(m.features) ) {
       f.cost = f.level === "full" ? f.fullCost : f.level === "partial" ? f.partialCost : f.noneCost;
@@ -391,7 +386,7 @@ export default class CharacterData extends foundry.abstract.TypeDataModel {
     const psionics = m.spentPsionics + itemBioE("psionic");
     // Apprentice Wizard / Time Lord options cost Bio-E (Transdimensional p.7–9).
     const mg = this.magic;
-    const magic = mg.payBioE ? (MAGIC_TRADITIONS[mg.tradition]?.bioe ?? 0) : 0;
+    const magic = mg.payBioE ? (CONFIG.PALLADIUM.MAGIC_TRADITIONS[mg.tradition]?.bioe ?? 0) : 0;
     const spent = sizeCost + featureCost + abilities + weapons + psionics + magic;
     const bonus = this.#effect("bioe");   // e.g. a background's "+10 Bio-E"
     m.bioe = {
@@ -446,7 +441,7 @@ export default class CharacterData extends foundry.abstract.TypeDataModel {
   #prepareCombat() {
     const c = this.combat;
     const effectiveLevel = Math.min(15, this.identity.level + c.bonusLevels);
-    const training = combatTrainingAt(c.training, effectiveLevel);
+    const training = CONFIG.PALLADIUM.combatTrainingAt(c.training, effectiveLevel);
     const pp = this.bonuses.pp.ppCombat;
     const ps = this.bonuses.ps.psDamage;
     const mod = c.mod;
@@ -457,15 +452,15 @@ export default class CharacterData extends foundry.abstract.TypeDataModel {
 
     // Conditions from token status effects.
     const statuses = this.parent?.statuses ?? new Set();
-    const active = Object.keys(CONDITIONS).filter(id => statuses.has(id));
+    const active = Object.keys(CONFIG.PALLADIUM.CONDITIONS).filter(id => statuses.has(id));
     const condMods = {};
     for ( const id of active ) {
-      for ( const [key, value] of Object.entries(CONDITIONS[id].mods ?? {}) ) condMods[key] = (condMods[key] ?? 0) + value;
+      for ( const [key, value] of Object.entries(CONFIG.PALLADIUM.CONDITIONS[id].mods ?? {}) ) condMods[key] = (condMods[key] ?? 0) + value;
     }
     const stunned = active.includes("stunned");
     c.conditions = {
       active, mods: condMods, stunned,
-      noDefense: active.filter(id => CONDITIONS[id].noDefense).map(id => CONDITIONS[id].label)
+      noDefense: active.filter(id => CONFIG.PALLADIUM.CONDITIONS[id].noDefense).map(id => CONFIG.PALLADIUM.CONDITIONS[id].label)
     };
 
     // Each total = training + attribute + skills/abilities + misc, then circumstances and conditions.
@@ -513,20 +508,20 @@ export default class CharacterData extends foundry.abstract.TypeDataModel {
   #prepareMagic() {
     const m = this.magic;
     const level = this.identity.level;
-    const p = magicAt(m.tradition, level);
+    const p = CONFIG.PALLADIUM.magicAt(m.tradition, level);
     const items = this.parent?.items ?? [];
     const spells = items.filter(i => i.type === "spell");
     m.caster = {
       isCaster: m.tradition !== "none",
-      label: MAGIC_TRADITIONS[m.tradition]?.label ?? "",
+      label: CONFIG.PALLADIUM.MAGIC_TRADITIONS[m.tradition]?.label ?? "",
       spellsPerDay: Math.max(0, p.spellsPerDay + m.mod.spellsPerDay),
       spellsPerMelee: Math.max(0, p.spellsPerMelee + m.mod.spellsPerMelee),
       strengthBonus: p.strength + m.mod.strength,
-      strength: BASE_SPELL_STRENGTH + p.strength + m.mod.strength,
+      strength: CONFIG.PALLADIUM.BASE_SPELL_STRENGTH + p.strength + m.mod.strength,
       saves: { magic: p.saveSpell, circle: p.saveCircle, psionics: p.savePsionics, change: p.saveChange },
       abilities: p.abilities,
       selections: spells.reduce((n, i) => n + (i.system.selections ?? 1), 0),
-      startingSelections: MAGIC_TRADITIONS[m.tradition]?.startingSelections ?? 0
+      startingSelections: CONFIG.PALLADIUM.MAGIC_TRADITIONS[m.tradition]?.startingSelections ?? 0
     };
     m.caster.remaining = Math.max(0, m.caster.spellsPerDay - m.spellsUsed);
   }
@@ -546,19 +541,19 @@ export default class CharacterData extends foundry.abstract.TypeDataModel {
       coma: b.pe.peComa
     };
     s.totals = {};
-    for ( const [key, cfg] of Object.entries(SAVES) ) {
+    for ( const [key, cfg] of Object.entries(CONFIG.PALLADIUM.SAVES) ) {
       const target = (key === "psionics") && s.isPsychic ? 10 : cfg.target;
       s.totals[key] = { label: cfg.label, target, bonus: base[key] + s.mod[key] };
     }
     // Save vs T.E. Change: percentile, P.E. % bonus (Transdimensional p.33).
-    s.change = { label: "vs T.E. Change", target: CHANGE_SAVE_TARGET, bonus: b.pe.pePercent + magic.change + s.mod.change };
+    s.change = { label: "vs T.E. Change", target: CONFIG.PALLADIUM.CHANGE_SAVE_TARGET, bonus: b.pe.pePercent + magic.change + s.mod.change };
   }
 
   /* -------------------------------------------- */
 
   #prepareProgress() {
     const i = this.identity;
-    i.xpLevel = levelForXP(i.xp);
+    i.xpLevel = CONFIG.PALLADIUM.levelForXP(i.xp);
   }
 
   /* -------------------------------------------- */
@@ -589,7 +584,7 @@ export default class CharacterData extends foundry.abstract.TypeDataModel {
     if ( !weapon.system.isPowder ) return byGroup ?? null;
     // Black powder: the W.P. for the weapon's family, else a group match, else W.P. Black Powder (general).
     const powderWPs = items.filter(i => (i.type === "wp") && (i.system.kind === "blackPowder"));
-    const family = POWDER_LOCKS[weapon.system.powder.lock]?.wp;
+    const family = CONFIG.PALLADIUM.POWDER_LOCKS[weapon.system.powder.lock]?.wp;
     return powderWPs.find(i => i.system.powderLock === family) ?? byGroup
       ?? powderWPs.find(i => i.system.powderLock === "general") ?? null;
   }

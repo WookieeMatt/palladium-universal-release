@@ -1,4 +1,3 @@
-import { VEHICLE_LOCATIONS } from "./config.mjs";
 import { cardHeader, damageButtons, defendingActors, postAttackCard } from "./combat.mjs";
 import { signed } from "./dice.mjs";
 import { deviceMalfunction } from "./timetravel.mjs";
@@ -28,7 +27,7 @@ export async function applyVehicleDamage(actor, amount, { strike = null, mode = 
   const sys = actor.system;
   if ( mode === "half" ) amount = Math.floor(amount / 2);
   if ( !location && (mode !== "hp") ) {
-    const options = Object.entries(VEHICLE_LOCATIONS).map(([k, l]) => `<option value="${k}">${l.label}</option>`).join("");
+    const options = Object.entries(CONFIG.PALLADIUM.VEHICLE_LOCATIONS).map(([k, l]) => `<option value="${k}">${l.label}</option>`).join("");
     location = await DialogV2.prompt({
       window: { title: `${actor.name}: Location Hit` },
       content: `<div class="form-group"><label>Location</label><div class="form-fields"><select name="location">${options}</select></div></div>
@@ -49,7 +48,7 @@ export async function applyVehicleDamage(actor, amount, { strike = null, mode = 
     const absorbed = Math.min(remaining, loc.sdc.value);
     const after = loc.sdc.value - absorbed;
     update[`system.locations.${location}.sdc.value`] = after;
-    lines.push(`${VEHICLE_LOCATIONS[location].label} armor (A.R. ${loc.ar}) absorbs ${absorbed}: S.D.C. ${loc.sdc.value} → ${after}.`);
+    lines.push(`${CONFIG.PALLADIUM.VEHICLE_LOCATIONS[location].label} armor (A.R. ${loc.ar}) absorbs ${absorbed}: S.D.C. ${loc.sdc.value} → ${after}.`);
     if ( after <= 0 ) lines.push("That armor is destroyed.");
     remaining -= absorbed;
   }
@@ -62,7 +61,7 @@ export async function applyVehicleDamage(actor, amount, { strike = null, mode = 
 
   if ( remaining > 0 ) {
     if ( (location === "crew") && (mode !== "hp") ) {
-      lines.push(`${remaining} damage: ${VEHICLE_LOCATIONS.crew.text}`);
+      lines.push(`${remaining} damage: ${CONFIG.PALLADIUM.VEHICLE_LOCATIONS.crew.text}`);
       remaining = 0;
     }
     else {
@@ -70,7 +69,7 @@ export async function applyVehicleDamage(actor, amount, { strike = null, mode = 
       const after = sdc.value - remaining;
       update["system.health.sdc.value"] = after;
       lines.push(`Vehicle S.D.C. ${sdc.value} → ${after}.`);
-      if ( VEHICLE_LOCATIONS[location]?.text && (mode !== "hp") ) lines.push(VEHICLE_LOCATIONS[location].text);
+      if ( CONFIG.PALLADIUM.VEHICLE_LOCATIONS[location]?.text && (mode !== "hp") ) lines.push(CONFIG.PALLADIUM.VEHICLE_LOCATIONS[location].text);
       if ( (sdc.max > 0) && (after <= -sdc.max) ) lines.push(`<strong class="pu-failure">Totaled.</strong>`);
       else if ( (sdc.max > 0) && (after <= 0) ) lines.push(`<strong class="pu-failure">Incapacitated: needs major repairs.</strong>`);
     }

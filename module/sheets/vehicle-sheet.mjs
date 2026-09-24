@@ -1,4 +1,3 @@
-import { DEVICE_TYPES, VEHICLE_LOCATIONS, VEHICLE_MOD_CATEGORIES, VEHICLE_TYPES } from "../config.mjs";
 import { WEAPON_TYPES } from "../data/items.mjs";
 import { operateDevice, rollControl, rollEvade, rollVehicleAttack, rollVehicleDamage } from "../vehicle.mjs";
 import { signed } from "../dice.mjs";
@@ -45,18 +44,18 @@ export default class PalladiumVehicleSheet extends HandlebarsApplicationMixin(Ac
     const byType = type => actor.items.filter(i => i.type === type).sort((a, b) => (a.sort - b.sort) || a.name.localeCompare(b.name));
     return Object.assign(context, {
       actor, system,
-      vehicleTypes: VEHICLE_TYPES,
-      locations: Object.entries(VEHICLE_LOCATIONS).map(([key, l]) => ({ key, label: l.label, ...system.locations[key] })),
+      vehicleTypes: CONFIG.PALLADIUM.VEHICLE_TYPES,
+      locations: Object.entries(CONFIG.PALLADIUM.VEHICLE_LOCATIONS).map(([key, l]) => ({ key, label: l.label, ...system.locations[key] })),
       status: system.health.totaled ? "Totaled" : system.health.incapacitated ? "Incapacitated" : "Operational",
       weapons: byType("weapon").map(i => ({ id: i.id, name: i.name, img: i.img, damage: i.system.damage,
         range: i.system.range, type: WEAPON_TYPES[i.system.weaponType],
         strike: signed(system.gunnerBonus + i.system.strikeBonus) })),
-      devices: byType("device").map(i => ({ id: i.id, name: i.name, img: i.img, type: DEVICE_TYPES[i.system.deviceType],
+      devices: byType("device").map(i => ({ id: i.id, name: i.name, img: i.img, type: CONFIG.PALLADIUM.DEVICE_TYPES[i.system.deviceType],
         readout: i.system.deviceType === "readout", bonus: i.system.skillBonus, charged: i.system.charged,
         recharge: i.system.recharge, maxArea: i.system.maxArea })),
       mods: actor.items.filter(i => i.type === "vehicleMod").map(i => ({ id: i.id, name: i.name, img: i.img,
-        category: VEHICLE_MOD_CATEGORIES[i.system.category], cost: i.system.cost,
-        effect: [i.system.location !== "none" ? `${VEHICLE_LOCATIONS[i.system.location].label.split(" (")[0]} A.R. ${i.system.ar}, S.D.C. ${i.system.sdc}` : "",
+        category: CONFIG.PALLADIUM.VEHICLE_MOD_CATEGORIES[i.system.category], cost: i.system.cost,
+        effect: [i.system.location !== "none" ? `${CONFIG.PALLADIUM.VEHICLE_LOCATIONS[i.system.location].label.split(" (")[0]} A.R. ${i.system.ar}, S.D.C. ${i.system.sdc}` : "",
           i.system.sdcBonus ? `S.D.C. +${i.system.sdcBonus}` : "", i.system.controlBonus ? `Control +${i.system.controlBonus}%` : "",
           i.system.speed, i.system.effect].filter(t => t).join(" · ") })),
       others: actor.items.filter(i => !["weapon", "device", "vehicleMod"].includes(i.type)).map(i => ({ id: i.id, name: i.name, img: i.img })),
@@ -77,7 +76,7 @@ export default class PalladiumVehicleSheet extends HandlebarsApplicationMixin(Ac
       const loc = mod.system.location;
       await this.actor.update({ [`system.locations.${loc}.ar`]: mod.system.ar,
         [`system.locations.${loc}.sdc.max`]: mod.system.sdc, [`system.locations.${loc}.sdc.value`]: mod.system.sdc });
-      ui.notifications.info(`${mod.name} installed: ${VEHICLE_LOCATIONS[loc].label} A.R. ${mod.system.ar}, S.D.C. ${mod.system.sdc}.`);
+      ui.notifications.info(`${mod.name} installed: ${CONFIG.PALLADIUM.VEHICLE_LOCATIONS[loc].label} A.R. ${mod.system.ar}, S.D.C. ${mod.system.sdc}.`);
     }
     return created;
   }

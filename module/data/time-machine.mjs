@@ -1,5 +1,4 @@
 import VehicleData from "./vehicle.mjs";
-import { formatCost, parseCost } from "../config.mjs";
 
 const { ArrayField, BooleanField, NumberField, SchemaField, StringField } = foundry.data.fields;
 
@@ -51,6 +50,6 @@ export default class TimeMachineData extends VehicleData {
     super.prepareDerivedData();
     this.device = this.timeDevice[0] ?? null;
     const all = [...this.timeDevice, ...this.supportDevices, ...this.installations];
-    this.totalCost = formatCost(all.reduce((n, e) => n + parseCost(e.cost), 0));
+    this.totalCost = CONFIG.PALLADIUM.formatCost(all.reduce((n, e) => n + CONFIG.PALLADIUM.parseCost(e.cost), 0));
   }
 }

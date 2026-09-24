@@ -28,6 +28,9 @@ The **System Guide** ships inside the system: open the Compendium Packs sidebar 
 ## Content
 The system provides the rules engine and sheets. It does not include book content (animals, skills, weapons...); create your own items or use a content module. You need the Palladium Books rulebooks to play.
 
+## Modules and license
+The code is released under the [MIT License](LICENSE): community modules, forks and add-ons are welcome. Modules can change the rules tables (`CONFIG.PALLADIUM`), call the `game.palladium` API and listen to `palladium.*` hooks. See [For Module Authors](wiki/13-Module-Authors.md). The license covers the code, not Palladium's game text or trademarks.
+
 ## Credits
 - Fonts: [Bangers](https://github.com/googlefonts/bangers) and [Comic Neue](https://github.com/crozynski/comicneue), SIL Open Font License 1.1 (see `assets/fonts`).
 - *Teenage Mutant Ninja Turtles & Other Strangeness* and *Palladium Books* are trademarks of their respective owners. This is an unofficial fan-made system, not affiliated with or endorsed by them.

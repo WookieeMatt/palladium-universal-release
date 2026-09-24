@@ -1,7 +1,3 @@
-import {
-  DEVICE_MALFUNCTIONS, MISHAP_CYCLES, MISHAP_TWISTS, NULL_TIME_FRAGMENT, NULL_TIME_LEVELS, PRACTICE_NEEDED,
-  SPELL_PRACTICE, TEMPORAL_MISHAPS, TE_CHANGE_STEP, tableRow
-} from "./config.mjs";
 import { cardHeader } from "./dice.mjs";
 
 /**
@@ -14,19 +10,21 @@ import { cardHeader } from "./dice.mjs";
  */
 export async function temporalMishap() {
   const roll = await new Roll("1d100").evaluate();
-  const row = tableRow(TEMPORAL_MISHAPS, roll.total);
+  const row = CONFIG.PALLADIUM.tableRow(CONFIG.PALLADIUM.TEMPORAL_MISHAPS, roll.total);
   const rolls = [roll];
   let detail = "";
   if ( row.sub ) {
     const sub = await new Roll("1d100").evaluate();
     rolls.push(sub);
-    if ( row.sub === "cycle" ) detail = `Cycle ${tableRow(MISHAP_CYCLES, sub.total).label}`;
-    else if ( row.sub === "twist" ) detail = `Twist ${tableRow(MISHAP_TWISTS, sub.total).label}`;
-    else detail = NULL_TIME_LEVELS[sub.total] ?? NULL_TIME_FRAGMENT;
+    if ( row.sub === "cycle" ) detail = `Cycle ${CONFIG.PALLADIUM.tableRow(CONFIG.PALLADIUM.MISHAP_CYCLES, sub.total).label}`;
+    else if ( row.sub === "twist" ) detail = `Twist ${CONFIG.PALLADIUM.tableRow(CONFIG.PALLADIUM.MISHAP_TWISTS, sub.total).label}`;
+    else detail = CONFIG.PALLADIUM.NULL_TIME_LEVELS[sub.total] ?? CONFIG.PALLADIUM.NULL_TIME_FRAGMENT;
     detail = `<br><strong>${detail}</strong> <span class="hint">(${sub.total})</span>`;
   }
   const html = `<strong>Temporal Mishap ${roll.total}: ${row.label}.</strong> ${row.text}${detail}`;
-  return { html, rolls };
+  const result = { html, rolls, row };
+  Hooks.callAll("palladium.temporalMishap", result);
+  return result;
 }
 
 /**
@@ -42,15 +40,15 @@ export async function rollTemporalMishap(actor, title = "Temporal Mishap") {
 
 /**
  * Roll a device's malfunction table.
- * @param {string} key   A DEVICE_MALFUNCTIONS key ("temporal", "gateway", "portable", "miniature")
+ * @param {string} key   A CONFIG.PALLADIUM.DEVICE_MALFUNCTIONS key ("temporal", "gateway", "portable", "miniature")
  * @returns {Promise<{html: string, rolls: Roll[]}|null>}
  */
 export async function deviceMalfunction(key) {
   if ( key === "temporal" ) return temporalMishap();
-  const table = DEVICE_MALFUNCTIONS[key];
+  const table = CONFIG.PALLADIUM.DEVICE_MALFUNCTIONS[key];
   if ( !table?.rows ) return null;
   const roll = await new Roll("1d100").evaluate();
-  return { html: `<strong>${table.label} malfunction ${roll.total}:</strong> ${tableRow(table.rows, roll.total).text}`, rolls: [roll] };
+  return { html: `<strong>${table.label} malfunction ${roll.total}:</strong> ${CONFIG.PALLADIUM.tableRow(table.rows, roll.total).text}`, rolls: [roll] };
 }
 
 /* -------------------------------------------- */
@@ -65,10 +63,10 @@ export async function deviceMalfunction(key) {
  */
 export async function practiceSpell(actor, spell) {
   const tradition = spell.system.tradition;
-  const table = SPELL_PRACTICE[tradition];
-  const needed = PRACTICE_NEEDED[tradition];
+  const table = CONFIG.PALLADIUM.SPELL_PRACTICE[tradition];
+  const needed = CONFIG.PALLADIUM.PRACTICE_NEEDED[tradition];
   const roll = await new Roll("1d100").evaluate();
-  const row = tableRow(table, roll.total);
+  const row = CONFIG.PALLADIUM.tableRow(table, roll.total);
   let status = "";
   if ( row.success ) {
     const successes = spell.system.successes + 1;
@@ -100,7 +98,7 @@ export async function practiceSpell(actor, spell) {
  */
 export async function applyTeChange(actor, direction) {
   if ( !actor?.isOwner ) return ui.notifications.warn("Only the character's owner can record T.E. change.");
-  const drift = actor.system.mutation.teDrift + (direction * TE_CHANGE_STEP);
+  const drift = actor.system.mutation.teDrift + (direction * CONFIG.PALLADIUM.TE_CHANGE_STEP);
   await actor.update({ "system.mutation.teDrift": drift });
   const word = direction > 0 ? "evolves" : "devolves";
   ui.notifications.info(`${actor.name} ${word}: T.E. change is now ${drift > 0 ? "+" : ""}${drift} Bio-E.`);
