@@ -30,3 +30,5 @@ The system provides rules and sheets, not book content. Create items yourself, o
 3. Drag an **Animal** item onto the sheet (Bio-E, Size Level and Human Feature costs are filled in).
 4. Drag **Origin**, **Creator Organization** and **Education** background items onto the Core tab's slots.
 5. Spend Bio-E on the **Bio-E / Mutation** tab, choose Combat Training on the **Combat** tab, add skills, W.P.s and gear.
+
+New characters and NPCs start with the system's **mutant turtle** portrait and token (instead of Foundry's mystery man), in a round token with a green ring. Click the portrait to use your own art.

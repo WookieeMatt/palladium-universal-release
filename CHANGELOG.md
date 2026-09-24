@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.12.0
+- **Mutant turtle default portrait**: new characters and NPCs start with a mutant turtle head (portrait and token) instead of Foundry's mystery man. Your own art is never replaced. Vehicles keep Foundry's default.
+
 ## 1.11.0
 - **Journals take the sheet look**: green title bar, parchment background, comic headings, each page on a paper panel, green-headed striped tables, a green table of contents and green link chips. Applies to every journal, the compendium journals and the System Guide included. World setting **TMNT Journal Style** (on by default) to switch it off.
 

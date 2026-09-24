@@ -177,14 +177,33 @@ Hooks.on("renderJournalEntryPageSheet", styleJournal);
 // Buttons on attack and damage chat cards
 Hooks.on("renderChatMessageHTML", onRenderChatMessage);
 
-// New characters and NPCs get a round portrait token with the system's green ring.
+// Characters and NPCs: the mutant turtle replaces Foundry's mystery man as the default portrait and token,
+// and new ones get a round portrait token with the system's green ring.
+export const DEFAULT_ACTOR_ART = "systems/palladium-universal/assets/tokens/mutant-turtle.svg";
+const MYSTERY_MAN = "icons/svg/mystery-man.svg";
+const isDefaultArt = src => !src || (src === MYSTERY_MAN);
+
+Hooks.once("init", () => {
+  const ActorClass = CONFIG.Actor?.documentClass;
+  const getDefaultArtwork = ActorClass?.getDefaultArtwork;
+  if ( typeof getDefaultArtwork !== "function" ) return;
+  ActorClass.getDefaultArtwork = function(actorData = {}) {
+    const art = getDefaultArtwork.call(this, actorData);
+    if ( !["character", "npc"].includes(actorData.type) ) return art;
+    return { ...art, img: DEFAULT_ACTOR_ART, texture: { ...(art.texture ?? {}), src: DEFAULT_ACTOR_ART } };
+  };
+});
+
 Hooks.on("preCreateActor", (actor, data) => {
   if ( !["character", "npc"].includes(actor.type) ) return;
-  if ( foundry.utils.hasProperty(data, "prototypeToken.ring.enabled") ) return;
-  actor.updateSource({
+  const update = {};
+  if ( isDefaultArt(actor.img) ) update.img = DEFAULT_ACTOR_ART;
+  if ( isDefaultArt(actor.prototypeToken?.texture?.src) ) update["prototypeToken.texture.src"] = update.img ?? actor.img;
+  if ( !foundry.utils.hasProperty(data, "prototypeToken.ring.enabled") ) Object.assign(update, {
     "prototypeToken.ring.enabled": true,
     "prototypeToken.ring.colors.ring": "#3d7a4d",
     "prototypeToken.ring.colors.background": "#efece0",
     "prototypeToken.actorLink": actor.type === "character"
   });
+  if ( !foundry.utils.isEmpty(update) ) actor.updateSource(update);
 });
