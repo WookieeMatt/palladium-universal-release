@@ -335,7 +335,7 @@ export default class CharacterData extends foundry.abstract.TypeDataModel {
 
   /**
    * The modifiers attribute generation adds to the dice, worked out before rolling: species (the
-   * animal's bonuses), Size Level (I.Q., P.S., P.E., Spd) and physical skills (P.S., P.P., P.E., Spd).
+   * animal's bonuses, its purchased options and abilities / powers), Size Level (I.Q., P.S., P.E., Spd) and physical skills (P.S., P.P., P.E., Spd).
    * Dice bonuses that haven't been rolled (e.g. Boxing +1D4) are kept as formulas.
    * @param {string} key
    */
@@ -354,7 +354,10 @@ export default class CharacterData extends foundry.abstract.TypeDataModel {
       }
       return out;
     };
-    const species = collect(items.filter(i => i.type === "animal"));
+    // Species: the animal, its purchased options and the character's abilities / powers (e.g. Hominid
+    // attribute boosts, Extraordinary P.E.).
+    const species = collect(items.filter(i => (i.type === "animal") || (i.type === "ability")
+      || i.getFlag?.("palladium-universal", "animalOption")));
     const size = G.sizeAttributes.includes(key) ? (CONFIG.PALLADIUM.SIZE_LEVELS[this.mutation.sizeLevel]?.[key] ?? 0) : null;
     const physical = G.physicalAttributes.includes(key)
       ? collect(items.filter(i => (i.type === "skill") && (i.system.category === "physical"))) : null;

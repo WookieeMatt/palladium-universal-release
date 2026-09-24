@@ -10,7 +10,7 @@ import { postCard, signed } from "./dice.mjs";
  *     another member of the team (same Actors folder) rolled a higher bonus die for this attribute,
  *     use theirs.
  *  3–5. The modifiers the character sheet works out before any roll (CharacterData, attr.gen):
- *     species, Size Level (I.Q., P.S., P.E., Spd) and physical skills (P.S., P.P., P.E., Spd).
+ *     species (animal, purchased options, abilities / powers), Size Level (I.Q., P.S., P.E., Spd) and physical skills (P.S., P.P., P.E., Spd).
  *     Dice bonuses that haven't been rolled (e.g. Boxing +1D4) are rolled here.
  */
 

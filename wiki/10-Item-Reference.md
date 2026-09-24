@@ -3,7 +3,7 @@
 Every item has a **Description** (rich text) and **Source** (book and page). Items with a **Bonuses** panel grant effects to their owner (see *Effects* below).
 
 ## Rolls on every item
-Every item has a **Roll** field (formula and label) under its description, e.g. *1D6*, *Duration (melee rounds)*. An item with a roll gets a 🎲 button on the character sheet. When the field is blank, dice written in the description (such as "2D6+6 minutes" or "4D6 damage") are offered instead; if there are several, the 🎲 asks which one. Weapons (attack and damage), skills, spells (Cast, Practice and damage), psionics (Use) and devices (Operate) keep their own buttons as well.
+Every item has a **Roll** field (formula and label) under its description, e.g. *1D6*, *Duration (melee rounds)*. An item with a roll gets a 🎲 button on the character sheet. The Roll field is offered first, then any other dice written in the description (such as "2D6+6 minutes" or "4D6 damage"); if there are several, the 🎲 asks which one. Weapons (attack and damage), skills, spells (Cast, Practice and damage), psionics (Use) and devices (Operate) keep their own buttons as well.
 
 Dice written in a description also show as **clickable rolls** on the item sheet and in the read-only view: click *2D6+6* to roll it.
 

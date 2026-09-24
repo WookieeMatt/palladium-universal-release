@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.6.2
+- Attribute generation: the **Species** step (and column) also counts bonuses from purchased animal options and abilities / powers (e.g. Hominid attribute boosts, Extraordinary P.E.).
+- An item's own **Roll** is offered first and the other dice in its description are still offered after it (before, the Roll field hid them).
+- Works with TMNT compendium 0.2.1, which labels the main roll of 22 items (e.g. Taser: *Stunned (minutes)*).
+
 ## 1.6.1
 - **Clickable dice in text:** dice written in table results on chat cards (misfire mishaps, device malfunctions, Temporal Mishaps, spell practice) and in item descriptions (item sheet and read-only view) are Foundry inline rolls: click *2D6 melee rounds* to roll it. Roll results on the cards stay plain.
 - API: `postCard({inlineRolls: true})`, `enrichDice(html)`.

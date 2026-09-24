@@ -10,7 +10,7 @@ Click an attribute's abbreviation (I.Q., M.E., M.A., P.S., P.P., P.E., P.B., Spd
 
 1. **Base:** 3D6.
 2. **Exceptional:** on 16, 17 or 18, add 1D6. With **Team Character Generation** on (world setting), if another character in the same Actors folder rolled a higher bonus die for that attribute, theirs is used.
-3. **Species:** the animal's flat bonus to that attribute.
+3. **Species:** the animal's flat bonus to that attribute, plus bonuses from its purchased options and the character's abilities / powers (e.g. Hominid attribute boosts, Extraordinary P.E.).
 4. **Size Level:** I.Q., P.S., P.E. and Spd only.
 5. **Physical skills:** P.S., P.P., P.E. and Spd only (dice bonuses such as Boxing's +1D4 are rolled if the skill hasn't stored a value).
 
@@ -25,7 +25,7 @@ Each line shows the modifiers attribute generation adds, worked out from the cha
 | Column | Meaning |
 |---|---|
 | **Attribute** | Click to generate it in chat (see *Generating attributes*). |
-| **Species** | The animal's bonus to that attribute. |
+| **Species** | The animal's bonus to that attribute, plus purchased options and abilities / powers. |
 | **Size** | Size Level modifier (I.Q., P.S., P.E. and Spd only; N/A for the others). |
 | **Physical Skills** | Bonuses from Physical skills (P.S., P.P., P.E. and Spd only). Unrolled dice such as Boxing's +1D4 are shown as dice and rolled when you generate. |
 | **Modifier** | The sum added to the 3D6. |

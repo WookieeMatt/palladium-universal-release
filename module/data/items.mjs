@@ -73,17 +73,17 @@ class ItemDataBase extends foundry.abstract.TypeDataModel {
   }
 
   /**
-   * The rolls this item offers on the character sheet: its own Roll field, or else each dice
-   * expression in its description, labelled with the sentence it appears in.
+   * The rolls this item offers on the character sheet: its own Roll field first (with its label), then
+   * each other dice expression in its description, labelled with the sentence it appears in.
    * @returns {Array<{label: string, formula: string, text: string}>}
    */
   get itemRolls() {
     const own = this.itemRoll;
+    const rolls = [];
     if ( own?.formula?.trim() ) {
-      return [{ label: own.label || "Roll", formula: diceFormula(own.formula), text: own.formula }];
+      rolls.push({ label: own.label || "Roll", formula: diceFormula(own.formula), text: own.formula });
     }
     const plain = String(this.description ?? "").replace(/<[^>]+>/g, " ").replace(/&nbsp;/g, " ").replace(/\s+/g, " ");
-    const rolls = [];
     for ( const match of plain.matchAll(DICE_PATTERN) ) {
       const formula = diceFormula(match[0]);
       if ( rolls.some(r => r.formula === formula) ) continue;
