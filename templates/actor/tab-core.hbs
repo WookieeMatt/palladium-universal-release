@@ -26,29 +26,6 @@
 
   <section class="panel">
     <div class="panel-header">
-      <h2>Background</h2>
-      <span class="hint">Drag an Origin, Creator Organization or Education item onto the sheet</span>
-    </div>
-    <div class="slot-grid">
-      {{#each backgrounds}}
-      <div class="drop-slot {{#if item}}filled{{/if}}" {{#if item}}data-item-id="{{item.id}}"{{/if}}>
-        <span class="hint">{{label}}</span>
-        {{#if item}}
-        <div class="slot-content">
-          <img src="{{item.img}}" alt="" class="item-icon" />
-          <a data-action="itemEdit">{{item.name}}</a>
-          <button type="button" class="icon-button" data-action="itemDelete" data-tooltip="Remove"><i class="fa-solid fa-xmark"></i></button>
-        </div>
-        {{else}}
-        <div class="slot-empty">Drop here</div>
-        {{/if}}
-      </div>
-      {{/each}}
-    </div>
-  </section>
-
-  <section class="panel">
-    <div class="panel-header">
       <h2>Health &amp; Damage</h2>
     </div>
     <div class="health-grid">

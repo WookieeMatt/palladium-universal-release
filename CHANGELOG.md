@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.6.3
+- The **Background** panel (Origin, Creator Organization, Education) moved from the Core tab to the **Bio-E / Mutation** tab, under the Animal.
+
 ## 1.6.2
 - Attribute generation: the **Species** step (and column) also counts bonuses from purchased animal options and abilities / powers (e.g. Hominid attribute boosts, Extraordinary P.E.).
 - An item's own **Roll** is offered first and the other dice in its description are still offered after it (before, the Roll field hid them).

@@ -30,9 +30,6 @@ Each line shows the modifiers attribute generation adds, worked out from the cha
 | **Physical Skills** | Bonuses from Physical skills (P.S., P.P., P.E. and Spd only). Unrolled dice such as Boxing's +1D4 are shown as dice and rolled when you generate. |
 | **Modifier** | The sum added to the 3D6. |
 
-### Background
-Three slots: **Origin**, **Creator Organization**, **Education / Background**. Drop a Background item anywhere on the sheet and it goes into its slot (replacing the previous one of that kind). An Education sets the Education field and bonus; a background that grants Combat Training sets it if you have none.
-
 ### Health & Damage
 - **Hit Points** (value/max).
 - **S.D.C.** (the maximum is calculated: Size Level S.D.C., doubled by *Extraordinary P.E.*-type effects, + skills + the **S.D.C. Bonus** field).
@@ -43,6 +40,9 @@ Three slots: **Origin**, **Creator Organization**, **Education / Background**. D
 ## Bio-E / Mutation tab
 ### Animal
 Drop an **Animal** item. The sheet sets species, starting Bio-E, original and current Size Level, build, and the Human Feature costs. The animal's **abilities and natural weapons** appear as checkboxes: tick one to buy it (it becomes an owned Ability or natural Weapon item and its Bio-E is spent); untick to refund. Options in the same choice group are alternatives: buying one refunds the other. Options costing 0 Bio-E are bought automatically. **Remove Animal** removes it and everything bought from it.
+
+### Background
+Three slots: **Origin**, **Creator Organization**, **Education / Background**. Drop a Background item anywhere on the sheet and it goes into its slot (replacing the previous one of that kind). An Education sets the Education field and bonus; a background that grants Combat Training sets it if you have none.
 
 ### Bio-E
 The panel adds up **Size**, **Human Features**, **Animal Abilities**, **Natural Weapons**, **Psionics** and **Magic Training** (Wizard 30 / Time Lord 25 when bought as a background option), plus **T.E. Change** from time travel and **Bonus (items)** from backgrounds or other items that grant Bio-E. The header shows **Remaining**, or **✓ All Bio-E spent** at exactly 0. Negative remaining turns red. *Extra Bio-E not tracked by items* lets you record purchases you haven't made items for.
