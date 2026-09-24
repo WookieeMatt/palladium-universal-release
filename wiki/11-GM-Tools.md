@@ -5,6 +5,25 @@
 
 **Configure Settings → System Settings → Team Character Generation**: when on, a character generating an attribute with an exceptional roll (16–18) uses the highest bonus die a teammate (a character in the same Actors folder) rolled for that attribute, if it's higher than their own.
 
+## Animations (Automated Animations)
+Install and enable **Automated Animations**, **Sequencer** and **JB2A** (the free *JB2A_DnD5e* or the Patreon version). The system then plays an animation when something is used:
+
+| What | Animation |
+|---|---|
+| Weapon attacks (character, NPC, vehicle) | From the attacker's token to your targeted tokens; a miss (4 or less) plays the miss version |
+| Maneuvers (Tackle, Throw, Jump Kick…) | Unarmed strike |
+| Casting a spell, using a psionic power | The spell or power |
+| An item's 🎲 roll (grenades, powers…) | The item |
+| Operating a device or time machine | A teleport flash |
+
+Damage, saves and skill checks don't animate. Select your token and target first.
+
+**How animations are chosen:** Automated Animations looks for an entry in its *Global Automatic Recognition* menu named after the item first (so you can give any item its own animation there, or on the item's own A-A tab). If there isn't one, the system's **trigger set** points TMNT names at the built-in entries: katana/sword → *sword*, sai/knife/tanto → *dagger*, bo/staff/nunchaku/tonfa → *greatclub*, spear/naginata → *spear*, kama/axe → *handaxe*, bows → *bow*, bite → *bite*, claws → *claw*, healing → *curewounds*, teleport/time/dimension → *mistystep*, grenades → *fireball*, and so on.
+
+**Guns:** Automated Animations has no built-in gun entry. Add one Range entry named **bullet** in its Global Automatic Recognition menu (pick a JB2A bullet animation) and every firearm and black powder weapon uses it.
+
+Turn animations off with **Configure Settings → System Settings → Automated Animations**. Nothing happens if the module isn't active.
+
 ## T.C.R.I. Dice (Dice So Nice)
 With the *Dice So Nice* module enabled, the system adds the **T.C.R.I. Dice**, a seven-piece set (d4, d6, d8, d10, d10 %, d12 and d20) of clear green dice filled with glittering liquid. The liquid swirls and the glitter twinkles while the dice roll.
 

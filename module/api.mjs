@@ -4,6 +4,7 @@ import * as combat from "./combat.mjs";
 import * as creation from "./creation.mjs";
 import * as dice from "./dice.mjs";
 import * as itemRolls from "./item-rolls.mjs";
+import * as animations from "./animations.mjs";
 import * as magic from "./magic.mjs";
 import * as timetravel from "./timetravel.mjs";
 import * as vehicle from "./vehicle.mjs";
@@ -40,6 +41,8 @@ export function buildApi() {
     enrichDice: dice.enrichDice,
     rollItem: itemRolls.rollItem,
     viewItemCopy: itemRolls.viewItemCopy,
+    playAnimation: animations.playAnimation,
+    animationNames: animations.animationNames,
     resultDetails: dice.resultDetails,
     signed: dice.signed,
 

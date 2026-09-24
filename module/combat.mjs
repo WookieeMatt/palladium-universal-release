@@ -1,9 +1,10 @@
-import { bonusLines, cardHeader, postCard, signed } from "./dice.mjs";
+import { bonusLines, cardHeader, decodeItem, postCard, signed } from "./dice.mjs";
 import { onMagicCardButton, rollChangeSave } from "./magic.mjs";
 import { applyTeChange, rollTemporalMishap } from "./timetravel.mjs";
 import { applyVehicleDamage, rollVehicleDamage } from "./vehicle.mjs";
 import { spendActions } from "./actions.mjs";
 import { viewItemCopy } from "./item-rolls.mjs";
+import { playAnimation } from "./animations.mjs";
 
 const { DialogV2 } = foundry.applications.api;
 
@@ -183,7 +184,7 @@ export async function rollAttack(actor, weapon, mode = "aimed") {
   const label = special.deathBlow ? `Roll Death Blow (×${mult} to Hit Points)` : (mult > 1) ? `Roll Damage (×${mult})` : "Roll Damage";
   const message = await postAttackCard(actor, roll, {
     title: `${weapon.name}${leap ? " (Leap Attack)" : modeLabel}`, item: weapon, parts, special, extra,
-    flags: { itemId: weapon.id, mode, ranged: !w.isMelee, weaponType: w.weaponType, deathBlow: special.deathBlow, double, leap },
+    flags: { itemRef: weapon.id, mode, ranged: !w.isMelee, weaponType: w.weaponType, deathBlow: special.deathBlow, double, leap },
     damageLabel: label
   });
   Hooks.callAll("palladium.rollAttack", actor, weapon, roll, { mode, natural, special, double, leap, message });
@@ -265,6 +266,8 @@ export async function postAttackCard(actor, roll, { title, parts, special, extra
   notes.push(...extra);
 
   const data = { card: "attack", actorUuid: actor.uuid, strike: roll.total, natural, crit, ...flags };
+  // Automated Animations: the weapon (or the maneuver) swings, hitting or missing the targets.
+  playAnimation(actor, item ?? { name: title }, { kind: flags.maneuver ? "maneuver" : flags.weaponType, hit });
   return postCard(actor, {
     title, item, label: "Strike", result: roll.total, rolls: [roll], notes,
     lines: [["d20", natural], ...bonusLines(parts), ["Total", roll.total]],
@@ -518,7 +521,7 @@ export async function rollDamage(actor, weapon, { crit = false, mode = "aimed", 
   if ( mult > 1 ) formula = `(${formula}) * ${mult}`;
   const roll = await new Roll(formula).evaluate();
 
-  const flags = { "palladium-universal": { card: "damage", actorUuid: actor.uuid, itemId: weapon.id,
+  const flags = { "palladium-universal": { card: "damage", actorUuid: actor.uuid, itemRef: weapon.id,
     damage: roll.total, strike, crit, deathBlow } };
   const title = deathBlow ? `Death Blow (×${mult}, to Hit Points)` : leap ? `Leap Attack Damage (×${mult})`
     : crit ? "Damage (Critical ×2)" : double ? "Damage (×2)" : "Damage";
@@ -656,7 +659,7 @@ export function onRenderChatMessage(message, html) {
   for ( const link of html.querySelectorAll(".pu-item-link") ) {
     link.addEventListener("click", event => {
       event.preventDefault();
-      viewItemCopy(data.itemData);
+      viewItemCopy(data.itemSnapshot ? decodeItem(data.itemSnapshot) : data.itemData);
     });
   }
   for ( const button of html.querySelectorAll("[data-pu-action]") ) {
@@ -705,7 +708,7 @@ async function onCardButton(event, message, data) {
 
   if ( (action === "damage") && data.vehicle ) {
     const actor = await fromUuid(data.actorUuid);
-    const weapon = actor?.items.get(data.itemId);
+    const weapon = actor?.items.get(data.itemRef ?? data.itemId);
     if ( !weapon ) return ui.notifications.warn("That weapon no longer exists.");
     if ( !actor.isOwner ) return ui.notifications.warn("Only the vehicle's owner can roll its damage.");
     return rollVehicleDamage(actor, weapon, { crit: data.crit, strike: data.strike });
@@ -720,7 +723,7 @@ async function onCardButton(event, message, data) {
 
   if ( action === "damage" ) {
     const actor = await fromUuid(data.actorUuid);
-    const weapon = actor?.items.get(data.itemId);
+    const weapon = actor?.items.get(data.itemRef ?? data.itemId);
     if ( !weapon ) return ui.notifications.warn("That weapon no longer exists.");
     if ( !actor.isOwner ) return ui.notifications.warn("Only the attacker's owner can roll its damage.");
     return rollDamage(actor, weapon, { crit: data.crit, mode: data.mode, strike: data.strike, deathBlow: data.deathBlow,

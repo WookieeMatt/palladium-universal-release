@@ -2,7 +2,7 @@
   "id": "palladium-universal",
   "title": "Palladium Universal",
   "description": "Teenage Mutant Ninja Turtles & Other Strangeness (Redux) for Foundry VTT v14, with the Transdimensional material: automated attribute bonuses, Bio-E and mutation, Combat Training, defend buttons, armor and damage, magic, psionics, black powder weapons, NPCs, vehicles and time machines. Includes an in-game System Guide.",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "compatibility": {
     "minimum": "14",
     "verified": "14.368"
@@ -22,6 +22,30 @@
   "bugs": "https://github.com/WookieeMatt/palladium-universal-release/issues",
   "changelog": "https://github.com/WookieeMatt/palladium-universal-release/blob/main/CHANGELOG.md",
   "background": "systems/palladium-universal/assets/icon.png",
+  "relationships": {
+    "recommends": [
+      {
+        "id": "autoanimations",
+        "type": "module",
+        "reason": "Animations for attacks, maneuvers, spells, psionics, item rolls and devices"
+      },
+      {
+        "id": "sequencer",
+        "type": "module",
+        "reason": "Required by Automated Animations"
+      },
+      {
+        "id": "JB2A_DnD5e",
+        "type": "module",
+        "reason": "Free animation assets used by Automated Animations"
+      },
+      {
+        "id": "dice-so-nice",
+        "type": "module",
+        "reason": "3D dice, including the T.C.R.I. Dice"
+      }
+    ]
+  },
   "esmodules": [
     "module/system.js"
   ],

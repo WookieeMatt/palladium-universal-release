@@ -70,6 +70,16 @@ Hooks.once("init", function () {
     requiresReload: true
   });
 
+  // Automated Animations (with Sequencer and JB2A): play animations when things are used.
+  game.settings.register("palladium-universal", "animations", {
+    name: "Automated Animations",
+    hint: "With the Automated Animations module active, attacks, maneuvers, spells, psionics, item rolls and devices play animations (JB2A via Sequencer). Damage, saves and skill checks don't.",
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: true
+  });
+
   // Team Character generation (p.12): teammates share their highest exceptional bonus die.
   game.settings.register("palladium-universal", "teamGeneration", {
     name: "Team Character Generation",

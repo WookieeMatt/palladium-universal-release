@@ -538,7 +538,7 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
   static #onRollSpellDamage(event, target) {
     const spell = this.#itemFromEvent(target);
     if ( !spell?.system.damage ) return;
-    return rollSpellDamage(this.actor, { spell: spell.name, itemId: spell.id,
+    return rollSpellDamage(this.actor, { spell: spell.name, itemRef: spell.id,
       damage: spell.system.damageFormula(this.actor.system.identity.level) });
   }
 

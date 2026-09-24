@@ -617,6 +617,54 @@ export const DEVICE_TYPES = {
 };
 
 /* -------------------------------------------- */
+/*  Animations (Automated Animations)           */
+/* -------------------------------------------- */
+
+/**
+ * Animation trigger set: extra names handed to Automated Animations so TMNT items find its built-in
+ * Global Automatic Recognition entries (sword, dagger, bow, unarmedstrike, bite, claw, fireball,
+ * curewounds, mistystep...). The first rule whose pattern matches the item name wins; the item's own
+ * name is always tried first, so a custom Automated Animations entry named after the item overrides.
+ * Modules can add or change rules in their "init" hook.
+ */
+export const ANIMATION_TRIGGERS = [
+  // Natural weapons
+  { match: /bite|jaw|fang|beak|peck/i, names: ["bite"] },
+  { match: /claw|talon|rake|scratch/i, names: ["claw"] },
+  { match: /horn|tusk|butt|ram|head/i, names: ["unarmedstrike"] },
+  // Melee weapons
+  { match: /katana|ninja-?to|sword|saber|sabre|scimitar|cutlass|wakizashi|tachi|machete|blade/i, names: ["sword", "greatsword"] },
+  { match: /dagger|knife|tanto|sai|kunai|dirk|stiletto|bayonet|shuriken|throwing star/i, names: ["dagger"] },
+  { match: /rapier|foil|epee/i, names: ["rapier"] },
+  { match: /spear|naginata|yari|pike|lance|trident|javelin|halberd|glaive|polearm/i, names: ["spear"] },
+  { match: /great ?axe|battle ?axe/i, names: ["greataxe"] },
+  { match: /axe|hatchet|tomahawk|kama/i, names: ["handaxe"] },
+  { match: /hammer|mace|morning ?star|flail/i, names: ["mace"] },
+  { match: /maul|sledge/i, names: ["maul"] },
+  { match: /bo\b|staff|club|nunchaku|tonfa|baton|jo\b|bat\b|stick|cane|tetsubo/i, names: ["greatclub"] },
+  // Ranged weapons
+  { match: /crossbow/i, names: ["crossbow"] },
+  { match: /bow|arrow|yumi/i, names: ["bow"] },
+  { match: /pistol|revolver|rifle|musket|shotgun|gun|carbine|smg|uzi|arquebus|blunderbuss|flintlock|matchlock|wheellock/i, names: ["bullet", "gun"] },
+  { match: /laser|blaster|\bray\b|beam/i, names: ["scorchingray"] },
+  { match: /grenade|bomb|explosive|dynamite|missile|rocket/i, names: ["fireball"] },
+  // Powers and effects
+  { match: /fire|flame|burn|inferno/i, names: ["firebolt"] },
+  { match: /lightning|electric|shock|bolt/i, names: ["witchbolt"] },
+  { match: /ice|frost|cold|freez/i, names: ["rayoffrost"] },
+  { match: /heal|cure|mend|restor/i, names: ["curewounds"] },
+  { match: /teleport|\btime\b|temporal|dimension|gate|portal|warp/i, names: ["mistystep"] },
+  { match: /energy|blast|psionic|mental|mind|telekin|radiation/i, names: ["magicmissile", "eldritchblast"] }
+];
+
+/** Fallbacks by what's being used, when no rule matches the name. */
+export const ANIMATION_FALLBACKS = {
+  natural: ["unarmedstrike"], melee: ["sword"], thrown: ["dagger"], bow: ["bow"], firearm: ["bullet", "gun"],
+  blackPowder: ["bullet", "gun"], explosive: ["fireball"], energy: ["scorchingray"],
+  maneuver: ["unarmedstrike"], spell: ["magicmissile"], psionic: ["magicmissile"], device: ["mistystep"]
+};
+
+/* -------------------------------------------- */
 /*  Time travel tables (Transdimensional)       */
 /* -------------------------------------------- */
 

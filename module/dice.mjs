@@ -51,6 +51,34 @@ export async function enrichDice(html) {
   return TextEditor ? TextEditor.enrichHTML(marked) : marked;
 }
 
+/**
+ * A copy of an item for a chat card's read-only view, encoded so that animation modules which scan
+ * chat data for item links (Automated Animations) don't mistake the card for an item use.
+ * @param {Item} item
+ * @returns {string}
+ */
+export function encodeItem(item) {
+  const data = item.toObject();
+  delete data._stats;
+  delete data.flags;
+  const bytes = new TextEncoder().encode(JSON.stringify(data));
+  let binary = "";
+  for ( let i = 0; i < bytes.length; i += 0x8000 ) binary += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
+  return btoa(binary);
+}
+
+/**
+ * Decode a card's item copy (see encodeItem).
+ * @param {string} snapshot
+ * @returns {object|null}
+ */
+export function decodeItem(snapshot) {
+  try {
+    const bytes = Uint8Array.from(atob(snapshot), c => c.charCodeAt(0));
+    return JSON.parse(new TextDecoder().decode(bytes));
+  } catch(err) { return null; }
+}
+
 /** Bonus parts as detail rows, skipping zeros: [["Training", "+3"], ...]. */
 export function bonusLines(parts = {}) {
   const labels = { training: "Training", attribute: "Attribute", skills: "Skills", mod: "Misc", treatment: "Treatment",
@@ -87,7 +115,7 @@ export async function postCard(actor, { title, label, result, lines = [], captio
     body = await enrichDice(body);
   }
   if ( item ) {
-    flags = foundry.utils.mergeObject(flags ?? {}, { "palladium-universal": { itemData: item.toObject() } }, { inplace: false });
+    flags = foundry.utils.mergeObject(flags ?? {}, { "palladium-universal": { itemSnapshot: encodeItem(item) } }, { inplace: false });
   }
   const content = `<div class="pu-card">${cardHeader(actor, title, "", !!item)}
     ${label !== undefined ? resultDetails(label, result, lines, caption) : ""}

@@ -59,6 +59,7 @@ Follow the shape of the existing entries: log `CONFIG.PALLADIUM.CONDITIONS` in t
 | Time travel | `temporalMishap()`, `rollTemporalMishap(actor)`, `deviceMalfunction(key)`, `practiceSpell(actor, spell)` |
 | Vehicles | `applyVehicleDamage(actor, amount, options)`, `rollControl(actor)`, `rollEvade(actor)`, `operateDevice(device)`, `operateTimeMachine(actor)` |
 | Building | `applyAnimal(actor, data)`, `removeAnimal(actor)`, `applyBackground(actor, data)`, `rollAttribute(actor, key)` |
+| Animations | `playAnimation(actor, item, {kind, hit})`, `animationNames(name, kind)`; the trigger set is `CONFIG.PALLADIUM.ANIMATION_TRIGGERS` (rules `{match: RegExp, names: [...]}`) and `ANIMATION_FALLBACKS` |
 | Items | `rollItem(actor, item)` (the item's Roll field or description dice), `viewItemCopy(itemData)` (read-only view), `item.system.itemRolls` |
 | Chat cards | `postCard(actor, {title, label, result, lines, caption, notes, body, buttons, rolls, flags, item})` (the standard card: header, *Label = Result* expanding to `lines` rows), `resultDetails(label, result, lines)`, `cardHeader(actor, title)`, `damageButtons()`, `signed(n)` |
 
@@ -92,6 +93,7 @@ The system fires these hooks. A `pre…` hook can return `false` to cancel. Its 
 | `palladium.castSpell` | `actor, spell, {strength, damage, message}` | |
 | `palladium.preSpendActions` | `actor, count, what` | Return `false` so the action isn't counted. |
 | `palladium.temporalMishap` | `{html, rolls, row}` | Change `html` to change the chat text. |
+| `palladium.preAnimation` | `actor, item, data` | Before an Automated Animations call; change `data.extraNames`, `targets`, `hitTargets`, or return `false`. |
 | `palladium.preRollAttribute` | `actor, key, {formula, exceptional, bonusFormula}` | Change the dice, e.g. `formula = "4d6kh3"`. |
 | `palladium.rollAttribute` | `actor, key, {base, exceptional, exceptionalDie, species, size, physical, total}` | Attribute generation (chat only; nothing is saved). |
 

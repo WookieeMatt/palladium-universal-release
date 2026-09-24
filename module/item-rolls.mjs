@@ -1,4 +1,5 @@
 import { postCard } from "./dice.mjs";
+import { playAnimation } from "./animations.mjs";
 
 const { DialogV2 } = foundry.applications.api;
 
@@ -27,6 +28,7 @@ export async function rollItem(actor, item) {
   if ( !Roll.validate(choice.formula) ) return ui.notifications.warn(`${item.name}: "${choice.text}" isn't a dice roll.`);
   const roll = await new Roll(choice.formula).evaluate();
   const dice = (roll.dice ?? []).reduce((n, d) => n + d.total, 0);
+  playAnimation(actor, item, { kind: item.type });
   return postCard(actor, {
     title: item.name, item, label: choice.label, result: roll.total, rolls: [roll],
     caption: choice.text !== choice.label ? choice.text : "",

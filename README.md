@@ -20,6 +20,7 @@ Updates then come through Foundry's normal *Update* button.
 - **Black powder**: misfires and mishaps, GM weather setting, W.P. families, range bands, deliberate overloading.
 - **NPCs** on a compact sheet, **Vehicles** with armor locations and piloting, **Time Machines** with device, support-device and installation drop zones.
 - **Built-in tables**: Temporal Mishap, device malfunctions, spell experimentation, misfire mishaps.
+- **Automated Animations** support (with Sequencer and JB2A): attacks, maneuvers, spells, psionics, item rolls and devices animate.
 - A parchment and dark-green comic look, and the **T.C.R.I. Dice** for Dice So Nice (green glitter liquid dice).
 
 ## Documentation

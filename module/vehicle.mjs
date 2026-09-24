@@ -1,6 +1,7 @@
 import { damageButtons, damageLines, defendingActors, postAttackCard } from "./combat.mjs";
 import { postCard, signed } from "./dice.mjs";
 import { deviceMalfunction } from "./timetravel.mjs";
+import { playAnimation } from "./animations.mjs";
 
 const { DialogV2 } = foundry.applications.api;
 
@@ -122,7 +123,7 @@ export async function rollVehicleAttack(actor, weapon) {
   const natural = roll.dice[0].total;
   return postAttackCard(actor, roll, {
     title: weapon.name, item: weapon, parts, special: { crit: natural === 20, natural },
-    flags: { vehicle: true, itemId: weapon.id, ranged: !weapon.system.isMelee, weaponType: weapon.system.weaponType },
+    flags: { vehicle: true, itemRef: weapon.id, ranged: !weapon.system.isMelee, weaponType: weapon.system.weaponType },
     damageLabel: natural === 20 ? "Roll Critical Damage (×2)" : "Roll Damage"
   });
 }
@@ -202,6 +203,7 @@ async function operate({ name, data, owner, readouts = [], extra = "", item }) {
   const notes = [`<span class="${success ? "pu-success" : "pu-failure"}">${success ? "Works" : "Malfunction!"}</span>`];
   if ( !success && data.malfunction ) notes.push(`<div class="pu-malfunction">${data.malfunction}</div>`);
   if ( table ) notes.push(table.html);
+  playAnimation(owner?.getActiveTokens?.().length ? owner : speaker, item ?? { name }, { kind: "device" });
   await postCard(speaker, { title: `Operates ${name}`, item, label: "Operate", inlineRolls: true, result: roll.total,
     rolls: [roll, ...(table?.rolls ?? [])],
     lines: [[skillLabel, `${skill}%`], ...(readout ? [[readout.name, `+${bonus}%`]] : []), ["Chance", `${target}%`], ["d100", roll.total],

@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.8.0
+- **Automated Animations support** (with Sequencer and JB2A): weapon attacks (with hit or miss), maneuvers, spells, psionics, item rolls and device / time machine operation play animations from the user's token to their targets. Damage, saves and skill checks don't. World setting to turn it off.
+- **Animation trigger set:** TMNT names (katana, sai, bo staff, nunchaku, naginata, kama, bows, guns, bite, claws, healing, teleport…) map to Automated Animations' built-in entries; an entry named after the item still wins. Editable in `CONFIG.PALLADIUM.ANIMATION_TRIGGERS`.
+- Chat cards no longer look like item uses to Automated Animations' generic chat handler, so nothing animates twice (flag `itemId` → `itemRef`; the card's item copy is stored encoded).
+- The manifest recommends Automated Animations, Sequencer, JB2A and Dice So Nice.
+
 ## 1.7.0
 - **Every notes box is a rich-text (ProseMirror) editor:** Skill Notes, Money / other possessions, Mutation Notes, the Modules tab boxes (spells, psionic powers, super powers and weaknesses, mecha M.D.C. and weapon systems, survival supplies and insanity effects) and a device's Malfunction text. Dice written in them show as clickable rolls.
 - New **Character notes** box on the Gear tab.
