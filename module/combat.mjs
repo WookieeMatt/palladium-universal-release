@@ -3,6 +3,7 @@ import { onMagicCardButton, rollChangeSave } from "./magic.mjs";
 import { applyTeChange, rollTemporalMishap } from "./timetravel.mjs";
 import { applyVehicleDamage, rollVehicleDamage } from "./vehicle.mjs";
 import { spendActions } from "./actions.mjs";
+import { applyBackgroundFromCard } from "./creation.mjs";
 
 const { DialogV2 } = foundry.applications.api;
 
@@ -658,6 +659,7 @@ async function onCardButton(event, message, data) {
   event.preventDefault();
   const action = event.currentTarget.dataset.puAction;
   if ( ["spell-save", "spell-damage", "psionic-save"].includes(action) ) return onMagicCardButton(action, data);
+  if ( action === "apply-background" ) return applyBackgroundFromCard(data);
 
   if ( action === "defend" ) {
     const defenders = defendingActors();

@@ -2,6 +2,8 @@
   <section class="panel">
     <div class="panel-header">
       <h2>Attributes</h2>
+      <button type="button" class="pu-roll-button" data-action="rollAllAttributes" data-tooltip="Roll all eight: 3D6 each, +1D6 on 16–18">
+        <i class="fa-solid fa-dice"></i> Roll All</button>
       <span class="hint">Total = Rolled + Size ({{#if system.mutation.applySizeModifiers}}applied{{else}}off{{/if}}) + Bonuses + Misc</span>
     </div>
     <table class="attribute-table">
@@ -11,7 +13,8 @@
       <tbody>
         {{#each attributes}}
         <tr>
-          <th scope="row">{{label}}</th>
+          <th scope="row"><a class="pu-rollable" data-action="rollAttribute" data-key="{{key}}"
+            data-tooltip="Roll {{label}}: 3D6, +1D6 on 16–18">{{label}}</a></th>
           <td><input type="number" name="system.attributes.{{key}}.value" value="{{value}}" /></td>
           <td class="derived">{{sizeModText}}</td>
           <td class="derived">{{itemModText}}</td>
@@ -34,16 +37,20 @@
   <section class="panel">
     <div class="panel-header">
       <h2>Background</h2>
-      <span class="hint">Drag an Origin, Creator Organization or Education item onto the sheet</span>
+      <span class="hint">Drag an Origin, Creator Organization or Education item onto the sheet, or roll on its table</span>
     </div>
     <div class="slot-grid">
       {{#each backgrounds}}
       <div class="drop-slot {{#if item}}filled{{/if}}" {{#if item}}data-item-id="{{item.id}}"{{/if}}>
-        <span class="hint">{{label}}</span>
+        <span class="hint">{{label}}
+          <button type="button" class="icon-button" data-action="rollBackgroundTable" data-kind="{{kind}}"
+            data-tooltip="Roll on a {{label}} table (from your compendiums)"><i class="fa-solid fa-dice-d20"></i></button>
+        </span>
         {{#if item}}
         <div class="slot-content">
           <img src="{{item.img}}" alt="" class="item-icon" />
           <a data-action="itemEdit">{{item.name}}</a>
+          {{#if item.money}}<button type="button" class="icon-button" data-action="rollMoney" data-tooltip="Roll starting money: {{item.money}}"><i class="fa-solid fa-coins"></i></button>{{/if}}
           <button type="button" class="icon-button" data-action="itemDelete" data-tooltip="Remove"><i class="fa-solid fa-xmark"></i></button>
         </div>
         {{else}}
@@ -60,7 +67,8 @@
     </div>
     <div class="health-grid">
       <div class="field">
-        <label>Hit Points</label>
+        <label>Hit Points <button type="button" class="icon-button" data-action="rollHitPoints"
+          data-tooltip="Roll Hit Points: P.E. + 1D6, +1D6 per level above first"><i class="fa-solid fa-dice"></i></button></label>
         <div class="pair">
           <input type="number" name="system.health.hp.value" value="{{system.health.hp.value}}" />
           <span class="sep">/</span>

@@ -58,7 +58,7 @@ Follow the shape of the existing entries: log `CONFIG.PALLADIUM.CONDITIONS` in t
 | Magic | `castSpell(actor, spell)`, `newDay(actor)`, `rollChangeSave(actor)`, `usePsionic(actor, power)` |
 | Time travel | `temporalMishap()`, `rollTemporalMishap(actor)`, `deviceMalfunction(key)`, `practiceSpell(actor, spell)` |
 | Vehicles | `applyVehicleDamage(actor, amount, options)`, `rollControl(actor)`, `rollEvade(actor)`, `operateDevice(device)`, `operateTimeMachine(actor)` |
-| Building | `applyAnimal(actor, data)`, `removeAnimal(actor)`, `applyBackground(actor, data)` |
+| Building | `applyAnimal(actor, data)`, `removeAnimal(actor)`, `applyBackground(actor, data)`, `rollAttribute(actor, key)`, `rollAllAttributes(actor)`, `rollHitPoints(actor)`, `rollHeightWeight(actor)`, `rollMoney(actor, backgroundItem)`, `rollBackgroundTable(actor, kind)` |
 | Chat cards | `cardHeader(actor, title, subtitle)`, `damageButtons()`, `signed(n)` |
 
 `game.palladium.config` is the same object as `CONFIG.PALLADIUM`. The `apiVersion` number goes up if the API changes in a way that breaks existing code.
@@ -91,6 +91,12 @@ The system fires these hooks. A `pre…` hook can return `false` to cancel. Its 
 | `palladium.castSpell` | `actor, spell, {strength, damage, message}` | |
 | `palladium.preSpendActions` | `actor, count, what` | Return `false` so the action isn't counted. |
 | `palladium.temporalMishap` | `{html, rolls, row}` | Change `html` to change the chat text. |
+| `palladium.preRollAttribute` | `actor, key, {formula, exceptional, bonusFormula}` | Change the dice, e.g. `formula = "4d6kh3"`. |
+| `palladium.rollAttribute` | `actor, key, {total, rolls}` | |
+| `palladium.preRollHitPoints` / `rollHitPoints` | `actor, {formula}` / `actor, {total, roll, levelUp?}` | |
+| `palladium.preRollHeightWeight` / `rollHeightWeight` | `actor, {height, weight, unit}` / `actor, {height, weight}` | |
+| `palladium.rollMoney` | `actor, item, {amount, roll}` | |
+| `palladium.rollBackgroundTable` | `actor, kind, {roll, result, table}` | |
 
 For example, a +2 Strike blessing:
 

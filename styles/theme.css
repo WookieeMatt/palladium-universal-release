@@ -520,3 +520,41 @@
   margin: 0 0 4px;
   font-size: 1.05rem;
 }
+
+/* Clickable roll labels (attribute abbreviations). */
+.palladium-universal .pu-rollable {
+  cursor: pointer;
+  color: inherit;
+  text-decoration: underline dotted var(--pu-green-light);
+  text-underline-offset: 3px;
+}
+.palladium-universal .pu-rollable:hover {
+  color: var(--pu-green-light);
+  text-decoration-style: solid;
+}
+
+/* Character creation roll buttons. */
+.palladium-universal .pu-roll-button {
+  flex: 0 0 auto;
+  width: auto;
+  padding: 2px 10px;
+  font-size: 0.85em;
+  line-height: 1.6;
+}
+.palladium-universal .field label .icon-button,
+.palladium-universal .drop-slot .hint .icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.7em;
+  height: 1.7em;
+  padding: 0;
+  margin-left: 4px;
+  font-size: 0.8em;
+  vertical-align: middle;
+}
+.palladium-universal .npc-roll-all {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 6px;
+}

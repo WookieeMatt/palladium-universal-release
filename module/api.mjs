@@ -1,6 +1,7 @@
 import * as actions from "./actions.mjs";
 import * as animal from "./animal.mjs";
 import * as combat from "./combat.mjs";
+import * as creation from "./creation.mjs";
 import * as dice from "./dice.mjs";
 import * as magic from "./magic.mjs";
 import * as timetravel from "./timetravel.mjs";
@@ -75,6 +76,12 @@ export function buildApi() {
     operateTimeMachine: vehicle.operateTimeMachine,
 
     // Character building
+    rollAttribute: creation.rollAttribute,
+    rollAllAttributes: creation.rollAllAttributes,
+    rollHitPoints: creation.rollHitPoints,
+    rollHeightWeight: creation.rollHeightWeight,
+    rollMoney: creation.rollMoney,
+    rollBackgroundTable: creation.rollBackgroundTable,
     applyAnimal: animal.applyAnimal,
     removeAnimal: animal.removeAnimal,
     applyBackground: animal.applyBackground,

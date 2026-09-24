@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.3.0
+- **Character creation rolls** from the sheet, posted to chat:
+  - Click an attribute name to roll it (3D6, +1D6 once on 16–18); **Roll All** rolls all eight (characters and NPCs).
+  - Hit Points (P.E. + 1D6, +1D6 per level above first), and an offer to roll the new Hit Points when the Level goes up.
+  - Height and weight from the Size Level table and build.
+  - Starting money from a background (added to Money / other possessions).
+  - Origin, Creator Organization and Education tables, built from background items in your compendiums, with an **Apply** button on the result.
+- API: `rollAttribute`, `rollAllAttributes`, `rollHitPoints`, `rollHeightWeight`, `rollMoney`, `rollBackgroundTable`, with matching hooks.
+
 ## 1.2.1
 - T.C.R.I. Dice load when the world starts (Dice So Nice preload), so the first throw doesn't stall.
 - New per-computer setting **T.C.R.I. Dice Finish**: Glass (default) or Fast (solid, glossy) for smoother throws on slower computers.
