@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.14.0
+- **Black powder weather is asked when you fire** instead of being a world setting: a prompt lists dry, humid (+5%), rain (+15%) and downpour or dunking (+35%), each with the resulting misfire chance; your last pick is the default. Cancelling fires nothing and spends no action. The misfire card and the attack card note the weather; the weapon list shows the dry chance "+ weather".
+- The Black Powder Weather setting is gone from the settings menu. Modules can still add weather options to `CONFIG.PALLADIUM.POWDER_WEATHER`; `rollAttack(actor, weapon, mode, {weather})` skips the prompt.
+
 ## 1.13.1
 - **Cleaner attack cards**: the Defend buttons sit under their own heading in an even three-column grid, icon over label, so long names like *Roll with Impact* and *Entangle* no longer spill out of their buttons. Each note on a card (hit line, actions left, crits) gets its own line.
 

@@ -258,7 +258,7 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
       return {
         id: item.id, name: item.name, img: item.img, type: WEAPON_TYPES[w.weaponType], damage: w.damage,
         burstDamage: w.burstDamage, range: w.range, modes, equipped: w.equipped, proficient,
-        misfire: w.isPowder ? misfireChance(item) : null, reload: w.reload, overload: w.isPowder && w.powder.overload,
+        misfire: w.isPowder ? misfireChance(item) : null,  // dry; the weather is asked when it fires reload: w.reload, overload: w.isPowder && w.powder.overload,
         needsWP: !["natural", "explosive"].includes(w.weaponType), bioe: w.bioe
       };
     });

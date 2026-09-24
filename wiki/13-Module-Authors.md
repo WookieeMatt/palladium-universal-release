@@ -27,7 +27,7 @@ Hooks.once("init", () => {
   P.CONDITIONS.slimed = { label: "Slimed", img: "icons/svg/acid.svg",
     mods: { strike: -2, parry: -2, dodge: -2 }, text: "Covered in mutagen: −2 Strike/Parry/Dodge." };
 
-  // A new black powder weather option for the GM's setting.
+  // A new black powder weather option (offered when a black powder weapon fires).
   P.POWDER_WEATHER.sewer = { label: "Sewer", misfire: 20 };
 
   // Replace a whole table, e.g. a house-ruled XP progression.
@@ -54,7 +54,7 @@ Follow the shape of the existing entries: log `CONFIG.PALLADIUM.CONDITIONS` in t
 | Group | Functions |
 |---|---|
 | Rolls | `rollD20(actor, {label, bonus, target})`, `rollPercent(actor, {label, target})`, `rollSkill(actor, skillItem)`, `rollSaveVsComa(actor)` |
-| Combat | `strikeBonus(actor, weapon, mode)`, `rollAttack(actor, weapon, mode)`, `rollDamage(actor, weapon, options)`, `applyDamage(actor, amount, {strike, mode})`, `rollManeuver(actor, key)`, `rollDefense(defender, key, attack)`, `rollHorrorFactor(actor, hf)`, `spendActions(actor, count)` |
+| Combat | `strikeBonus(actor, weapon, mode)`, `rollAttack(actor, weapon, mode, {weather})` (black powder: `weather` skips the prompt), `askPowderWeather(weapon)`, `rollDamage(actor, weapon, options)`, `applyDamage(actor, amount, {strike, mode})`, `rollManeuver(actor, key)`, `rollDefense(defender, key, attack)`, `rollHorrorFactor(actor, hf)`, `spendActions(actor, count)` |
 | Magic | `castSpell(actor, spell)`, `newDay(actor)`, `rollChangeSave(actor)`, `usePsionic(actor, power)` |
 | Time travel | `temporalMishap()`, `rollTemporalMishap(actor)`, `deviceMalfunction(key)`, `practiceSpell(actor, spell)` |
 | Vehicles | `applyVehicleDamage(actor, amount, options)`, `rollControl(actor)`, `rollEvade(actor)`, `operateDevice(device)`, `operateTimeMachine(actor)` |
@@ -80,7 +80,7 @@ The system fires these hooks. A `pre…` hook can return `false` to cancel. Its 
 | Hook | Arguments | Notes |
 |---|---|---|
 | `palladium.strikeBonus` | `actor, weapon, {mode, parts}` | Add or change labelled parts; they show on the card. |
-| `palladium.preRollAttack` | `actor, weapon, {mode}` | Before actions are spent; change `mode` or cancel. |
+| `palladium.preRollAttack` | `actor, weapon, {mode, weather}` | Before actions are spent; change `mode` or the black powder `weather`, or cancel. |
 | `palladium.rollAttack` | `actor, weapon, roll, {mode, natural, special, double, leap, message}` | After the attack card is posted. |
 | `palladium.preRollDamage` | `actor, weapon, {base, parts, notes, crit, mode, strike, deathBlow, double, leap}` | Change the dice (`base`), add bonus `parts` or card `notes`. |
 | `palladium.rollDamage` | `actor, weapon, roll, {…, message}` | After the damage card is posted. |

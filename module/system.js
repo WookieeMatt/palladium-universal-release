@@ -152,21 +152,18 @@ Hooks.once("init", function () {
   ]);
 });
 
-// After every module's "init": pick up conditions and weather that modules added to CONFIG.PALLADIUM.
+// After every module's "init": pick up conditions that modules added to CONFIG.PALLADIUM.
 Hooks.once("setup", function () {
   const known = new Set(CONFIG.statusEffects.map(e => e.id));
   for ( const effect of CONFIG.PALLADIUM.statusEffects() ) {
     if ( !known.has(effect.id) ) CONFIG.statusEffects.push(effect);
   }
 
-  // Black powder misfire weather (Transdimensional p.68), set by the GM.
-  game.settings.register("palladium-universal", "powderWeather", {
-    name: "Black Powder Weather",
-    hint: "Adds to black powder misfire chances: humid +5%, rain +15%, downpour or dunking +35%.",
-    scope: "world",
-    config: true,
+  // Black powder misfire weather is asked when a black powder weapon fires; this remembers the last choice.
+  game.settings.register("palladium-universal", "powderWeatherLast", {
+    scope: "client",
+    config: false,
     type: String,
-    choices: Object.fromEntries(Object.entries(CONFIG.PALLADIUM.POWDER_WEATHER).map(([k, v]) => [k, v.label])),
     default: "dry"
   });
 });

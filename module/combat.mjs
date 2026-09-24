@@ -34,19 +34,48 @@ export const MELEE_MODES = {
   leap: { label: "Leap Attack", requires: "leapAttack" }
 };
 
-/** The GM's weather setting for black powder misfires. */
-export function powderWeather() {
-  try { return CONFIG.PALLADIUM.POWDER_WEATHER[game.settings.get("palladium-universal", "powderWeather")] ?? CONFIG.PALLADIUM.POWDER_WEATHER.dry; }
-  catch { return CONFIG.PALLADIUM.POWDER_WEATHER.dry; }
+/**
+ * Black powder misfire weather (Transdimensional p.68): asked each time a black powder weapon fires.
+ * @param {string} [key]   A CONFIG.PALLADIUM.POWDER_WEATHER key (default: dry)
+ */
+export function powderWeather(key = "dry") {
+  return CONFIG.PALLADIUM.POWDER_WEATHER[key] ?? CONFIG.PALLADIUM.POWDER_WEATHER.dry;
+}
+
+/** The weather last chosen on this client (the prompt's default). */
+function lastPowderWeather() {
+  try { return game.settings.get("palladium-universal", "powderWeatherLast") || "dry"; } catch(err) { return "dry"; }
 }
 
 /**
  * Misfire chance for a black powder weapon: the weapon's rate + weather + deliberate overload.
  * @param {Item} weapon
+ * @param {string} [weather]   Weather key (default: dry)
  */
-export function misfireChance(weapon) {
+export function misfireChance(weapon, weather = "dry") {
   const p = weapon.system.powder;
-  return p.misfire + powderWeather().misfire + (p.overload ? CONFIG.PALLADIUM.OVERLOAD.misfire : 0);
+  return p.misfire + powderWeather(weather).misfire + (p.overload ? CONFIG.PALLADIUM.OVERLOAD.misfire : 0);
+}
+
+/**
+ * Ask for the weather before a black powder weapon fires. Remembers the choice as the next default.
+ * @param {Item} weapon
+ * @returns {Promise<string|null>}  The weather key, or null if cancelled
+ */
+export async function askPowderWeather(weapon) {
+  const last = lastPowderWeather();
+  const options = Object.entries(CONFIG.PALLADIUM.POWDER_WEATHER).map(([key, w]) =>
+    `<option value="${key}"${key === last ? " selected" : ""}>${w.label}${w.misfire ? ` (+${w.misfire}%)` : ""} — misfire ${misfireChance(weapon, key)}%</option>`).join("");
+  const weather = await DialogV2.prompt({
+    window: { title: `${weapon.name}: Weather` },
+    content: `<div class="form-group"><label>Weather</label><div class="form-fields"><select name="weather" autofocus>${options}</select></div></div>
+      <p class="hint">Damp powder misfires more often: humid +5%, rain +15%, downpour or dunking +35%.</p>`,
+    ok: { label: "Fire", icon: "fa-solid fa-fire", callback: (event, button) => button.form.elements.weather.value },
+    rejectClose: false
+  });
+  if ( !weather ) return null;
+  try { await game.settings.set("palladium-universal", "powderWeatherLast", weather); } catch(err) { /* not registered */ }
+  return weather;
 }
 
 /* -------------------------------------------- */
@@ -140,16 +169,22 @@ export function strikeBonus(actor, weapon, mode = "aimed") {
  * @param {Item} weapon
  * @param {string} [mode="aimed"]
  */
-export async function rollAttack(actor, weapon, mode = "aimed") {
+export async function rollAttack(actor, weapon, mode = "aimed", { weather } = {}) {
   const w = weapon.system;
   if ( w.isModern && (mode !== "aimed") && !w.burstDamage ) mode = "aimed";
   if ( w.isPowder && !(mode in POWDER_MODES) ) mode = "aimed";
   if ( (mode === "leap") && (!w.isMelee || !actor.system.combat.trainingData.unlocks.includes("leapAttack")) ) {
     return ui.notifications.warn(`${actor.name}'s Combat Training hasn't unlocked Leap Attack.`);
   }
-  const hookOptions = { mode };
+  // Black powder: ask the weather first (cancel = no shot, no action spent).
+  if ( w.isPowder && !weather ) {
+    weather = await askPowderWeather(weapon);
+    if ( !weather ) return null;
+  }
+  const hookOptions = { mode, weather };
   if ( Hooks.call("palladium.preRollAttack", actor, weapon, hookOptions) === false ) return null;
   mode = hookOptions.mode;
+  weather = hookOptions.weather;
 
   // Actions: Leap Attack uses two; a black powder Aimed shot without the W.P. counts as two attacks.
   const wp = actor.system.proficiencyFor(weapon);
@@ -160,8 +195,10 @@ export async function rollAttack(actor, weapon, mode = "aimed") {
   let double = false;
   const extra = [];
   if ( w.isPowder ) {
-    const mishap = await rollMisfire(actor, weapon);
+    const mishap = await rollMisfire(actor, weapon, weather);
     if ( mishap && (mishap.key !== "overloaded") ) return null;
+    const wx = powderWeather(weather);
+    extra.push(`<span class="hint">${wx.label} weather: no misfire (${misfireChance(weapon, weather)}% chance).</span>`);
     if ( mishap ) double = true;
     if ( !wp && (mode !== "wild") ) extra.push(`<span class="hint">No W.P.: a careful Aimed shot counts as two attacks.</span>`);
     if ( mode === "long" ) extra.push(`<span class="hint">${CONFIG.PALLADIUM.powderLongRange(w.powder.lock, w.powder.longarm).text}</span>`);
@@ -207,8 +244,8 @@ export function damageMultiplier({ crit = false, deathBlow = false, double = fal
  * @param {Item} weapon
  * @returns {Promise<object|null>}  The mishap, or null if the gun fires
  */
-export async function rollMisfire(actor, weapon) {
-  const chance = misfireChance(weapon);
+export async function rollMisfire(actor, weapon, weather = "dry") {
+  const chance = misfireChance(weapon, weather);
   if ( chance <= 0 ) return null;
   const check = await new Roll("1d100").evaluate();
   if ( check.total > chance ) return null;
@@ -219,7 +256,8 @@ export async function rollMisfire(actor, weapon) {
   if ( mishap.key === "explosion" ) buttons.push(["2D6", "Shooter takes 2D6"]);
   await postCard(actor, {
     title: `${weapon.name}: Misfire!`, item: weapon, label: "Mishap", inlineRolls: true, result: mishap.label, rolls: [check, table],
-    lines: [["Misfire chance", `${chance}%`], ["Misfire roll", check.total], ["Mishap roll", table.total]],
+    lines: [["Weather", `${powderWeather(weather).label}${powderWeather(weather).misfire ? ` (+${powderWeather(weather).misfire}%)` : ""}`],
+      ["Misfire chance", `${chance}%`], ["Misfire roll", check.total], ["Mishap roll", table.total]],
     notes: [`<span class="pu-failure">${mishap.text}</span>`],
     buttons: buttons.map(([f, l]) => `<div class="pu-buttons"><button type="button" data-pu-action="self-damage" data-formula="${f}">
       <i class="fa-solid fa-burst"></i> ${l}</button></div>`).join(""),

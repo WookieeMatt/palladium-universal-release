@@ -50,6 +50,7 @@ export function buildApi() {
     // Combat
     strikeBonus: combat.strikeBonus,
     rollAttack: combat.rollAttack,
+    askPowderWeather: combat.askPowderWeather,
     rollDamage: combat.rollDamage,
     applyDamage: combat.applyDamage,
     rollManeuver: combat.rollManeuver,
