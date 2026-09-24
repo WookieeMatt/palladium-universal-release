@@ -3,7 +3,9 @@
 ## Skills tab
 Two lists, **Professional** and **Amateur**. Each skill shows its % and a d20 button; skills with a second percentage (e.g. Medical Doctor's *Treat*) show both.
 
-**Skill % = base + per-level progression (from the level the skill was acquired) + I.Q. bonus + Education bonus (Professional only) + misc + bonuses from other items.** Checks cap at 95%; rolls of 96–100 always fail. Physical skills can be marked *passive* (no roll) and grant bonuses through effects (e.g. Boxing: +1 action, +1 parry, S.D.C.). Dice in effect formulas (like `1D6` S.D.C.) are rolled once when the skill is added.
+**Skill % = base + per-level progression (from the level the skill was acquired) + I.Q. bonus (I.Q. 16+) + Education bonus (Professional only) + Team Characters + misc + bonuses from other items.** Checks cap at 95%; rolls of 96–100 always fail. Roll 1D100: at or under the % succeeds. The chat card lists every part (base, per level, I.Q., Education, Team, misc), the skill %, the cap when it applies, and the roll.
+
+**Team Levels** (skill item): Team Characters (p.19) get +1 skill level per additional team member, for skills every member took. Set it on the skill; it adds *Per Level %* × that number. Physical skills can be marked *passive* (no roll) and grant bonuses through effects (e.g. Boxing: +1 action, +1 parry, S.D.C.). Dice in effect formulas (like `1D6` S.D.C.) are rolled once when the skill is added.
 
 The **Skill Notes** box is a rich-text editor (click it to edit; bold, lists, links, and dice such as *1D6* become clickable rolls). Every notes box on the sheets works the same way, including *Money / other possessions* and *Character notes* on the Gear tab.
 

@@ -34,7 +34,12 @@
       </div>
       <div class="field">
         <label>Misc Bonus %</label>
-        <input type="number" name="system.bonus" value="{{system.bonus}}" data-tooltip="Origin bonus, Team Characters levels, etc." />
+        <input type="number" name="system.bonus" value="{{system.bonus}}" data-tooltip="Origin bonus, task difficulty, etc." />
+      </div>
+      <div class="field">
+        <label>Team Levels</label>
+        <input type="number" name="system.teamLevels" value="{{system.teamLevels}}" min="0"
+          data-tooltip="Team Characters (p.19): +1 skill level per additional team member, for skills every member took. Adds Per Level % × this." />
       </div>
     </div>
     <div class="field">

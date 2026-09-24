@@ -36,6 +36,7 @@ export function buildApi() {
     rollD20: dice.rollD20,
     rollPercent: dice.rollPercent,
     rollSkill: dice.rollSkill,
+    rollSave: dice.rollSave,
     rollSaveVsComa: dice.rollSaveVsComa,
     cardHeader: dice.cardHeader,
     postCard: dice.postCard,

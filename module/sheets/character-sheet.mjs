@@ -1,7 +1,7 @@
 import { castSpell, newDay, rollChangeSave, rollMagicAbility, rollSpellDamage, usePsionic } from "../magic.mjs";
 import { operateDevice } from "../vehicle.mjs";
 import { practiceSpell, rollTemporalMishap } from "../timetravel.mjs";
-import { rollD20, rollPercent, rollSaveVsComa, rollSkill, signed } from "../dice.mjs";
+import { rollD20, rollPercent, rollSave, rollSaveVsComa, rollSkill, signed } from "../dice.mjs";
 import { attributeBonusText, printAttribute, rollAttributes } from "../creation.mjs";
 import { rollDumbLuck, rollPullOut, rollTactic, rollVeer } from "../air-combat.mjs";
 import { rollItem } from "../item-rolls.mjs";
@@ -158,7 +158,9 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
       })),
       circumstances: ["actions", "critical"].map(key => ({ key, label: CONFIG.PALLADIUM.CIRCUMSTANCES[key], value: system.combat.circ[key] })),
       saves: Object.entries(system.saves.totals).map(([key, s]) => ({
-        key, ...s, bonusText: signed(s.bonus), mod: system.saves.mod[key]
+        key, ...s, bonusText: signed(s.bonus), mod: system.saves.mod[key],
+        // Poison / Toxin asks the threat when rolled: lethal 14+, drugs 15+, non-lethal 16+.
+        ...(key === "toxin" ? { target: Object.values(CONFIG.PALLADIUM.TOXIN_SAVES).map(t => t.target).join("/") } : {})
       })),
       magic: system.magic.caster,
       magicTraditions: Object.fromEntries(Object.entries(CONFIG.PALLADIUM.MAGIC_TRADITIONS).map(([k, v]) => [k, v.label])),
@@ -515,8 +517,7 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
 
   /** @this {PalladiumCharacterSheet} */
   static #onRollSave(event, target) {
-    const save = this.actor.system.saves.totals[target.dataset.save];
-    return rollD20(this.actor, { label: `Save ${save.label}`, bonus: save.bonus, target: save.target });
+    return rollSave(this.actor, target.dataset.save);
   }
 
   /** @this {PalladiumCharacterSheet} */

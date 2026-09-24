@@ -64,5 +64,6 @@ A result card lists what absorbed the damage and warns of coma or death. You nee
 Attacks, maneuvers, spells, psionics and Reactions that cost an action (Dodge, Roll with Impact, untrained Parry, reaction Entangle/Disarm/Throw) spend actions automatically; cards say how many are left. Leap Attacks and untrained black powder aimed shots cost two. Running out only **warns**: the roll still happens and the GM rules. When the **Combat Tracker** advances to a new round, everyone's actions reset and **Horrified** ends; ending the combat also clears them. The **↺** button resets by hand.
 
 ## Saving throws
-At the bottom of the Combat tab: vs Psionics (15+, or 10+ with *Psychic* ticked), vs Strangeness (12+), vs Poison/Toxin (14+), vs Magic (12+), vs Circles & Wards (12+), vs Coma, and **vs Horror Factor**.
+At the bottom of the Combat tab: vs Psionics (15+, or 10+ with *Psychic* ticked), vs Strangeness (12+), vs Poison/Toxin (asks the threat: lethal poison 14+, harmful drugs 15+, non-lethal poison 16+), vs Magic (12+), vs Circles & Wards (12+), vs Coma, and **vs Horror Factor**.
+Every save is d20 + the save bonus and must **meet or beat** the target; the card shows the roll, the bonus and the target.
 **Save vs Coma** asks for the treatment available, rolls three times (d20 + P.E. coma bonus + treatment, 16+) and restores 1 HP on two successes.

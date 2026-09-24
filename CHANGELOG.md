@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.16.0
+- **Skill cards show the whole calculation**: base, per level, I.Q. bonus, Education bonus (Professional only), Team Characters and misc, then the skill %, the 95% cap when it applies, and the d100 roll. The rules are unchanged: roll at or under the %, 95% maximum, 96–100 always fail.
+- **Team Levels on skills** (Team Characters, p.19): +1 skill level per additional team member, for skills every member took; adds *Per Level %* × levels. (Before, it had to go in Misc Bonus.)
+- **Save vs Poison / Toxin asks the threat**: lethal poison 14+, harmful drugs 15+ or non-lethal poison 16+ (it was always 14+). The saves table shows 14/15/16+.
+- Save cards list the save bonus and any misc modifier; vs Psionics notes which target applies (15+, or 10+ with psionic powers). API: `rollSave(actor, key, {threat})`.
+
 ## 1.15.0
 - **Scene Weather macro (GM)** in the new *Palladium Universal Macros (GM)* compendium (hidden from players): sets the current scene's black powder weather, announces it in chat, and makes it the default in everyone's weather prompt in that scene (they can still change it per shot). "Not set" clears it. API: `scenePowderWeather`, `setScenePowderWeather`, `sceneWeatherDialog`.
 

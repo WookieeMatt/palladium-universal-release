@@ -160,19 +160,69 @@ export async function rollD20(actor, { label, bonus = 0, breakdown, target, crit
 /* -------------------------------------------- */
 
 /**
+ * Roll a saving throw: d20 + save bonus, meet or beat the target (p.90). Save vs Poison / Toxin asks which
+ * threat it is (lethal poison 14+, harmful drugs 15+, non-lethal poison 16+); vs Psionics is 15+, or 10+
+ * for a character with psionic powers.
+ * @param {Actor} actor
+ * @param {string} key               A CONFIG.PALLADIUM.SAVES key
+ * @param {object} [options]
+ * @param {string} [options.threat]  A CONFIG.PALLADIUM.TOXIN_SAVES key (skips the question)
+ */
+export async function rollSave(actor, key, { threat } = {}) {
+  const save = actor.system.saves?.totals?.[key];
+  if ( !save ) return null;
+  let { label, target } = save;
+  let note = "";
+  if ( key === "toxin" ) {
+    const threats = CONFIG.PALLADIUM.TOXIN_SAVES;
+    if ( !(threat in threats) ) {
+      const options = Object.entries(threats).map(([k, t]) => `<option value="${k}">${t.label} (${t.target}+)</option>`).join("");
+      threat = await DialogV2.prompt({
+        window: { title: `${actor.name}: Save vs Poison / Toxin` },
+        content: `<div class="form-group"><label>Threat</label><div class="form-fields"><select name="threat" autofocus>${options}</select></div></div>
+          <p class="hint">Drug saves can vary with potency: the GM can adjust the target with a circumstance.</p>`,
+        ok: { label: "Roll", icon: "fa-solid fa-dice-d20", callback: (event, button) => button.form.elements.threat.value },
+        rejectClose: false
+      });
+      if ( !threat ) return null;
+    }
+    label = `vs ${threats[threat].label}`;
+    target = threats[threat].target;
+  }
+  else if ( key === "psionics" ) {
+    note = `<span class="hint">${actor.system.saves.isPsychic ? "Has psionic powers: 10+" : "No psionic powers: 15+"}</span>`;
+  }
+  const mod = actor.system.saves.mod?.[key] ?? 0;
+  return rollD20(actor, { label: `Save ${label}`, bonus: save.bonus, target, note,
+    breakdown: { "Save bonus": save.bonus - mod, mod } });
+}
+
+/* -------------------------------------------- */
+
+/**
  * Roll a percentile check and post it to chat. Skill checks cap at 95%; 96–100 always fail (p.54).
  * @param {Actor} actor
  * @param {object} options
  * @param {string} options.label
  * @param {number} options.target        Percentage chance
  * @param {boolean} [options.skill=true] Apply the 95% skill cap
+ * @param {object} [options.breakdown]   How the percentage is made up (skill breakdown), shown in the details
  */
-export async function rollPercent(actor, { label, target, skill = true, item } = {}) {
+export async function rollPercent(actor, { label, target, skill = true, item, breakdown } = {}) {
   const chance = skill ? Math.min(target, 95) : target;
   const roll = await new Roll("1d100").evaluate();
   const success = (roll.total <= chance) && !(skill && (roll.total >= 96));
-  const lines = [["Chance", `${chance}%`], ["d100", roll.total]];
-  if ( skill && (target > 95) ) lines.splice(1, 0, ["Skill cap", "95%"]);
+  const lines = [];
+  if ( breakdown ) {
+    const names = { base: "Base", level: "Per level", iq: "I.Q. bonus", education: "Education bonus", team: "Team Characters", misc: "Misc" };
+    for ( const [k, v] of Object.entries(breakdown) ) if ( v || (k === "base") ) lines.push([names[k] ?? k, k === "base" ? `${v}%` : `${signed(v)}%`]);
+    const sum = Object.values(breakdown).reduce((a, b) => a + b, 0);
+    if ( sum !== target ) lines.push(["Adjusted", `${signed(target - sum)}%`]);
+    lines.push(["Skill %", `${target}%`]);
+  }
+  if ( skill && (target > 95) ) lines.push(["Skill cap", "95%"]);
+  if ( !breakdown || (chance !== target) ) lines.push(["Chance", `${chance}%`]);
+  lines.push(["d100", roll.total]);
   return postCard(actor, { title: label, item, label, result: roll.total, lines, rolls: [roll],
     notes: [`<span class="${success ? "pu-success" : "pu-failure"}">${success ? "Success" : "Failure"} (${chance}% or under)</span>`] });
 }
@@ -191,7 +241,8 @@ export async function rollSkill(actor, skill, secondary = false) {
   const label = secondary && skill.system.label2 ? `${skill.name}: ${skill.system.label2}` : skill.name;
   const hookData = { label, target, secondary };
   if ( Hooks.call("palladium.preRollSkill", actor, skill, hookData) === false ) return null;
-  const result = await rollPercent(actor, { label: hookData.label, target: hookData.target, skill: true, item: skill });
+  const breakdown = { ...pct.breakdown, base: secondary ? skill.system.base2 : pct.breakdown.base };
+  const result = await rollPercent(actor, { label: hookData.label, target: hookData.target, skill: true, item: skill, breakdown });
   Hooks.callAll("palladium.rollSkill", actor, skill, { ...hookData, result });
   return result;
 }

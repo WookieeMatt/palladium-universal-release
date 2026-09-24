@@ -145,7 +145,8 @@ export class SkillData extends ItemDataBase {
       label2: textField(),              // e.g. "Treat" for Medical Doctor, "Jumping" for Acrobatics
       base2: new NumberField({ required: true, nullable: true, integer: true, initial: null }),
       levelAcquired: intField(1, { min: 1, max: 15 }),
-      bonus: intField(),                // misc %, e.g. origin "+20%" or Team Characters levels
+      bonus: intField(),                // misc %, e.g. origin "+20%"
+      teamLevels: intField(0, { min: 0 }), // Team Characters (p.19): +1 skill level per other member
       passive: new BooleanField(),      // physical skills with no percentile roll
       requires: textField(),
       effects: effectsField()
@@ -162,11 +163,12 @@ export class SkillData extends ItemDataBase {
     const progress = this.perLevel * Math.max(0, level - this.levelAcquired);
     const iq = actorSystem.bonuses?.iq.iqSkill ?? 0;
     const education = this.training === "professional" ? actorSystem.identity.educationBonus : 0;
-    const common = progress + iq + education + this.bonus + extra;
+    const team = this.perLevel * this.teamLevels;
+    const common = progress + iq + education + team + this.bonus + extra;
     return {
       primary: this.base + common,
       secondary: this.base2 === null ? null : this.base2 + common,
-      breakdown: { base: this.base, level: progress, iq, education, misc: this.bonus + extra }
+      breakdown: { base: this.base, level: progress, iq, education, team, misc: this.bonus + extra }
     };
   }
 }

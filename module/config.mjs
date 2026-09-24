@@ -162,10 +162,17 @@ export function levelForXP(xp) {
 export const SAVES = {
   psionics: { label: "vs Psionics", target: 15 },     // 10 for psychics
   strangeness: { label: "vs Strangeness", target: 12 },
-  toxin: { label: "vs Poison / Toxin", target: 14 },  // 14 lethal, 16 non-lethal, 15 drugs
+  toxin: { label: "vs Poison / Toxin", target: 14 },  // asked when rolled: see TOXIN_SAVES
   magic: { label: "vs Magic", target: 12 },           // 12 apprentice, 16 master; else the caster's spell strength
   circle: { label: "vs Circles & Wards", target: 12 }, // Transdimensional p.42 (target set by the GM)
   coma: { label: "vs Coma", target: 16 }
+};
+
+/** Save vs Poison / Toxin targets by threat (p.90), asked when the save is rolled. */
+export const TOXIN_SAVES = {
+  lethal: { label: "Lethal poison", target: 14 },
+  drugs: { label: "Harmful drugs", target: 15 },
+  nonLethal: { label: "Non-lethal poison", target: 16 }
 };
 
 /** Save vs Coma treatment bonuses (p.93). */
