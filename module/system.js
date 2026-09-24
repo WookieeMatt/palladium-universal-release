@@ -71,6 +71,20 @@ Hooks.once("init", function () {
   });
 
   // Automated Animations (with Sequencer and JB2A): play animations when things are used.
+  game.settings.register("palladium-universal", "defaultArt", {
+    name: "Default Portrait",
+    hint: "The portrait and token new characters and NPCs start with (compendium NPCs with a default portrait follow it too when imported). Your own art is never replaced.",
+    scope: "world",
+    config: true,
+    type: String,
+    choices: {
+      bw: "Mutant turtle (black and white)",
+      color: "Mutant turtle (color)",
+      foundry: "Foundry's mystery man"
+    },
+    default: "bw"
+  });
+
   game.settings.register("palladium-universal", "journalTheme", {
     name: "TMNT Journal Style",
     hint: "Journals (including the compendium journals and the System Guide) use the character sheet look: green title bar, parchment pages, comic headings and green tables. Turn off to keep Foundry's journal style.",
@@ -177,11 +191,22 @@ Hooks.on("renderJournalEntryPageSheet", styleJournal);
 // Buttons on attack and damage chat cards
 Hooks.on("renderChatMessageHTML", onRenderChatMessage);
 
-// Characters and NPCs: the mutant turtle replaces Foundry's mystery man as the default portrait and token,
-// and new ones get a round portrait token with the system's green ring.
-export const DEFAULT_ACTOR_ART = "systems/palladium-universal/assets/tokens/mutant-turtle.svg";
+// Characters and NPCs: the default portrait and token is the mutant turtle (world setting "defaultArt":
+// black and white, color, or Foundry's mystery man), and new ones get a round token with the green ring.
 const MYSTERY_MAN = "icons/svg/mystery-man.svg";
-const isDefaultArt = src => !src || (src === MYSTERY_MAN);
+export const ACTOR_ART = {
+  bw: "systems/palladium-universal/assets/tokens/mutant-turtle.svg",
+  color: "systems/palladium-universal/assets/tokens/mutant-turtle-color.svg",
+  foundry: MYSTERY_MAN
+};
+/** The default portrait for characters and NPCs, per the world setting. */
+export function defaultActorArt() {
+  let choice = "bw";
+  try { choice = game.settings.get("palladium-universal", "defaultArt"); } catch(err) { choice = "bw"; }
+  return ACTOR_ART[choice] ?? ACTOR_ART.bw;
+}
+/** Any of the defaults (or no image): replaced by the current choice, so compendium NPCs follow the setting. */
+const isDefaultArt = src => !src || Object.values(ACTOR_ART).includes(src);
 
 Hooks.once("init", () => {
   const ActorClass = CONFIG.Actor?.documentClass;
@@ -190,15 +215,18 @@ Hooks.once("init", () => {
   ActorClass.getDefaultArtwork = function(actorData = {}) {
     const art = getDefaultArtwork.call(this, actorData);
     if ( !["character", "npc"].includes(actorData.type) ) return art;
-    return { ...art, img: DEFAULT_ACTOR_ART, texture: { ...(art.texture ?? {}), src: DEFAULT_ACTOR_ART } };
+    const src = defaultActorArt();
+    return { ...art, img: src, texture: { ...(art.texture ?? {}), src } };
   };
 });
 
 Hooks.on("preCreateActor", (actor, data) => {
   if ( !["character", "npc"].includes(actor.type) ) return;
   const update = {};
-  if ( isDefaultArt(actor.img) ) update.img = DEFAULT_ACTOR_ART;
-  if ( isDefaultArt(actor.prototypeToken?.texture?.src) ) update["prototypeToken.texture.src"] = update.img ?? actor.img;
+  const art = defaultActorArt();
+  if ( isDefaultArt(actor.img) && (actor.img !== art) ) update.img = art;
+  const token = actor.prototypeToken?.texture?.src;
+  if ( isDefaultArt(token) && (token !== art) ) update["prototypeToken.texture.src"] = art;
   if ( !foundry.utils.hasProperty(data, "prototypeToken.ring.enabled") ) Object.assign(update, {
     "prototypeToken.ring.enabled": true,
     "prototypeToken.ring.colors.ring": "#3d7a4d",

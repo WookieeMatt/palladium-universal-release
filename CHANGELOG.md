@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.13.0
+- The default portrait is now the **black and white** mutant turtle (white inside, transparent around the head, so it reads on any map); the **color** turtle ships too.
+- New world setting **Default Portrait**: black and white turtle (default), color turtle, or Foundry's mystery man. Compendium NPCs with a default portrait follow it when imported.
+
 ## 1.12.0
 - **Mutant turtle default portrait**: new characters and NPCs start with a mutant turtle head (portrait and token) instead of Foundry's mystery man. Your own art is never replaced. Vehicles keep Foundry's default.
 
