@@ -605,9 +605,89 @@ export const VEHICLE_LOCATIONS = {
   hull: { label: "Hull / Fuselage (Vehicle Armor)", text: "" },
   crew: { label: "Crew / Passenger Compartment", text: "Got through the compartment: the GM applies the damage to an occupant." },
   engine: { label: "Engine", text: "Engine hit: the vehicle may slow or stop (GM)." },
-  fuel: { label: "Fuel Tank", text: "Fuel tank hit: it may leak or explode (GM)." },
+  fuel: { label: "Fuel Tank / Energy Pack", text: "Fuel tank or energy pack hit: it may leak or explode (GM)." },
+  power: { label: "Power Plant (Fusion Generator)", text: "Power plant hit: systems may fail (GM)." },
+  cargo: { label: "Cargo Hold", text: "Cargo hit: 10% to 60% (1D6×10%) of the cargo is ruined." },
   turret: { label: "Turret", text: "Turret hit: the weapon or its gunner may be hit (GM)." }
 };
+
+/* -------------------------------------------- */
+/*  Air & space combat (Guide to the Universe)  */
+/* -------------------------------------------- */
+
+/**
+ * Speed Classes (index = class): the equivalent Spd attribute, the label and top speed in mph. The
+ * rated Speed Class is always the bonus to maneuver rolls, whatever the current speed.
+ */
+export const SPEED_CLASSES = [
+  [0, "Hover", 0], [22, "15 mph", 15], [44, "30 mph", 30], [66, "45 mph", 45], [88, "60 mph", 60], [110, "75 mph", 75],
+  [132, "90 mph", 90], [154, "105 mph", 105], [176, "120 mph", 120], [198, "135 mph", 135], [220, "150 mph", 150],
+  [242, "165 mph", 165], [264, "180 mph", 180], [286, "195 mph", 195], [308, "210 mph", 210], [330, "225 mph", 225],
+  [352, "240 mph", 240], [396, "270 mph", 270], [440, "300 mph", 300], [484, "330 mph", 330], [528, "360 mph", 360],
+  [572, "390 mph", 390], [616, "420 mph", 420], [660, "450 mph", 450], [704, "480 mph", 480], [792, "540 mph", 540],
+  [880, "600 mph", 600], [968, "640 mph", 640], [null, "Mach 1", 660], [null, "Mach 1.5", 990], [null, "Mach 2", 1320],
+  [null, "Mach 2.5", 1650], [null, "Mach 3", 1980], [null, "Mach 4", 2640], [null, "Mach 5 (escape velocity)", 3300],
+  [null, "Mach 10", 6600], [null, "Mach 15", 9900], [null, "Mach 20", 13200], [null, "Mach 30", 19800], [null, "Mach 50", 33000],
+  [null, "Mach 100", 66000], [null, "Mach 150", 99000], [null, "Mach 200", 132000], [null, "Mach 500", 330000],
+  [null, "Mach 1,000", 660000], [null, "1% lightspeed", 6700000], [null, "5% lightspeed", 33500000],
+  [null, "10% lightspeed", 67000000], [null, "50% lightspeed", 335000000], [null, "Speed of light", 670000000],
+  [null, "Trans-light (cruise mode)", null]
+].map(([spd, label, mph], cls) => ({ cls, spd, label, mph }));
+
+/** The highest Speed Class whose top speed is at or below this many mph (e.g. 160 mph flight → 10). */
+export function speedClassFor(mph) {
+  let best = 0;
+  for ( const s of cfg().SPEED_CLASSES ) if ( (s.mph !== null) && (s.mph <= mph) ) best = s.cls;
+  return best;
+}
+
+/** Drive types: the T.M.F. a vehicle can be upgraded to, and the Emergency Landing penalty. */
+export const DRIVE_TYPES = {
+  helicopter: { label: "Helicopter", maxTmf: 7, landing: -30 },
+  plane: { label: "Propeller Airplane", maxTmf: 8, landing: 0 },
+  jet: { label: "Jet / Scramjet", maxTmf: 8, landing: -10 },
+  ion: { label: "Ion Drive", maxTmf: 10, landing: -50 },
+  other: { label: "Other", maxTmf: 10, landing: 0 }
+};
+
+/**
+ * Air combat tactics: each takes a full melee and is an opposed d20 roll plus the vehicle's Speed Class
+ * and/or T.M.F. (flying characters: T.M.F. = P.P.).
+ */
+export const AIR_TACTICS = {
+  dogTail: { label: "Dog Tail", sc: true, tmf: true, icon: "fa-crosshairs",
+    text: "Get on (or stay on) the enemy's tail. The Dog Tail can fire every weapon at the Dog every round." },
+  jink: { label: "Jink", sc: true, tmf: true, icon: "fa-shuffle",
+    text: "Dodge ALL enemy fire this melee. Doesn't throw off a Dog Tail; with no Dog Tail, success puts combat back to square one. Separate gunners can fire; the pilot can't." },
+  rollOver: { label: "Roll-Over", sc: true, tmf: true, icon: "fa-rotate",
+    text: "Take the advantage: success evades a Dog Tail and gains the advantage; failure means the Dog Tail succeeds or continues. Dodge during it: d20 + T.M.F. Separate gunners can fire; the pilot can't." },
+  speedEscape: { label: "Speed Escape", sc: true, tmf: true, icon: "fa-gauge-high",
+    text: "Flat-out run: success leaves combat and any Dog Tails. No firing and no dodges; vulnerable to air and ground fire." },
+  maneuverEscape: { label: "Maneuver Escape", sc: true, tmf: false, icon: "fa-person-running",
+    text: "Escape from any Dog Tails and leave combat. Dodge during it: d20 + Speed Class. Separate gunners can fire; the pilot can't." },
+  dodgeGround: { label: "Dodge Ground Fire", sc: true, tmf: false, icon: "fa-shield",
+    text: "A Dog Tail dodging ground fire (also the Dodge during a Maneuver Escape)." },
+  dodgeDog: { label: "Dodge the Dog's Fire", sc: false, tmf: true, icon: "fa-shield-halved",
+    text: "A Dog Tail dodging fire from the Dog (also the Dodge during a Roll-Over)." }
+};
+
+/** Chicken games: veer off by rolling under Pilot skill + Air-to-Air Combat, minus the penalty. */
+export const CHICKEN_GAMES = {
+  ram: { label: "Mid-Air Ram", start: 10, step: 10,
+    text: "Starts at −10%; −20% if both keep playing, then −10% more each time. Both at 100%: collision. One chance to veer off each; gunners (not the pilot) get one melee of shots at the start." },
+  dodgeEm: { label: "Dodge 'Em", start: 0, step: 10,
+    text: "No penalty at first, then −10%, −20%... Past −90% the vehicle collides. One chance to veer; no gunner strikes." },
+  divebomb: { label: "Divebomber", start: 0, step: 20,
+    text: "No penalty, then −20%, −40%, −60%, −80%; past −80% the vehicle crashes at full speed plus 2 speed levels. Nobody fires. Veering off also needs the Pull-Out save (d20 under the T.M.F.)." },
+  skim: { label: "Skimming Atmosphere", start: 0, step: 10,
+    text: "In space, needs Speed Class 42+: played like Dodge 'Em, but each round the ship takes damage: Speed Class, ×2, ×4, ×8... (armor first, then all components and S.D.C.). Missing a veer means crashing into the wall of air." }
+};
+
+/** Crash damage by the vehicle's payload rating (the heaviest vehicle involved): die per 10 mph (per mph over 720). */
+export const CRASH_DAMAGE = [
+  { under: 1000, die: "d6" }, { under: 9000, die: "d8" }, { under: 50000, die: "d10" },
+  { under: 1000000, die: "2d6" }, { under: Infinity, die: "3d6" }
+];
 
 export const DEVICE_TYPES = {
   timeMachine: "Time Machine",

@@ -523,7 +523,7 @@ export class VehicleModData extends ItemDataBase {
     return {
       ...super.defineSchema(),
       category: choiceField(["armor", "equipment", "capability", "accessory"], "equipment"),
-      location: choiceField(["none", "hull", "crew", "engine", "fuel", "turret"], "none"),  // armor installs here
+      location: choiceField(["none", "hull", "crew", "engine", "fuel", "power", "cargo", "turret"], "none"),  // armor installs here
       ar: intField(0, { min: 0 }),
       sdc: intField(0, { min: 0 }),
       sdcBonus: intField(),            // e.g. Ram-Prow +75 S.D.C.

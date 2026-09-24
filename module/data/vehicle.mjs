@@ -1,5 +1,5 @@
 
-const { HTMLField, NumberField, SchemaField, StringField } = foundry.data.fields;
+const { BooleanField, HTMLField, NumberField, SchemaField, StringField } = foundry.data.fields;
 
 const intField = (initial = 0, options = {}) => new NumberField({
   required: true, nullable: false, integer: true, initial, ...options
@@ -35,6 +35,16 @@ export default class VehicleData extends foundry.abstract.TypeDataModel {
       gunnerBonus: intField(),                   // Strike bonus for mounted weapons
       evadeBonus: intField(),                    // bonus to the pilot's Evade roll
       initiative: intField(),
+      // Air & space (Guide to the Universe): rated Speed Class and T.M.F. add to maneuver rolls.
+      air: new SchemaField({
+        drive: new StringField({ required: true, initial: "other", choices: Object.keys(CONFIG.PALLADIUM.DRIVE_TYPES) }),
+        speedClass: intField(0, { min: 0, max: 50 }),
+        tmf: intField(0, { min: 0, max: 20 }),
+        payload: intField(0, { min: 0 }),        // lb (the Basic Aircraft Form's rating; sets the crash damage row)
+        airToAir: intField(0, { min: 0 }),       // the pilot's Air-to-Air Combat % (added to veer rolls)
+        mach: intField(0, { min: 0 }),           // current Mach in atmosphere: over Mach 5 it's a penalty
+        inSpace: new BooleanField()              // energy weapon range ×10, projectiles ×2
+      }),
       notes: new HTMLField({ required: true, blank: true })
     };
   }
@@ -52,5 +62,10 @@ export default class VehicleData extends foundry.abstract.TypeDataModel {
     this.combat = { totals: { initiative: this.initiative } };
     this.modControlBonus = sum("controlBonus");
     this.controlTarget = this.controlSkill + this.controlBonus + this.modControlBonus;
+    // Over Mach 5 in atmosphere: a penalty equal to the Mach speed on control rolls and combat maneuvers.
+    const air = this.air;
+    air.machPenalty = (!air.inSpace && (air.mach > 5)) ? air.mach : 0;
+    air.speed = CONFIG.PALLADIUM.SPEED_CLASSES[air.speedClass] ?? CONFIG.PALLADIUM.SPEED_CLASSES[0];
+    air.isAir = ["air", "space"].includes(this.vehicleType) || (air.speedClass > 0) || (air.tmf > 0);
   }
 }

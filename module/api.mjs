@@ -5,6 +5,7 @@ import * as creation from "./creation.mjs";
 import * as dice from "./dice.mjs";
 import * as itemRolls from "./item-rolls.mjs";
 import * as animations from "./animations.mjs";
+import * as air from "./air-combat.mjs";
 import * as magic from "./magic.mjs";
 import * as timetravel from "./timetravel.mjs";
 import * as vehicle from "./vehicle.mjs";
@@ -83,6 +84,15 @@ export function buildApi() {
     rollVehicleDamage: vehicle.rollVehicleDamage,
     operateDevice: vehicle.operateDevice,
     operateTimeMachine: vehicle.operateTimeMachine,
+
+    // Air & space combat (Guide to the Universe)
+    airStats: air.airStats,
+    rollTactic: air.rollTactic,
+    rollVeer: air.rollVeer,
+    rollPullOut: air.rollPullOut,
+    rollEmergencyLanding: air.rollEmergencyLanding,
+    rollCrash: air.rollCrash,
+    rollDumbLuck: air.rollDumbLuck,
 
     // Character building
     rollAttributes: creation.rollAttributes,

@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.10.0
+- **Air & space combat** (TMNT Guide to the Universe) on the vehicle sheet: Drive, **Speed Class** (0–50 with its top speed), **T.M.F.**, payload, the pilot's Air-to-Air %, current Mach (over Mach 5 in atmosphere is a penalty) and In Space (energy weapon range ×10, projectiles ×2).
+- Tactic buttons: **Dog Tail, Jink, Roll-Over, Speed Escape** (d20 + Speed Class + T.M.F.), **Maneuver Escape**, dodges; **Veer Off** for the chicken games (Mid-Air Ram, Dodge 'Em, Divebomber, Skimming Atmosphere), **Pull-Out** save, **Emergency Landing**, **Crash** damage and **Dumb Luck**.
+- **Flying characters and NPCs** (Flight / Glide, or a toggle) get an Air Combat panel: T.M.F. = P.P., Speed Class from their flight speed.
+- Two more vehicle armor locations: **Power Plant** (fusion generator) and **Cargo Hold**; Fuel Tank is now Fuel Tank / Energy Pack.
+
 ## 1.9.0
 - **Roll Attributes** (Core tab): one button rolls all eight attributes at character creation (3D6, +1D6 on 16–18 with the team rule, + species, size and physical skill modifiers; dice bonuses such as Boxing's +1D4 are rolled) and **saves** them. Each attribute shows its **Rolled** dice and final **Score** in boxes that can't be edited; the sheet's bonuses, skills, combat and saves use the Score.
 - One detailed chat card: a table of every attribute's 3D6, exceptional die, species, size, physical skills and score.

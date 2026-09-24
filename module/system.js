@@ -124,7 +124,8 @@ Hooks.once("init", function () {
     "systems/palladium-universal/templates/item/parts/effects.hbs",
     "systems/palladium-universal/templates/item/parts/description.hbs",
     "systems/palladium-universal/templates/vehicle/time-machine.hbs",
-    "systems/palladium-universal/templates/actor/parts/item-roll.hbs"
+    "systems/palladium-universal/templates/actor/parts/item-roll.hbs",
+    "systems/palladium-universal/templates/actor/parts/air-combat.hbs"
   ]);
 });
 

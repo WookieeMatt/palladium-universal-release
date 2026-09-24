@@ -112,6 +112,12 @@ export default class CharacterData extends foundry.abstract.TypeDataModel {
       attributes: new SchemaField(Object.fromEntries(
         Object.keys(CONFIG.PALLADIUM.ATTRIBUTES).map(key => [key, attributeField()])
       )),
+      // Flying characters in air combat (Guide to the Universe): T.M.F. = P.P.
+      flight: new SchemaField({
+        enabled: new BooleanField(),                   // show the Air Combat panel without a flight ability
+        speedClass: intField(0, { min: 0, max: 50 }),  // 0 = from the flight ability's speed (Flight 160 mph = 10)
+        veerSkill: intField(0, { min: 0 })             // % for veering off in chicken games (+ Air-to-Air Combat)
+      }),
       // Attribute generation is rolled once; a re-roll needs the GM's permission.
       generation: new SchemaField({
         rolled: new BooleanField(),
@@ -405,6 +411,26 @@ export default class CharacterData extends foundry.abstract.TypeDataModel {
       physicalDice: physical?.dice ?? [], modifier: species.value + (size ?? 0) + (physical?.value ?? 0), dice };
   }
 
+  /**
+   * Air combat for flying characters: shown with a Flight / Glide ability (or the manual toggle).
+   * T.M.F. = P.P.; Speed Class from the flight field; veer % = the field + Air-to-Air Combat skill.
+   */
+  #prepareFlight() {
+    const items = this.parent?.items ?? [];
+    const flier = items.find(i => ["ability", "animal"].includes(i.type) && /^(flight|glide)\b/i.test(i.name));
+    const skill = items.find(i => (i.type === "skill") && /^air-to-air/i.test(i.name));
+    const f = this.flight;
+    f.source = flier?.name ?? "";
+    f.active = f.enabled || !!flier;
+    f.tmf = this.attributes.pp.total ?? 0;
+    f.airToAir = skill ? skill.system.percentages(this).primary : 0;
+    f.veerTarget = f.veerSkill + f.airToAir;
+    // Speed Class: typed, else from the ability's "up to N mph" (Flight 160 mph → 10, Glide 120 mph → 8).
+    const mph = Number(/(\d+)\s*mph/i.exec(flier?.system.description ?? "")?.[1] ?? 160);
+    f.effectiveSpeedClass = f.speedClass || CONFIG.PALLADIUM.speedClassFor(mph);
+    f.speed = CONFIG.PALLADIUM.SPEED_CLASSES[f.effectiveSpeedClass] ?? CONFIG.PALLADIUM.SPEED_CLASSES[0];
+  }
+
   /** Sum of item effects for a target key. */
   #effect(target) {
     return this.itemEffects.totals[target] ?? 0;
@@ -578,6 +604,7 @@ export default class CharacterData extends foundry.abstract.TypeDataModel {
     }
     c.totals.actions = Math.max(0, c.totals.actions);
     c.actionsLeft = Math.max(0, c.totals.actions - c.actionsUsed);
+    this.#prepareFlight();
   }
 
   /* -------------------------------------------- */

@@ -1,0 +1,29 @@
+<section class="panel pu-air">
+  <div class="panel-header">
+    <h2>Air Combat</h2>
+    <span class="hint">{{#if system.flight.source}}{{system.flight.source}}: {{/if}}T.M.F. = P.P. · each tactic takes a full melee</span>
+  </div>
+  {{#if system.flight.active}}
+  <div class="npc-health">
+    <div class="field"><label data-tooltip="0 = from the flight ability's speed (Flight 160 mph = 10, Glide 120 mph = 8); now {{system.flight.effectiveSpeedClass}}">Speed Class</label>
+      <input type="number" name="system.flight.speedClass" value="{{system.flight.speedClass}}" min="0" max="50" /></div>
+    <div class="readonly-field"><label>T.M.F. (P.P.)</label><span class="derived">{{system.flight.tmf}}</span></div>
+    <div class="field"><label data-tooltip="Chance to veer off in chicken games (the book gives flyers no pilot skill: GM's call). Air-to-Air Combat skill adds {{system.flight.airToAir}}%">Veer %</label>
+      <input type="number" name="system.flight.veerSkill" value="{{system.flight.veerSkill}}" min="0" /></div>
+  </div>
+  <div class="pu-tactics">
+    {{#each airTactics}}
+    <button type="button" data-action="rollAirTactic" data-tactic="{{key}}" data-tooltip="{{text}}"><i class="fa-solid {{icon}}"></i> {{label}} {{total}}</button>
+    {{/each}}
+  </div>
+  <div class="pu-tactics">
+    <button type="button" data-action="rollVeer" data-tooltip="Chicken games: roll under Veer % + Air-to-Air minus the penalty"><i class="fa-solid fa-person-falling-burst"></i> Veer Off {{system.flight.veerTarget}}%</button>
+    <button type="button" data-action="rollPullOut" data-tooltip="Divebomber: d20 under the T.M.F. (P.P.) or crash"><i class="fa-solid fa-plane-arrival"></i> Pull-Out ≤{{system.flight.tmf}}</button>
+    <button type="button" data-action="rollDumbLuck" data-tooltip="20% or less: thrown clear with only 4D6"><i class="fa-solid fa-clover"></i> Dumb Luck</button>
+  </div>
+  <p class="hint">Top speed {{system.flight.speed.label}}.</p>
+  {{/if}}
+  {{#unless system.flight.source}}
+  <label class="hint"><input type="checkbox" name="system.flight.enabled" {{checked system.flight.enabled}} /> Flies without a Flight / Glide ability (super power, robot jets…)</label>
+  {{/unless}}
+</section>

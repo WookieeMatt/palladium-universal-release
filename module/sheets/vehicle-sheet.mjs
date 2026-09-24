@@ -1,6 +1,8 @@
 import { WEAPON_TYPES } from "../data/items.mjs";
 import { operateDevice, rollControl, rollEvade, rollVehicleAttack, rollVehicleDamage } from "../vehicle.mjs";
 import { signed } from "../dice.mjs";
+import { rollCrash, rollDumbLuck, rollEmergencyLanding, rollPullOut, rollTactic, rollVeer, spaceRange } from "../air-combat.mjs";
+
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ActorSheetV2 } = foundry.applications.sheets;
@@ -27,6 +29,12 @@ export default class PalladiumVehicleSheet extends HandlebarsApplicationMixin(Ac
       rollAttack: PalladiumVehicleSheet.#onRollAttack,
       rollDamage: PalladiumVehicleSheet.#onRollDamage,
       operate: PalladiumVehicleSheet.#onOperate,
+      rollTactic: PalladiumVehicleSheet.#onRollTactic,
+      rollVeer: PalladiumVehicleSheet.#onRollVeer,
+      rollPullOut: PalladiumVehicleSheet.#onRollPullOut,
+      rollLanding: PalladiumVehicleSheet.#onRollLanding,
+      rollCrash: PalladiumVehicleSheet.#onRollCrash,
+      rollDumbLuck: PalladiumVehicleSheet.#onRollDumbLuck,
       recharge: PalladiumVehicleSheet.#onRecharge
     }
   };
@@ -47,8 +55,14 @@ export default class PalladiumVehicleSheet extends HandlebarsApplicationMixin(Ac
       vehicleTypes: CONFIG.PALLADIUM.VEHICLE_TYPES,
       locations: Object.entries(CONFIG.PALLADIUM.VEHICLE_LOCATIONS).map(([key, l]) => ({ key, label: l.label, ...system.locations[key] })),
       status: system.health.totaled ? "Totaled" : system.health.incapacitated ? "Incapacitated" : "Operational",
+      speedClasses: Object.fromEntries(CONFIG.PALLADIUM.SPEED_CLASSES.map(c => [c.cls, `${c.cls} — ${c.label}`])),
+      drives: Object.fromEntries(Object.entries(CONFIG.PALLADIUM.DRIVE_TYPES).map(([k, d]) => [k, d.label])),
+      tactics: Object.entries(CONFIG.PALLADIUM.AIR_TACTICS).map(([key, t]) => ({ key, ...t,
+        total: signed((t.sc ? system.air.speedClass : 0) + (t.tmf ? system.air.tmf : 0) - (system.air.machPenalty ?? 0)) })),
+      veerTarget: system.controlSkill + system.air.airToAir - (system.air.machPenalty ?? 0),
+      maxTmf: CONFIG.PALLADIUM.DRIVE_TYPES[system.air.drive]?.maxTmf,
       weapons: byType("weapon").map(i => ({ id: i.id, name: i.name, img: i.img, damage: i.system.damage,
-        range: i.system.range, type: WEAPON_TYPES[i.system.weaponType],
+        range: system.air.inSpace ? spaceRange(i.system.range, i.system.weaponType) : i.system.range, type: WEAPON_TYPES[i.system.weaponType],
         strike: signed(system.gunnerBonus + i.system.strikeBonus) })),
       devices: byType("device").map(i => ({ id: i.id, name: i.name, img: i.img, type: CONFIG.PALLADIUM.DEVICE_TYPES[i.system.deviceType],
         readout: i.system.deviceType === "readout", bonus: i.system.skillBonus, charged: i.system.charged,
@@ -131,6 +145,36 @@ export default class PalladiumVehicleSheet extends HandlebarsApplicationMixin(Ac
   static #onOperate(event, target) {
     const item = this.#itemFromEvent(target);
     if ( item ) return operateDevice(item);
+  }
+
+  /** @this {PalladiumVehicleSheet} */
+  static #onRollTactic(event, target) {
+    return rollTactic(this.actor, target.dataset.tactic);
+  }
+
+  /** @this {PalladiumVehicleSheet} */
+  static #onRollVeer() {
+    return rollVeer(this.actor);
+  }
+
+  /** @this {PalladiumVehicleSheet} */
+  static #onRollPullOut() {
+    return rollPullOut(this.actor);
+  }
+
+  /** @this {PalladiumVehicleSheet} */
+  static #onRollLanding() {
+    return rollEmergencyLanding(this.actor);
+  }
+
+  /** @this {PalladiumVehicleSheet} */
+  static #onRollCrash() {
+    return rollCrash(this.actor);
+  }
+
+  /** @this {PalladiumVehicleSheet} */
+  static #onRollDumbLuck() {
+    return rollDumbLuck(this.actor);
   }
 
   /** @this {PalladiumVehicleSheet} */

@@ -719,3 +719,17 @@
   border-radius: 4px;
 }
 .pu-card .pu-gen-notes p { margin: 2px 0; font-size: 0.8em; color: var(--pu-ink-soft, #5d5a4b); }
+
+/* Air & space combat (v1.10.0) */
+.palladium-universal .pu-tactics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 6px 0;
+}
+.palladium-universal .pu-tactics button {
+  flex: 1 1 auto;
+  width: auto;
+  white-space: nowrap;
+}
+.palladium-universal .pu-air .npc-health input[type="checkbox"] { width: auto; }

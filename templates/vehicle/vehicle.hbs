@@ -83,6 +83,44 @@
       <p class="hint">One maneuver per round (costs an action); Control Rolls don't cost an action. Evade: Strikes must meet or beat the roll until the next maneuver.</p>
     </section>
 
+    {{#if system.air.isAir}}
+    <section class="panel pu-air">
+      <div class="panel-header">
+        <h2>Air &amp; Space Combat</h2>
+        <span class="hint">Each tactic takes a full melee; opposed d20 rolls</span>
+      </div>
+      <div class="npc-health">
+        <div class="field"><label>Drive</label><select name="system.air.drive">{{selectOptions drives selected=system.air.drive}}</select></div>
+        <div class="field"><label data-tooltip="The rated Speed Class is always the bonus, whatever the current speed">Speed Class</label>
+          <select name="system.air.speedClass" data-dtype="Number">{{selectOptions speedClasses selected=system.air.speedClass}}</select></div>
+        <div class="field"><label data-tooltip="Transient Maneuvering Factor{{#if maxTmf}}; this drive can be upgraded to {{maxTmf}}{{/if}}">T.M.F.</label>
+          <input type="number" name="system.air.tmf" value="{{system.air.tmf}}" min="0" /></div>
+        <div class="field"><label data-tooltip="The Basic Aircraft Form's payload rating: sets the crash damage row">Payload (lb)</label>
+          <input type="number" name="system.air.payload" value="{{system.air.payload}}" min="0" /></div>
+        <div class="field"><label data-tooltip="The pilot's Air-to-Air Combat %, added to veer rolls (it can go over 100%)">Air-to-Air %</label>
+          <input type="number" name="system.air.airToAir" value="{{system.air.airToAir}}" min="0" /></div>
+        <div class="field"><label data-tooltip="Current speed in atmosphere: over Mach 5 the Mach number is a penalty on control rolls and maneuvers">Current Mach</label>
+          <input type="number" name="system.air.mach" value="{{system.air.mach}}" min="0" /></div>
+        <div class="field"><label data-tooltip="Energy weapon range ×10, projectiles ×2">In Space</label>
+          <input type="checkbox" name="system.air.inSpace" {{checked system.air.inSpace}} /></div>
+      </div>
+      {{#if system.air.machPenalty}}<p class="warning">Over Mach 5 in atmosphere: −{{system.air.machPenalty}} on control rolls and maneuvers (limit Mach 100).</p>{{/if}}
+      <div class="pu-tactics">
+        {{#each tactics}}
+        <button type="button" data-action="rollTactic" data-tactic="{{key}}" data-tooltip="{{text}}"><i class="fa-solid {{icon}}"></i> {{label}} {{total}}</button>
+        {{/each}}
+      </div>
+      <div class="pu-tactics">
+        <button type="button" data-action="rollVeer" data-tooltip="Chicken games (Mid-Air Ram, Dodge 'Em, Divebomber, Skimming Atmosphere): roll under Pilot skill + Air-to-Air minus the penalty"><i class="fa-solid fa-person-falling-burst"></i> Veer Off {{veerTarget}}%</button>
+        <button type="button" data-action="rollPullOut" data-tooltip="Divebomber: d20 under the T.M.F. or crash"><i class="fa-solid fa-plane-arrival"></i> Pull-Out ≤{{system.air.tmf}}</button>
+        <button type="button" data-action="rollLanding" data-tooltip="Pilot skill (without Air-to-Air) with the drive's penalty"><i class="fa-solid fa-plane-circle-exclamation"></i> Emergency Landing</button>
+        <button type="button" data-action="rollCrash" data-tooltip="Impact damage by payload rating and speed"><i class="fa-solid fa-car-burst"></i> Crash</button>
+        <button type="button" data-action="rollDumbLuck" data-tooltip="20% or less: thrown clear with only 4D6"><i class="fa-solid fa-clover"></i> Dumb Luck</button>
+      </div>
+      <p class="hint">Top speed {{system.air.speed.label}}. Price tables for Speed Class and T.M.F. upgrades, arms, armor and equipment: the <em>Air &amp; Space Vehicle Tables</em> journal in the TMNT compendium.</p>
+    </section>
+    {{/if}}
+
     <section class="panel">
       <div class="panel-header">
         <h2>Weapons</h2>

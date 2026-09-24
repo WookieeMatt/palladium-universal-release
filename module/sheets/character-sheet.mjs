@@ -3,6 +3,7 @@ import { operateDevice } from "../vehicle.mjs";
 import { practiceSpell, rollTemporalMishap } from "../timetravel.mjs";
 import { rollD20, rollPercent, rollSaveVsComa, rollSkill, signed } from "../dice.mjs";
 import { attributeBonusText, printAttribute, rollAttributes } from "../creation.mjs";
+import { rollDumbLuck, rollPullOut, rollTactic, rollVeer } from "../air-combat.mjs";
 import { rollItem } from "../item-rolls.mjs";
 import {
   FIRE_MODES, MELEE_MODES, POWDER_MODES, misfireChance, rollAttack, rollDamage, rollHorrorFactor, rollManeuver, strikeBonus
@@ -50,6 +51,10 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
       rollComa: PalladiumCharacterSheet.#onRollComa,
       rollInfluence: PalladiumCharacterSheet.#onRollInfluence,
       printAttribute: PalladiumCharacterSheet.#onPrintAttribute,
+      rollAirTactic: PalladiumCharacterSheet.#onRollAirTactic,
+      rollVeer: PalladiumCharacterSheet.#onRollVeer,
+      rollPullOut: PalladiumCharacterSheet.#onRollPullOut,
+      rollDumbLuck: PalladiumCharacterSheet.#onRollDumbLuck,
       rollAttributes: PalladiumCharacterSheet.#onRollAttributes,
       rollItem: PalladiumCharacterSheet.#onRollItem,
       rollSpellDamage: PalladiumCharacterSheet.#onRollSpellDamage,
@@ -131,6 +136,8 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
       systemFields: system.schema.fields,
       attributes: this.#prepareAttributes(),
       generation: this.#generationState(),
+      airTactics: Object.entries(CONFIG.PALLADIUM.AIR_TACTICS).map(([key, t]) => ({ key, ...t,
+        total: signed((t.sc ? system.flight.effectiveSpeedClass : 0) + (t.tmf ? system.flight.tmf : 0)) })),
       alignments: CONFIG.PALLADIUM.ALIGNMENTS,
       trainingChoices: Object.fromEntries(Object.entries(CONFIG.PALLADIUM.COMBAT_TRAINING).map(([k, v]) => [k, v.label])),
       featureLevels: CONFIG.PALLADIUM.FEATURE_LEVELS,
@@ -520,6 +527,26 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
   /** @this {PalladiumCharacterSheet} */
   static #onPrintAttribute(event, target) {
     return printAttribute(this.actor, target.dataset.key);
+  }
+
+  /** @this {PalladiumCharacterSheet} */
+  static #onRollAirTactic(event, target) {
+    return rollTactic(this.actor, target.dataset.tactic);
+  }
+
+  /** @this {PalladiumCharacterSheet} */
+  static #onRollVeer() {
+    return rollVeer(this.actor);
+  }
+
+  /** @this {PalladiumCharacterSheet} */
+  static #onRollPullOut() {
+    return rollPullOut(this.actor);
+  }
+
+  /** @this {PalladiumCharacterSheet} */
+  static #onRollDumbLuck() {
+    return rollDumbLuck(this.actor);
   }
 
   /** @this {PalladiumCharacterSheet} */
