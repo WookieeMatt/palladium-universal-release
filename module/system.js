@@ -12,7 +12,7 @@ import PalladiumTimeMachineSheet from "./sheets/time-machine-sheet.mjs";
 import { onRenderChatMessage } from "./combat.mjs";
 import { onDeleteCombat, onUpdateCombat } from "./actions.mjs";
 import { buildApi } from "./api.mjs";
-import { registerTcriDice } from "./dice-so-nice.mjs";
+import { registerTcriDice, TCRI_FINISHES } from "./dice-so-nice.mjs";
 
 Hooks.once("init", function () {
   console.log("Palladium Universal | Initializing system");
@@ -57,6 +57,16 @@ Hooks.once("init", function () {
     config: true,
     type: Boolean,
     default: true,
+    requiresReload: true
+  });
+  game.settings.register("palladium-universal", "tcriDiceFinish", {
+    name: "T.C.R.I. Dice Finish",
+    hint: "Glass looks like the real dice. If throws stutter on this computer, choose Fast (solid, glossy dice).",
+    scope: "client",
+    config: true,
+    type: String,
+    choices: TCRI_FINISHES,
+    default: "glass",
     requiresReload: true
   });
 

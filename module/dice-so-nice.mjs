@@ -16,6 +16,12 @@ const TYPES = {
   d20: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"]
 };
 
+/**
+ * Finishes (client setting "tcriDiceFinish"). Glass is see-through, which Dice So Nice renders with an
+ * extra pass when its "advanced glass" quality option is on; plastic is solid and glossy, and cheaper.
+ */
+export const TCRI_FINISHES = { glass: "Glass (clear, as the real dice)", plastic: "Fast (solid, glossy)" };
+
 /** The theme: clear green resin, black numbers, pale edges, glass. */
 export const TCRI_COLORSET = {
   name: TCRI_ID,
@@ -76,6 +82,8 @@ float tcriHash(vec3 p) { return fract(sin(dot(p, vec3(12.9898, 78.233, 37.719)))
  */
 export async function registerTcriDice(dice3d) {
   const preferred = game.settings.get("palladium-universal", "tcriDiceDefault") ? "preferred" : "default";
+  const finish = game.settings.get("palladium-universal", "tcriDiceFinish");
+  if ( finish in TCRI_FINISHES ) TCRI_COLORSET.material = finish;
   try {
     await dice3d.addTexture(TEXTURE_ID, {
       name: "T.C.R.I. Liquid Glitter",
@@ -107,4 +115,8 @@ export async function registerTcriDice(dice3d) {
   for ( const [type, labels] of Object.entries(TYPES) ) {
     dice3d.addDicePreset({ type, labels, system: TCRI_ID, colorset: TCRI_ID });
   }
+
+  // Load the dice now rather than on the first throw (avoids a hitch the first time they're rolled).
+  try { await dice3d.preloadPresets?.(TCRI_ID); }
+  catch(err) { console.warn("Palladium Universal | T.C.R.I. Dice preload failed; they load on the first throw.", err); }
 }

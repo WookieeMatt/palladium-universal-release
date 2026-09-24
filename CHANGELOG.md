@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.1
+- T.C.R.I. Dice load when the world starts (Dice So Nice preload), so the first throw doesn't stall.
+- New per-computer setting **T.C.R.I. Dice Finish**: Glass (default) or Fast (solid, glossy) for smoother throws on slower computers.
+
 ## 1.2.0
 - **T.C.R.I. Dice** for Dice So Nice: a seven-piece set (d4, d6, d8, d10, d10 %, d12, d20) of clear green dice filled with glittering liquid that swirls while rolling. Available as a Dice So Nice dice preset (animated liquid) and a theme (colors, glass and a glitter texture).
 - New world setting **T.C.R.I. Dice by Default**: players who haven't customized Dice So Nice roll the T.C.R.I. Dice.

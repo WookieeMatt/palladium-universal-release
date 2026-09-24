@@ -10,6 +10,7 @@ With the *Dice So Nice* module enabled, the system adds the **T.C.R.I. Dice**, a
 - **Picking them yourself:** open *Dice So Nice Settings* → *Appearance*, then either:
   - set **Dice Presets** to **T.C.R.I. Dice** (group *Palladium Universal*) for the full animated set, or
   - set **Theme** to **T.C.R.I. Dice** to put the same colors and static glitter on another preset.
+- **Smoother throws:** the dice load when the world starts, so the first throw doesn't stall. If throws still stutter on a computer, set **T.C.R.I. Dice Finish** (Configure Settings, per computer) to **Fast**: solid, glossy dice that are cheaper to draw than see-through glass. Turning off *advanced glass* in Dice So Nice's graphics settings also helps.
 - **No Dice So Nice?** Nothing changes: rolls work as usual.
 
 ## Rounds and the Combat Tracker
