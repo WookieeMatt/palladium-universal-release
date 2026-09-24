@@ -286,9 +286,8 @@ function defendButtons(data) {
     if ( (key === "rollImpact") && CONFIG.PALLADIUM.NO_ROLL_WITH_IMPACT.includes(data.weaponType) ) return false;
     return true;
   }).map(([key, r]) => `<button type="button" data-pu-action="defend" data-reaction="${key}"
-    data-tooltip="Defend with the selected token">
-    <i class="fa-solid ${r.icon}"></i> ${r.label}</button>`);
-  return `<div class="pu-buttons pu-defend"><span class="pu-label">Defend:</span>${buttons.join("")}</div>`;
+    data-tooltip="${r.label} with the selected token"><i class="fa-solid ${r.icon}"></i><span>${r.label}</span></button>`);
+  return `<div class="pu-defend"><div class="pu-defend-title">Defend</div><div class="pu-defend-grid">${buttons.join("")}</div></div>`;
 }
 
 /* -------------------------------------------- */

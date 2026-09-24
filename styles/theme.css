@@ -901,3 +901,59 @@
   padding: 0 4px;
 }
 .pu-journal .journal-entry-page a:not(.content-link):not(.inline-roll) { color: var(--pu-green-light); text-decoration: underline; }
+
+/* Attack cards (v1.13.1): one note per line; Defend buttons in an even grid (icon over label) */
+.pu-card .pu-notes > span,
+.pu-card .pu-notes > strong { display: block; }
+.pu-card .pu-notes > * + * { margin-top: 2px; }
+.pu-card .pu-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.pu-card .pu-buttons button {
+  flex: 1 1 auto;
+  height: auto;
+  min-height: 30px;
+  margin: 0;
+}
+.pu-card .pu-defend { padding: 2px 8px 8px; }
+.pu-card .pu-defend-title {
+  font-family: var(--pu-heading);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--pu-green);
+  font-size: 0.95rem;
+  border-bottom: 2px solid var(--pu-green);
+  margin-bottom: 5px;
+}
+.pu-card .pu-defend-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px;
+}
+.pu-card .pu-defend-grid button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  height: auto;
+  min-height: 46px;
+  margin: 0;
+  padding: 4px 2px;
+  line-height: 1.05;
+  font-size: 0.8rem;
+  white-space: normal;
+  overflow-wrap: normal;
+  word-break: keep-all;
+  text-align: center;
+  background: var(--pu-green);
+  color: var(--pu-parchment);
+  border: 1px solid #16301d;
+  border-radius: 6px;
+  font-family: var(--pu-body);
+  font-weight: 700;
+}
+.pu-card .pu-defend-grid button:hover { background: var(--pu-green-light); box-shadow: none; }
+.pu-card .pu-defend-grid button i { font-size: 1rem; margin: 0; }

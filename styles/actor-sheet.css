@@ -984,23 +984,9 @@
   background: rgba(200, 75, 75, 0.25);
 }
 
-.pu-card .pu-defend {
-  flex-wrap: wrap;
-  align-items: center;
-}
-
-.pu-card .pu-defend .pu-label {
-  font-weight: 700;
-  margin-right: 4px;
-}
-
 .pu-card .pu-text {
   font-size: 0.9em;
   margin: 4px 0;
-}
-
-.pu-card .pu-defend button {
-  flex: 1 1 30%;
 }
 
 /* -------------------------------------------- */

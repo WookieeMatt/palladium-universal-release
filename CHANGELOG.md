@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.13.1
+- **Cleaner attack cards**: the Defend buttons sit under their own heading in an even three-column grid, icon over label, so long names like *Roll with Impact* and *Entangle* no longer spill out of their buttons. Each note on a card (hit line, actions left, crits) gets its own line.
+
 ## 1.13.0
 - The default portrait is now the **black and white** mutant turtle (white inside, transparent around the head, so it reads on any map); the **color** turtle ships too.
 - New world setting **Default Portrait**: black and white turtle (default), color turtle, or Foundry's mystery man. Compendium NPCs with a default portrait follow it when imported.
