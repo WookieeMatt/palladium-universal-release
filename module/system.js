@@ -70,6 +70,16 @@ Hooks.once("init", function () {
     requiresReload: true
   });
 
+  // Team Character generation (p.12): teammates share their highest exceptional bonus die.
+  game.settings.register("palladium-universal", "teamGeneration", {
+    name: "Team Character Generation",
+    hint: "When generating an attribute scores 16–18, use a higher exceptional bonus die rolled for that attribute by another character in the same Actors folder (the team).",
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: false
+  });
+
   // Initiative: d20 + Initiative bonus, highest first (p.84)
   CONFIG.Combat.initiative = { formula: "1d20 + @combat.totals.initiative", decimals: 0 };
 

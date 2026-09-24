@@ -4,7 +4,7 @@
       {{#each attributes}}
       <div class="npc-attr" data-tooltip="{{bonus}}">
         <label><a class="pu-rollable" data-action="rollAttribute" data-key="{{key}}"
-          data-tooltip="Roll {{label}}: 3D6, +1D6 on 16–18">{{label}}</a></label>
+          data-tooltip="Generate {{label}} in chat (nothing is saved)">{{label}}</a></label>
         <input type="number" name="system.attributes.{{key}}.value" value="{{value}}" />
         <span class="derived">{{total}}</span>
       </div>

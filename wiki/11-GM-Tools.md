@@ -3,6 +3,8 @@
 ## Settings
 **Configure Settings → System Settings → Black Powder Weather**: Dry, Humid (+5%), Rain (+15%), Downpour or dunking (+35%). Added to every black powder misfire chance.
 
+**Configure Settings → System Settings → Team Character Generation**: when on, a character generating an attribute with an exceptional roll (16–18) uses the highest bonus die a teammate (a character in the same Actors folder) rolled for that attribute, if it's higher than their own.
+
 ## T.C.R.I. Dice (Dice So Nice)
 With the *Dice So Nice* module enabled, the system adds the **T.C.R.I. Dice**, a seven-piece set (d4, d6, d8, d10, d10 %, d12 and d20) of clear green dice filled with glittering liquid. The liquid swirls and the glitter twinkles while the dice roll.
 

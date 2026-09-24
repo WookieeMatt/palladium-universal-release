@@ -5,14 +5,22 @@ Name, portrait (click to change), animal, alignment, **level**, **XP** (the shee
 
 New characters and NPCs get a round token with a green ring.
 
-## Rolling attributes
-Click an attribute's name (I.Q., M.E. …) on the Core tab to roll it: **3D6**, plus **one more 1D6** on 16, 17 or 18, plus every modifier on that line (animal, background and skill bonuses, Size Level, Misc). The chat card lists each part and the final score. The sheet keeps the score for all its bonuses; rolling an attribute again asks first.
+## Generating attributes
+Click an attribute's abbreviation (I.Q., M.E., M.A., P.S., P.P., P.E., P.B., Spd) on the Core tab. The calculation goes to chat; **nothing is saved to the sheet**.
+
+1. **Base:** 3D6.
+2. **Exceptional:** on 16, 17 or 18, add 1D6. With **Team Character Generation** on (world setting), if another character in the same Actors folder rolled a higher bonus die for that attribute, theirs is used.
+3. **Species:** the animal's flat bonus to that attribute.
+4. **Size Level:** I.Q., P.S., P.E. and Spd only.
+5. **Physical skills:** P.S., P.P., P.E. and Spd only (dice bonuses such as Boxing's +1D4 are rolled if the skill hasn't stored a value).
+
+The card reads *Generating …, Base 3D6, Exceptional 1D6, Species Bonus, Size Modifier, Physical Skill Bonus, Final Total* ("N/A" where a step doesn't apply).
 
 ## Core tab
 ### Attributes
 | Column | Meaning |
 |---|---|
-| **Attribute** | Click to roll it (see above). |
+| **Attribute** | Click to generate it in chat (see above). |
 | **Size** | The Size Level modifier (Bio-E tab; can be switched off there). |
 | **Bonuses** | From the animal, background, skills and abilities (item effects). |
 | **Misc** | Your own adjustment. |

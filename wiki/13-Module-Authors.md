@@ -92,7 +92,7 @@ The system fires these hooks. A `pre…` hook can return `false` to cancel. Its 
 | `palladium.preSpendActions` | `actor, count, what` | Return `false` so the action isn't counted. |
 | `palladium.temporalMishap` | `{html, rolls, row}` | Change `html` to change the chat text. |
 | `palladium.preRollAttribute` | `actor, key, {formula, exceptional, bonusFormula}` | Change the dice, e.g. `formula = "4d6kh3"`. |
-| `palladium.rollAttribute` | `actor, key, {base, total, rolls}` | `base` is the saved dice total, `total` the final score. |
+| `palladium.rollAttribute` | `actor, key, {base, exceptional, exceptionalDie, species, size, physical, total}` | Attribute generation (chat only; nothing is saved). |
 
 For example, a +2 Strike blessing:
 

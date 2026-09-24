@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.5.0
+- **Attribute generation** follows the step-by-step rules: click an attribute abbreviation to print *Base 3D6, Exceptional 1D6, Species Bonus, Size Modifier (I.Q., P.S., P.E., Spd only), Physical Skill Bonus (P.S., P.P., P.E., Spd only), Final Total* to chat. **Nothing is saved to the sheet.**
+- New world setting **Team Character Generation**: teammates (same Actors folder) share their highest exceptional bonus die per attribute.
+
 ## 1.4.0
 - **Attribute rolls reworked:** click an attribute's name to roll 3D6 (+1D6 once on 16–18); the roll is added to that line's modifiers (animal, background and skill bonuses, Size Level, Misc) and the final score is printed to chat with every part listed. The dice total is saved behind the scenes; the sheet no longer shows a Rolled column, only the modifiers, the total and what it grants. The Bonuses column's tooltip names each source.
 - Removed the other 1.3.0 character creation rolls (Roll All, Hit Points and level-up Hit Points, height and weight, starting money, background tables) and their API functions and hooks.

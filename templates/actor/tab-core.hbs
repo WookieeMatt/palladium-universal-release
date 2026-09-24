@@ -2,7 +2,7 @@
   <section class="panel">
     <div class="panel-header">
       <h2>Attributes</h2>
-      <span class="hint">Click an attribute to roll it: 3D6 (+1D6 on 16–18) + Size ({{#if system.mutation.applySizeModifiers}}applied{{else}}off{{/if}}) + Bonuses + Misc</span>
+      <span class="hint">Click an attribute to generate it in chat (nothing is saved)</span>
     </div>
     <table class="attribute-table">
       <thead>
@@ -12,7 +12,7 @@
         {{#each attributes}}
         <tr>
           <th scope="row"><a class="pu-rollable" data-action="rollAttribute" data-key="{{key}}"
-            data-tooltip="{{#if rolled}}Rolled. Click to roll again{{else}}Roll {{label}}{{/if}}: 3D6 (+1D6 on 16–18) + this line's modifiers">{{label}}</a></th>
+            data-tooltip="Generate {{label}} in chat: 3D6, +1D6 on 16–18, + species, size and physical skill bonuses. Nothing is saved.">{{label}}</a></th>
           <td class="derived">{{sizeModText}}</td>
           <td class="derived" data-tooltip="{{itemModTooltip}}">{{itemModText}}</td>
           <td><input type="number" name="system.attributes.{{key}}.mod" value="{{mod}}" /></td>
