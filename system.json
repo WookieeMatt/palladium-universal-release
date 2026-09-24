@@ -2,7 +2,7 @@
   "id": "palladium-universal",
   "title": "Palladium Universal",
   "description": "Teenage Mutant Ninja Turtles & Other Strangeness (Redux) for Foundry VTT v14, with the Transdimensional material: automated attribute bonuses, Bio-E and mutation, Combat Training, defend buttons, armor and damage, magic, psionics, black powder weapons, NPCs, vehicles and time machines. Includes an in-game System Guide.",
-  "version": "1.6.3",
+  "version": "1.7.0",
   "compatibility": {
     "minimum": "14",
     "verified": "14.368"
@@ -48,12 +48,36 @@
     "Actor": {
       "character": {
         "htmlFields": [
-          "notes"
+          "notes",
+          "gear",
+          "skills",
+          "mutation.abilities",
+          "mutation.naturalWeapons",
+          "magic.spells",
+          "psionics.powers",
+          "superPowers.powers",
+          "superPowers.weaknesses",
+          "mecha.mdcByLocation",
+          "mecha.weaponSystems",
+          "survival.supplies",
+          "survival.insanityEffects"
         ]
       },
       "npc": {
         "htmlFields": [
-          "notes"
+          "notes",
+          "gear",
+          "skills",
+          "mutation.abilities",
+          "mutation.naturalWeapons",
+          "magic.spells",
+          "psionics.powers",
+          "superPowers.powers",
+          "superPowers.weaknesses",
+          "mecha.mdcByLocation",
+          "mecha.weaponSystems",
+          "survival.supplies",
+          "survival.insanityEffects"
         ]
       },
       "vehicle": {
@@ -120,7 +144,8 @@
       },
       "device": {
         "htmlFields": [
-          "description"
+          "description",
+          "malfunction"
         ]
       },
       "installation": {

@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.7.0
+- **Every notes box is a rich-text (ProseMirror) editor:** Skill Notes, Money / other possessions, Mutation Notes, the Modules tab boxes (spells, psionic powers, super powers and weaknesses, mecha M.D.C. and weapon systems, survival supplies and insanity effects) and a device's Malfunction text. Dice written in them show as clickable rolls.
+- New **Character notes** box on the Gear tab.
+- Existing plain-text notes convert automatically, one paragraph per line.
+
 ## 1.6.3
 - The **Background** panel (Origin, Creator Organization, Education) moved from the Core tab to the **Bio-E / Mutation** tab, under the Animal.
 

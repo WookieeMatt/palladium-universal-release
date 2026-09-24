@@ -207,11 +207,11 @@
     <div class="two-col">
       <div class="large-entry-box">
         <label>Abilities (notes)</label>
-        <textarea name="system.mutation.abilities" rows="4">{{system.mutation.abilities}}</textarea>
+        <prose-mirror name="system.mutation.abilities" value="{{system.mutation.abilities}}" toggled="true">{{{enriched.mutation_abilities}}}</prose-mirror>
       </div>
       <div class="large-entry-box">
         <label>Natural Weapons (notes)</label>
-        <textarea name="system.mutation.naturalWeapons" rows="4">{{system.mutation.naturalWeapons}}</textarea>
+        <prose-mirror name="system.mutation.naturalWeapons" value="{{system.mutation.naturalWeapons}}" toggled="true">{{{enriched.mutation_naturalWeapons}}}</prose-mirror>
       </div>
     </div>
   </section>

@@ -200,7 +200,7 @@ async function operate({ name, data, owner, readouts = [], extra = "", item }) {
   const speaker = operator ?? owner;
   const table = success ? null : await deviceMalfunction(data.malfunctionTable);
   const notes = [`<span class="${success ? "pu-success" : "pu-failure"}">${success ? "Works" : "Malfunction!"}</span>`];
-  if ( !success && data.malfunction ) notes.push(`<span>${data.malfunction}</span>`);
+  if ( !success && data.malfunction ) notes.push(`<div class="pu-malfunction">${data.malfunction}</div>`);
   if ( table ) notes.push(table.html);
   await postCard(speaker, { title: `Operates ${name}`, item, label: "Operate", inlineRolls: true, result: roll.total,
     rolls: [roll, ...(table?.rolls ?? [])],

@@ -5,7 +5,7 @@ Two lists, **Professional** and **Amateur**. Each skill shows its % and a d20 bu
 
 **Skill % = base + per-level progression (from the level the skill was acquired) + I.Q. bonus + Education bonus (Professional only) + misc + bonuses from other items.** Checks cap at 95%; rolls of 96–100 always fail. Physical skills can be marked *passive* (no roll) and grant bonuses through effects (e.g. Boxing: +1 action, +1 parry, S.D.C.). Dice in effect formulas (like `1D6` S.D.C.) are rolled once when the skill is added.
 
-The **Skill Notes** box is free text.
+The **Skill Notes** box is a rich-text editor (click it to edit; bold, lists, links, and dice such as *1D6* become clickable rolls). Every notes box on the sheets works the same way, including *Money / other possessions* and *Character notes* on the Gear tab.
 
 ## Weapon Proficiencies (Combat tab)
 Kinds: **Ancient** (melee: +1 Strike and Parry at levels 1, 4, 7, 10, 13), **Targeting** (ranged Strike), **Modern** (Aimed +3, Burst +1, Wild +0, +1 at levels 4, 7, 10, 13), **Paired Weapons** (no multiple-attacker penalty), **Shield**, and **Black Powder** (see Black Powder). A weapon uses the W.P. whose **Weapon Group** matches the weapon's **Proficiency** (e.g. both "Sword"). *Team Bonus Levels* and *Level Acquired* adjust the progression.

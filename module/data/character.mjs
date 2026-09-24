@@ -3,6 +3,25 @@ const {
   BooleanField, HTMLField, NumberField, SchemaField, StringField
 } = foundry.data.fields;
 
+/** A rich-text (ProseMirror) notes field. */
+const notesField = () => new HTMLField({ required: true, blank: true });
+
+/** The notes fields that were plain text before 1.7.0, by path in the system data. */
+export const NOTES_FIELDS = ["mutation.abilities", "mutation.naturalWeapons", "skills", "gear", "magic.spells", "psionics.powers",
+  "superPowers.powers", "superPowers.weaknesses", "mecha.mdcByLocation", "mecha.weaponSystems", "survival.supplies",
+  "survival.insanityEffects"];
+
+/**
+ * Plain text to HTML paragraphs, one per line ("a\nb" → "<p>a</p><p>b</p>"). Text that is already HTML
+ * is left as it is.
+ * @param {string} text
+ */
+export function textToHTML(text) {
+  if ( (typeof text !== "string") || !text.trim() || /<[a-z][\s\S]*>/i.test(text) ) return text;
+  const escape = s => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  return text.split(/\r?\n/).filter(l => l.trim()).map(l => `<p>${escape(l)}</p>`).join("");
+}
+
 /** An effect's numeric value: the rolled value, or its formula if it has no dice. */
 function effectValue(effect) {
   if ( effect.value !== null && effect.value !== undefined ) return effect.value;
@@ -108,8 +127,8 @@ export default class CharacterData extends foundry.abstract.TypeDataModel {
         spentPsionics: intField(0, { min: 0 }),
         // T.E. evolution (+) or devolution (−) in Bio-E points from time travel (Transdimensional p.33).
         teDrift: intField(),
-        abilities: textField(),
-        naturalWeapons: textField(),
+        abilities: notesField(),
+        naturalWeapons: notesField(),
         notes: textField()
       }),
 
@@ -145,8 +164,8 @@ export default class CharacterData extends foundry.abstract.TypeDataModel {
         mod: new SchemaField(Object.fromEntries([...Object.keys(CONFIG.PALLADIUM.SAVES), "change"].map(key => [key, intField()])))
       }),
 
-      skills: textField(),
-      gear: textField(),
+      skills: notesField(),
+      gear: notesField(),
 
       toggles: new SchemaField({
         useMdc: new BooleanField(),
@@ -165,32 +184,32 @@ export default class CharacterData extends foundry.abstract.TypeDataModel {
         mod: new SchemaField({ strength: intField(), spellsPerDay: intField(), spellsPerMelee: intField() }),
         ppe: resourceField(),
         spellStrength: textField(),
-        spells: textField()
+        spells: notesField()
       }),
 
       psionics: new SchemaField({
         isp: resourceField(),
-        powers: textField()
+        powers: notesField()
       }),
 
       superPowers: new SchemaField({
         category: textField(),
-        powers: textField(),
-        weaknesses: textField()
+        powers: notesField(),
+        weaknesses: notesField()
       }),
 
       mecha: new SchemaField({
         name: textField(),
-        mdcByLocation: textField(),
-        weaponSystems: textField(),
+        mdcByLocation: notesField(),
+        weaponSystems: notesField(),
         speed: textField(),
         handling: textField()
       }),
 
       survival: new SchemaField({
         infectionLevel: textField(),
-        supplies: textField(),
-        insanityEffects: textField()
+        supplies: notesField(),
+        insanityEffects: notesField()
       }),
 
       notes: new HTMLField({ required: true, blank: true })
@@ -266,6 +285,12 @@ export default class CharacterData extends foundry.abstract.TypeDataModel {
 
     // v0.3.0 armor was a text description.
     if ( typeof source.health?.armor === "string" ) source.health.armor = { name: source.health.armor };
+
+    // 1.7.0: notes boxes became rich text; keep each line of old plain text as a paragraph.
+    for ( const path of NOTES_FIELDS ) {
+      const value = foundry.utils.getProperty(source, path);
+      if ( typeof value === "string" ) foundry.utils.setProperty(source, path, textToHTML(value));
+    }
 
     // Blank or out-of-range levels from older data.
     if ( source.identity && ("level" in source.identity) ) {

@@ -45,7 +45,7 @@
     </div>
     <div class="large-entry-box">
       <label>Malfunction</label>
-      <textarea name="system.malfunction" rows="3" placeholder="What happens on a failed operation roll">{{system.malfunction}}</textarea>
+      <prose-mirror name="system.malfunction" value="{{system.malfunction}}" toggled="true">{{{enrichedMalfunction}}}</prose-mirror>
     </div>
     {{/unless}}
     <p class="hint">Operating: roll under the operator's skill (plus the best readout device assisting this kind; only one can assist). Failure is a malfunction. Afterwards the device needs recharging.</p>

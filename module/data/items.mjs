@@ -478,12 +478,23 @@ export class DeviceData extends ItemDataBase {
       assists: choiceField(["timeMachine", "crossDimensional"], "timeMachine"),
       recharge: textField(),
       maxArea: textField(),
-      malfunction: textField(),          // what happens on a failed operation roll
+      malfunction: new HTMLField({ required: true, blank: true }),   // what happens on a failed operation roll (rich text)
       malfunctionTable: choiceField(["none", "temporal", "gateway", "portable", "miniature"], "none"),
       charged: new BooleanField({ initial: true }),
       weight: textField(),
       cost: textField()
     };
+  }
+
+  /** @override */
+  static migrateData(source) {
+    // 1.7.0: the malfunction text became rich text.
+    const text = source.malfunction;
+    if ( (typeof text === "string") && text.trim() && !/<[a-z][\s\S]*>/i.test(text) ) {
+      source.malfunction = text.split(/\r?\n/).filter(l => l.trim())
+        .map(l => `<p>${l.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")}</p>`).join("");
+    }
+    return super.migrateData(source);
   }
 }
 

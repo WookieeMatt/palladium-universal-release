@@ -632,3 +632,15 @@
   border-color: transparent;
 }
 .palladium-universal.item.pu-read-only .window-content button:disabled { display: none; }
+
+/* Notes boxes (ProseMirror) */
+.palladium-universal .large-entry-box prose-mirror,
+.palladium-universal .panel > prose-mirror {
+  display: block;
+  min-height: 6rem;
+  background: #fffdf5;
+  border: 1px solid var(--pu-rule);
+  border-radius: 6px;
+  padding: 4px 8px;
+}
+.palladium-universal .large-entry-box prose-mirror .editor-content { min-height: 5rem; }

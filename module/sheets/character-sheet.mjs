@@ -7,7 +7,8 @@ import { rollItem } from "../item-rolls.mjs";
 import {
   FIRE_MODES, MELEE_MODES, POWDER_MODES, misfireChance, rollAttack, rollDamage, rollHorrorFactor, rollManeuver, strikeBonus
 } from "../combat.mjs";
-import { BACKGROUND_KINDS, SKILL_CATEGORIES, WEAPON_TYPES, WP_KINDS } from "../data/items.mjs";
+import { BACKGROUND_KINDS, SKILL_CATEGORIES, WEAPON_TYPES, WP_KINDS, inlineDice } from "../data/items.mjs";
+import { NOTES_FIELDS } from "../data/character.mjs";
 import { applyAnimal, applyBackground, purchasedItems, removeAnimal, setOptionPurchased } from "../animal.mjs";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
@@ -115,9 +116,17 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
     const context = await super._prepareContext(options);
     const actor = this.actor;
     const system = actor.system;
+    // Notes boxes (ProseMirror): their display HTML, with written dice as clickable rolls.
+    const enriched = {};
+    const TextEditor = foundry.applications.ux.TextEditor.implementation;
+    for ( const path of [...NOTES_FIELDS, "notes"] ) {
+      enriched[path.replaceAll(".", "_")] = await TextEditor.enrichHTML(inlineDice(foundry.utils.getProperty(system, path) ?? ""),
+        { relativeTo: actor, secrets: actor.isOwner });
+    }
     return Object.assign(context, {
       actor,
       system,
+      enriched,
       systemFields: system.schema.fields,
       attributes: this.#prepareAttributes(),
       alignments: CONFIG.PALLADIUM.ALIGNMENTS,

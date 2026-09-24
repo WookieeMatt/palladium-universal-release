@@ -97,6 +97,8 @@ export default class PalladiumItemSheet extends HandlebarsApplicationMixin(ItemS
       enrichedDescription: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
         inlineDice(item.system.description), { relativeTo: item }
       ),
+      enrichedMalfunction: item.type === "device" ? await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+        inlineDice(item.system.malfunction), { relativeTo: item }) : "",
       skillCategories: SKILL_CATEGORIES,
       trainingChoices: { professional: "Professional", amateur: "Amateur" },
       wpKinds: WP_KINDS,
