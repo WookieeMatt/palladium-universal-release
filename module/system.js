@@ -12,6 +12,7 @@ import PalladiumTimeMachineSheet from "./sheets/time-machine-sheet.mjs";
 import { onRenderChatMessage } from "./combat.mjs";
 import { onDeleteCombat, onUpdateCombat } from "./actions.mjs";
 import { buildApi } from "./api.mjs";
+import { registerTcriDice } from "./dice-so-nice.mjs";
 
 Hooks.once("init", function () {
   console.log("Palladium Universal | Initializing system");
@@ -47,6 +48,17 @@ Hooks.once("init", function () {
 
   // Token status effects are this system's conditions (plus "dead" for defeated combatants).
   CONFIG.statusEffects = CONFIG.PALLADIUM.statusEffects();
+
+  // Dice So Nice: make the T.C.R.I. Dice the preferred look for players who haven't picked their own.
+  game.settings.register("palladium-universal", "tcriDiceDefault", {
+    name: "T.C.R.I. Dice by Default",
+    hint: "With Dice So Nice, players who haven't customized their dice roll the T.C.R.I. Dice (green glitter liquid). Everyone can still pick them in Dice So Nice's settings.",
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: true,
+    requiresReload: true
+  });
 
   // Initiative: d20 + Initiative bonus, highest first (p.84)
   CONFIG.Combat.initiative = { formula: "1d20 + @combat.totals.initiative", decimals: 0 };
@@ -103,6 +115,9 @@ Hooks.once("setup", function () {
     default: "dry"
   });
 });
+
+// Dice So Nice: the T.C.R.I. Dice (theme and animated dice system).
+Hooks.once("diceSoNiceReady", dice3d => registerTcriDice(dice3d));
 
 // Actions per Round reset each new round
 Hooks.on("updateCombat", onUpdateCombat);

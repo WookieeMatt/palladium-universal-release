@@ -20,7 +20,7 @@ Updates then come through Foundry's normal *Update* button.
 - **Black powder**: misfires and mishaps, GM weather setting, W.P. families, range bands, deliberate overloading.
 - **NPCs** on a compact sheet, **Vehicles** with armor locations and piloting, **Time Machines** with device, support-device and installation drop zones.
 - **Built-in tables**: Temporal Mishap, device malfunctions, spell experimentation, misfire mishaps.
-- A parchment and dark-green comic look.
+- A parchment and dark-green comic look, and the **T.C.R.I. Dice** for Dice So Nice (green glitter liquid dice).
 
 ## Documentation
 The **System Guide** ships inside the system: open the Compendium Packs sidebar → **Palladium Universal Guide**. The same pages are in the [`wiki`](wiki/00-Home.md) folder.

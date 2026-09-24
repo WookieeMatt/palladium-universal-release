@@ -3,6 +3,15 @@
 ## Settings
 **Configure Settings → System Settings → Black Powder Weather**: Dry, Humid (+5%), Rain (+15%), Downpour or dunking (+35%). Added to every black powder misfire chance.
 
+## T.C.R.I. Dice (Dice So Nice)
+With the *Dice So Nice* module enabled, the system adds the **T.C.R.I. Dice**, a seven-piece set (d4, d6, d8, d10, d10 %, d12 and d20) of clear green dice filled with glittering liquid. The liquid swirls and the glitter twinkles while the dice roll.
+
+- **Default look:** the world setting **T.C.R.I. Dice by Default** (on unless you turn it off) gives every player the T.C.R.I. Dice until they choose their own dice in Dice So Nice. Changing it reloads the world.
+- **Picking them yourself:** open *Dice So Nice Settings* → *Appearance*, then either:
+  - set **Dice Presets** to **T.C.R.I. Dice** (group *Palladium Universal*) for the full animated set, or
+  - set **Theme** to **T.C.R.I. Dice** to put the same colors and static glitter on another preset.
+- **No Dice So Nice?** Nothing changes: rolls work as usual.
+
 ## Rounds and the Combat Tracker
 - Initiative = d20 + the Initiative total.
 - Advancing to a **new round** resets everyone's actions and ends **Horrified** (the GM's client does this; a GM must be connected).

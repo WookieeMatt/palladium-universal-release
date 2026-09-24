@@ -8,7 +8,7 @@
 
 Updates arrive through Foundry's normal **Update** button on the Game Systems tab.
 
-**Requirements:** Foundry VTT v14. *Dice So Nice* is supported (every roll is a real Foundry roll) but not required.
+**Requirements:** Foundry VTT v14. *Dice So Nice* is supported (every roll is a real Foundry roll) but not required. With it, the system adds the **T.C.R.I. Dice** (see *GM Tools*).
 
 ## Document types
 **Actors**
