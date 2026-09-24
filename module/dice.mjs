@@ -32,6 +32,22 @@ export function cardHeader(actor, title, subtitle = "") {
   </header>${lines}`;
 }
 
+/**
+ * A roll result that expands to its details on click: "I.Q. = 21", then the calculation lines.
+ * @param {string} label                 What was rolled
+ * @param {string|number} result         The result
+ * @param {Array<[string, string|number]>} lines   Detail rows (label, value)
+ * @param {string} [caption]             A small heading above the rows
+ */
+export function resultDetails(label, result, lines, caption = "") {
+  const rows = lines.map(([name, value]) => `<li><span>${name}</span><strong>${value}</strong></li>`).join("");
+  return `<details class="pu-details">
+    <summary><span class="pu-roll-label">${label}</span><span class="pu-roll-eq">=</span>
+      <strong class="pu-roll-result">${result}</strong><i class="fa-solid fa-chevron-down pu-roll-toggle"></i></summary>
+    ${caption ? `<p class="pu-details-caption">${caption}</p>` : ""}<ul class="pu-lines">${rows}</ul>
+  </details>`;
+}
+
 /* -------------------------------------------- */
 
 /**

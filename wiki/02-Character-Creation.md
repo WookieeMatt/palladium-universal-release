@@ -16,7 +16,7 @@ Click an attribute's abbreviation (I.Q., M.E., M.A., P.S., P.P., P.E., P.B., Spd
 
 Steps 3–5 are the Species, Size and Physical Skills columns on the sheet, so the chat always matches what the sheet shows.
 
-The card reads *Generating …, Base 3D6, Exceptional 1D6, Species Bonus, Size Modifier, Physical Skill Bonus, Final Total* ("N/A" where a step doesn't apply).
+The card shows the result (e.g. **I.Q. = 21**); click it to expand the calculation: *Base 3D6, Exceptional 1D6, Species Bonus, Size Modifier, Physical Skill Bonus, Final Total* ("N/A" where a step doesn't apply).
 
 ## Core tab
 ### Attributes

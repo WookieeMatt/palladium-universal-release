@@ -537,3 +537,74 @@
   color: var(--pu-green-light);
   text-decoration-style: solid;
 }
+
+
+/* Roll results: "I.Q. = 21", click to expand the details. */
+.pu-card .pu-details {
+  margin: 8px;
+  border: 1px solid var(--pu-rule);
+  border-radius: 6px;
+  background: #fffdf5;
+}
+.pu-card .pu-details > summary {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+  list-style: none;
+}
+.pu-card .pu-details > summary::-webkit-details-marker { display: none; }
+.pu-card .pu-roll-label {
+  font-family: var(--pu-heading);
+  letter-spacing: 0.05em;
+  font-size: 1.15rem;
+  color: var(--pu-green);
+}
+.pu-card .pu-roll-eq { color: var(--pu-ink-soft); }
+.pu-card .pu-roll-result {
+  font-family: var(--pu-heading);
+  font-size: 1.5rem;
+  color: var(--pu-ink);
+}
+.pu-card .pu-roll-toggle {
+  margin-left: auto;
+  font-size: 0.8rem;
+  color: var(--pu-ink-soft);
+  transition: transform 0.15s ease;
+}
+.pu-card .pu-details[open] .pu-roll-toggle { transform: rotate(180deg); }
+.pu-card .pu-details-caption {
+  margin: 0;
+  padding: 4px 10px 0;
+  border-top: 1px solid var(--pu-rule);
+  font-weight: 700;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--pu-ink-soft);
+}
+.pu-card .pu-lines {
+  list-style: none;
+  margin: 0;
+  padding: 4px 10px 8px;
+}
+.pu-card .pu-lines li {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 2px 0;
+  border-bottom: 1px dotted var(--pu-rule);
+}
+.pu-card .pu-lines li:last-child {
+  border-bottom: none;
+  font-weight: 700;
+}
+
+/* Result lists without stray bullet marks. */
+.pu-card .pu-results {
+  list-style: none;
+  margin: 6px 0;
+  padding: 0 10px;
+}
+.pu-card .pu-results li { padding: 2px 0; }

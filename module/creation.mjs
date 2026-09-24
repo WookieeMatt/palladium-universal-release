@@ -1,4 +1,4 @@
-import { signed } from "./dice.mjs";
+import { cardHeader, resultDetails, signed } from "./dice.mjs";
 
 /**
  * Attribute generation (p.12). Clicking an attribute abbreviation on the character sheet runs the
@@ -92,16 +92,15 @@ export async function rollAttribute(actor, key) {
   const result = { key, base: base.total, exceptional, exceptionalDie, species, size, physical, total };
 
   // Step 6: chat log, then discard.
-  const line = (name, value) => `<li>${name}: ${value}</li>`;
-  const content = `<div class="pu-card"><p class="pu-text"><strong>Generating ${label}</strong></p>
-    <ul class="pu-results">
-      ${line("Base 3D6", base.total)}
-      ${line("Exceptional 1D6", exceptionalText)}
-      ${line("Species Bonus", signed(species))}
-      ${line("Size Modifier", size === null ? "N/A" : signed(size))}
-      ${line("Physical Skill Bonus", physical === null ? "N/A" : signed(physical))}
-    </ul>
-    <p class="pu-text"><strong>Final Total: ${total}</strong></p></div>`;
+  const content = `<div class="pu-card">${cardHeader(actor, `Rolls ${label}`)}
+    ${resultDetails(label, total, [
+      ["Base 3D6", base.total],
+      ["Exceptional 1D6", exceptionalText],
+      ["Species Bonus", signed(species)],
+      ["Size Modifier", size === null ? "N/A" : signed(size)],
+      ["Physical Skill Bonus", physical === null ? "N/A" : signed(physical)],
+      ["Final Total", total]
+    ], `Generating ${label}`)}</div>`;
   await ChatMessage.create({
     speaker: ChatMessage.getSpeaker({ actor }), rolls, content,
     flags: { "palladium-universal": { card: "attributeGeneration", actorUuid: actor.uuid, key, exceptionalDie } }

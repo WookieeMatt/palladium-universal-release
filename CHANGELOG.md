@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.5.3
+- Attribute generation card: green header with the portrait, the result as **I.Q. = 21**, and a click to expand the full calculation (Base 3D6, Exceptional 1D6, Species, Size, Physical Skills, Final Total) in neat rows.
+- Result lists on chat cards no longer show stray bullet marks.
+
 ## 1.5.2
 - Sheet tabs spread evenly across the tab bar.
 - Combat Training fields line up (the Training dropdown no longer sits higher than the others).
