@@ -3,8 +3,8 @@
     <div class="npc-attributes">
       {{#each attributes}}
       <div class="npc-attr" data-tooltip="{{bonus}}">
-        <label><a class="pu-rollable" data-action="rollAttribute" data-key="{{key}}"
-          data-tooltip="Generate {{label}} in chat (nothing is saved)">{{label}}</a></label>
+        <label><a class="pu-rollable" data-action="printAttribute" data-key="{{key}}"
+          data-tooltip="Show {{label}} in chat">{{label}}</a></label>
         <input type="number" name="system.attributes.{{key}}.value" value="{{value}}" />
         <span class="derived">{{total}}</span>
       </div>

@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.9.0
+- **Roll Attributes** (Core tab): one button rolls all eight attributes at character creation (3D6, +1D6 on 16–18 with the team rule, + species, size and physical skill modifiers; dice bonuses such as Boxing's +1D4 are rolled) and **saves** them. Each attribute shows its **Rolled** dice and final **Score** in boxes that can't be edited; the sheet's bonuses, skills, combat and saves use the Score.
+- One detailed chat card: a table of every attribute's 3D6, exceptional die, species, size, physical skills and score.
+- **Rolled once:** the button then becomes *Ask GM to Re-roll*; the GM gets a whispered card with an **Allow Re-roll** button. The GM can re-roll directly after a confirmation.
+- Clicking an attribute's abbreviation (character and NPC sheets) now **shows it in chat** (score, breakdown and what it gives) instead of rolling.
+- Characters that already have all eight attributes count as rolled. NPC attributes stay editable.
+
 ## 1.8.0
 - **Automated Animations support** (with Sequencer and JB2A): weapon attacks (with hit or miss), maneuvers, spells, psionics, item rolls and device / time machine operation play animations from the user's token to their targets. Damage, saves and skill checks don't. World setting to turn it off.
 - **Animation trigger set:** TMNT names (katana, sai, bo staff, nunchaku, naginata, kama, bows, guns, bite, claws, healing, teleport…) map to Automated Animations' built-in entries; an entry named after the item still wins. Editable in `CONFIG.PALLADIUM.ANIMATION_TRIGGERS`.

@@ -644,3 +644,78 @@
   padding: 4px 8px;
 }
 .palladium-universal .large-entry-box prose-mirror .editor-content { min-height: 5rem; }
+
+/* Attribute generation (v1.9.0): Roll Attributes button, read-only boxes, chat table */
+.palladium-universal .panel-header:has(.pu-roll-attributes) {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.palladium-universal .panel-header .pu-roll-attributes {
+  margin-left: auto;
+  flex: 0 0 auto;
+  width: auto;
+  font-family: var(--pu-heading);
+  letter-spacing: 0.05em;
+  color: var(--pu-paper);
+  background: var(--pu-green-light);
+  border: 1px solid var(--pu-green);
+  border-radius: 8px;
+  padding: 2px 12px;
+}
+.palladium-universal .panel-header .pu-roll-attributes:hover { background: var(--pu-green); }
+.palladium-universal .panel-header .pu-roll-attributes.locked {
+  color: var(--pu-ink-soft);
+  background: var(--pu-parchment);
+  border-color: var(--pu-rule);
+}
+.palladium-universal .pu-box {
+  display: inline-block;
+  min-width: 2.6em;
+  padding: 1px 6px;
+  text-align: center;
+  font-weight: 700;
+  color: var(--pu-ink);
+  background: var(--pu-parchment);
+  border: 1px solid var(--pu-rule);
+  border-radius: 6px;
+  cursor: default;
+  user-select: text;
+}
+.palladium-universal .pu-box.score {
+  color: var(--pu-paper);
+  background: var(--pu-green-light);
+  border-color: var(--pu-green);
+}
+.palladium-universal .pu-box.empty {
+  color: var(--pu-ink-soft);
+  background: transparent;
+  border-style: dashed;
+  font-weight: 400;
+}
+.palladium-universal .pu-box.halved { background: var(--pu-red); border-color: var(--pu-red); }
+
+.pu-card .pu-gen-table {
+  width: 100%;
+  margin: 6px 0 2px;
+  border-collapse: collapse;
+  font-size: 0.9em;
+  text-align: center;
+}
+.pu-card .pu-gen-table th,
+.pu-card .pu-gen-table td { padding: 2px 3px; border-bottom: 1px solid var(--pu-rule, #a39d80); }
+.pu-card .pu-gen-table thead th {
+  font-size: 0.8em;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--pu-ink-soft, #5d5a4b);
+}
+.pu-card .pu-gen-table tbody th { text-align: left; }
+.pu-card .pu-gen-table td.na { color: var(--pu-ink-soft, #5d5a4b); }
+.pu-card .pu-gen-table td.score {
+  font-weight: 700;
+  color: #fff;
+  background: var(--pu-green-light, #3d7a4d);
+  border-radius: 4px;
+}
+.pu-card .pu-gen-notes p { margin: 2px 0; font-size: 0.8em; color: var(--pu-ink-soft, #5d5a4b); }

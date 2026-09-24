@@ -85,6 +85,10 @@ export function buildApi() {
     operateTimeMachine: vehicle.operateTimeMachine,
 
     // Character building
+    rollAttributes: creation.rollAttributes,
+    printAttribute: creation.printAttribute,
+    requestReroll: creation.requestReroll,
+    allowReroll: creation.allowReroll,
     rollAttribute: creation.rollAttribute,
     applyAnimal: animal.applyAnimal,
     removeAnimal: animal.removeAnimal,

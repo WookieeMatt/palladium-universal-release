@@ -5,6 +5,7 @@ import { applyVehicleDamage, rollVehicleDamage } from "./vehicle.mjs";
 import { spendActions } from "./actions.mjs";
 import { viewItemCopy } from "./item-rolls.mjs";
 import { playAnimation } from "./animations.mjs";
+import { allowReroll } from "./creation.mjs";
 
 const { DialogV2 } = foundry.applications.api;
 
@@ -670,6 +671,7 @@ export function onRenderChatMessage(message, html) {
 async function onCardButton(event, message, data) {
   event.preventDefault();
   const action = event.currentTarget.dataset.puAction;
+  if ( action === "allow-reroll" ) return allowReroll(data);
   if ( ["spell-save", "spell-damage", "psionic-save"].includes(action) ) return onMagicCardButton(action, data);
 
   if ( action === "defend" ) {

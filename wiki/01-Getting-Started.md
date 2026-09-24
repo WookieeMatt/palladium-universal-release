@@ -26,7 +26,7 @@ The system provides rules and sheets, not book content. Create items yourself, o
 
 ## First steps
 1. Create a **Character** actor and open it.
-2. Enter the rolled attributes on the **Core** tab.
+2. Click **Roll Attributes** on the **Core** tab (once; re-rolls need the GM's permission).
 3. Drag an **Animal** item onto the sheet (Bio-E, Size Level and Human Feature costs are filled in).
 4. Drag **Origin**, **Creator Organization** and **Education** background items onto the Core tab's slots.
 5. Spend Bio-E on the **Bio-E / Mutation** tab, choose Combat Training on the **Combat** tab, add skills, W.P.s and gear.

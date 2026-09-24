@@ -2,7 +2,7 @@ import { castSpell, newDay, rollChangeSave, rollMagicAbility, rollSpellDamage, u
 import { operateDevice } from "../vehicle.mjs";
 import { practiceSpell, rollTemporalMishap } from "../timetravel.mjs";
 import { rollD20, rollPercent, rollSaveVsComa, rollSkill, signed } from "../dice.mjs";
-import { rollAttribute } from "../creation.mjs";
+import { attributeBonusText, printAttribute, rollAttributes } from "../creation.mjs";
 import { rollItem } from "../item-rolls.mjs";
 import {
   FIRE_MODES, MELEE_MODES, POWDER_MODES, misfireChance, rollAttack, rollDamage, rollHorrorFactor, rollManeuver, strikeBonus
@@ -49,7 +49,8 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
       rollSave: PalladiumCharacterSheet.#onRollSave,
       rollComa: PalladiumCharacterSheet.#onRollComa,
       rollInfluence: PalladiumCharacterSheet.#onRollInfluence,
-      rollAttribute: PalladiumCharacterSheet.#onRollAttribute,
+      printAttribute: PalladiumCharacterSheet.#onPrintAttribute,
+      rollAttributes: PalladiumCharacterSheet.#onRollAttributes,
       rollItem: PalladiumCharacterSheet.#onRollItem,
       rollSpellDamage: PalladiumCharacterSheet.#onRollSpellDamage,
       changeSize: PalladiumCharacterSheet.#onChangeSize,
@@ -129,6 +130,7 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
       enriched,
       systemFields: system.schema.fields,
       attributes: this.#prepareAttributes(),
+      generation: this.#generationState(),
       alignments: CONFIG.PALLADIUM.ALIGNMENTS,
       trainingChoices: Object.fromEntries(Object.entries(CONFIG.PALLADIUM.COMBAT_TRAINING).map(([k, v]) => [k, v.label])),
       featureLevels: CONFIG.PALLADIUM.FEATURE_LEVELS,
@@ -304,47 +306,38 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
     const b = system.bonuses;
     return Object.entries(CONFIG.PALLADIUM.ATTRIBUTES).map(([key, label]) => {
       const attr = system.attributes[key];
-      let bonus = "";
       let influence = null;
-      switch ( key ) {
-        case "iq": if ( b.iq.iqSkill ) bonus = `+${b.iq.iqSkill}% all skills`; break;
-        case "me": if ( b.me.meSave ) bonus = `${signed(b.me.meSave)} save vs psionics & strangeness`; break;
-        case "ma":
-          if ( b.ma.maPercent ) {
-            bonus = `${b.ma.maPercent}% trust / intimidate`;
-            influence = { key: "ma", label: "Trust / Intimidate", target: b.ma.maPercent };
-          }
-          break;
-        case "ps": if ( b.ps.psDamage ) bonus = `${signed(b.ps.psDamage)} melee & hurled damage`; break;
-        case "pp": if ( b.pp.ppCombat ) bonus = `${signed(b.pp.ppCombat)} strike, parry, dodge`; break;
-        case "pe":
-          if ( b.pe.pePercent ) {
-            bonus = `${signed(b.pe.peSave)} save vs toxins & magic · ${b.pe.pePercent}% coma/death (${signed(b.pe.peComa)} d20)`;
-          }
-          break;
-        case "pb":
-          if ( b.pb.pbPercent ) {
-            bonus = `${b.pb.pbPercent}% charm / impress`;
-            influence = { key: "pb", label: "Charm / Impress", target: b.pb.pbPercent };
-          }
-          break;
-        case "spd": {
-          const mv = system.movement;
-          bonus = `Move ${mv.move} yd · Run ${mv.fullRun} yd/round · ${mv.sprint} yd/min`;
-          break;
-        }
-      }
+      if ( (key === "ma") && b.ma.maPercent ) influence = { key: "ma", label: "Trust / Intimidate", target: b.ma.maPercent };
+      if ( (key === "pb") && b.pb.pbPercent ) influence = { key: "pb", label: "Charm / Impress", target: b.pb.pbPercent };
+      const rolled = attr.value !== null;
+      const gen = PalladiumCharacterSheet.#generationText(attr.gen);
+      // Once rolled, the Modifier shows the dice bonuses as rolled (e.g. "+2" instead of "+1D4").
+      if ( rolled ) gen.modifier = signed(attr.gen.modifier + attr.dice);
+      const parts = [["Rolled", attr.value], ["Modifier", signed(attr.gen.modifier + attr.dice)]];
+      const other = rolled && !attr.halved ? attr.total - attr.value - attr.gen.modifier - attr.dice : 0;
+      if ( other ) parts.push(["Other bonuses", signed(other)]);
+      if ( attr.halved ) parts.push(["Halved", ""]);
       return {
         key, label, value: attr.value, mod: attr.mod, sizeMod: attr.sizeMod,
         sizeModText: attr.sizeMod ? signed(attr.sizeMod) : "—",
         itemModText: attr.itemMod ? signed(attr.itemMod) : "—",
         itemModTooltip: (system.itemEffects?.sources?.[`attributes.${key}`] ?? []).filter(s => s.value)
           .map(s => `${s.source} ${signed(s.value)}`).join(", ") || "Animal, background, skills and abilities",
-        rolled: attr.value !== null,
-        total: attr.total ?? "—", bonus, influence, halved: attr.halved,
-        gen: PalladiumCharacterSheet.#generationText(attr.gen)
+        rolled, rolledText: rolled ? attr.value : "—",
+        total: attr.total ?? "—", bonus: attributeBonusText(system, key), influence, halved: attr.halved,
+        scoreTooltip: rolled ? parts.map(([k, v]) => `${k} ${v}`.trim()).join(" · ") : "Not rolled yet",
+        gen
       };
     });
+  }
+
+  /** The Roll Attributes button's state: first roll, GM-allowed re-roll, or locked (ask the GM). */
+  #generationState() {
+    const g = this.actor.system.generation ?? {};
+    if ( !g.rolled ) return { label: "Roll Attributes", icon: "fa-dice", hint: "Rolls 3D6 for every attribute (+1D6 on 16–18) once, at character creation." };
+    if ( g.rerollAllowed ) return { label: "Re-roll Attributes", icon: "fa-dice", hint: "The GM has allowed one re-roll." };
+    if ( game.user.isGM ) return { label: "Re-roll Attributes", icon: "fa-lock", locked: true, hint: "Already rolled. As GM you can roll them again." };
+    return { label: "Ask GM to Re-roll", icon: "fa-lock", locked: true, hint: "Attributes are rolled once. Ask the GM for permission to roll again." };
   }
 
   /** Display text for an attribute's generation modifiers ("N/A" where a step doesn't apply). */
@@ -525,8 +518,13 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
   }
 
   /** @this {PalladiumCharacterSheet} */
-  static #onRollAttribute(event, target) {
-    return rollAttribute(this.actor, target.dataset.key);
+  static #onPrintAttribute(event, target) {
+    return printAttribute(this.actor, target.dataset.key);
+  }
+
+  /** @this {PalladiumCharacterSheet} */
+  static #onRollAttributes() {
+    return rollAttributes(this.actor);
   }
 
   /** @this {PalladiumCharacterSheet} */

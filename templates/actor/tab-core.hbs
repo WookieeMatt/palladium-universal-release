@@ -2,22 +2,27 @@
   <section class="panel">
     <div class="panel-header">
       <h2>Attributes</h2>
-      <span class="hint">Click an attribute to roll 3D6 (+1D6 on 16–18) + its Modifier in chat. Nothing is saved.</span>
+      <span class="hint">Click an attribute to show it in chat.</span>
+      <button type="button" class="pu-roll-attributes{{#if generation.locked}} locked{{/if}}" data-action="rollAttributes"
+        data-tooltip="{{generation.hint}}"><i class="fa-solid {{generation.icon}}"></i> {{generation.label}}</button>
     </div>
     <table class="attribute-table">
       <thead>
-        <tr><th>Attribute</th><th data-tooltip="The animal, its purchased options and abilities / powers">Species</th><th data-tooltip="I.Q., P.S., P.E. and Spd only">Size</th>
-          <th data-tooltip="P.S., P.P., P.E. and Spd only">Physical Skills</th><th>Modifier</th></tr>
+        <tr><th>Attribute</th><th data-tooltip="3D6, +1D6 on 16–18 (rolled once at character creation)">Rolled</th>
+          <th data-tooltip="The animal, its purchased options and abilities / powers">Species</th><th data-tooltip="I.Q., P.S., P.E. and Spd only">Size</th>
+          <th data-tooltip="P.S., P.P., P.E. and Spd only">Physical Skills</th><th>Modifier</th><th>Score</th></tr>
       </thead>
       <tbody>
         {{#each attributes}}
         <tr>
-          <th scope="row"><a class="pu-rollable" data-action="rollAttribute" data-key="{{key}}"
-            data-tooltip="Generate {{label}} in chat: 3D6, +1D6 on 16–18, + {{gen.modifier}}. Nothing is saved.">{{label}}</a></th>
+          <th scope="row"><a class="pu-rollable" data-action="printAttribute" data-key="{{key}}"
+            data-tooltip="Show {{label}} in chat{{#if bonus}}: {{bonus}}{{/if}}">{{label}}</a></th>
+          <td><span class="pu-box{{#unless rolled}} empty{{/unless}}" data-tooltip="Rolled at character creation; not editable">{{rolledText}}</span></td>
           <td class="derived">{{gen.species}}</td>
           <td class="derived">{{gen.size}}</td>
           <td class="derived">{{gen.physical}}</td>
-          <td class="total">{{gen.modifier}}</td>
+          <td class="derived">{{gen.modifier}}</td>
+          <td><span class="pu-box score{{#unless rolled}} empty{{/unless}}{{#if halved}} halved{{/if}}" data-tooltip="{{scoreTooltip}}{{#if bonus}} — {{bonus}}{{/if}}">{{total}}</span></td>
         </tr>
         {{/each}}
       </tbody>

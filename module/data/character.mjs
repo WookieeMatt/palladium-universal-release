@@ -52,7 +52,8 @@ const resourceField = () => new SchemaField({
 
 /** A rolled attribute plus a manual modifier. Blank until the player enters a value. */
 const attributeField = () => new SchemaField({
-  value: optionalInt(),
+  value: optionalInt(),   // the generation roll: 3D6 (+ the exceptional 1D6)
+  dice: intField(),       // dice bonuses rolled at generation (e.g. Boxing +1D4 to P.S.)
   mod: intField()
 });
 
@@ -111,6 +112,11 @@ export default class CharacterData extends foundry.abstract.TypeDataModel {
       attributes: new SchemaField(Object.fromEntries(
         Object.keys(CONFIG.PALLADIUM.ATTRIBUTES).map(key => [key, attributeField()])
       )),
+      // Attribute generation is rolled once; a re-roll needs the GM's permission.
+      generation: new SchemaField({
+        rolled: new BooleanField(),
+        rerollAllowed: new BooleanField()
+      }),
 
       mutation: new SchemaField({
         bioeTotal: intField(0, { min: 0 }),
@@ -222,6 +228,14 @@ export default class CharacterData extends foundry.abstract.TypeDataModel {
 
   /** @override */
   static migrateData(source) {
+    // v1.9.0: characters whose attributes were already filled in count as rolled.
+    if ( source.attributes && (source.generation?.rolled === undefined) ) {
+      const values = Object.values(source.attributes).map(a => a?.value);
+      if ( values.length && values.every(v => Number.isFinite(v)) ) {
+        source.generation = { ...(source.generation ?? {}), rolled: true };
+      }
+    }
+
     // v0.2.0 sheet saved Initiative/Strike/Parry/Dodge under system.derived by mistake.
     const legacy = source.derived;
     if ( legacy && (typeof legacy === "object") ) {
@@ -411,7 +425,7 @@ export default class CharacterData extends foundry.abstract.TypeDataModel {
     for ( const [key, attr] of Object.entries(this.attributes) ) {
       attr.sizeMod = (applySize && (key in size)) ? size[key] : 0;
       attr.itemMod = this.#effect(`attributes.${key}`);
-      attr.total = attr.value === null ? null : Math.max(0, attr.value + attr.sizeMod + attr.itemMod + attr.mod);
+      attr.total = attr.value === null ? null : Math.max(0, attr.value + attr.sizeMod + attr.itemMod + attr.dice + attr.mod);
       attr.halved = this.#effect(`attributes.${key}.halve`) > 0;
       if ( attr.halved && (attr.total !== null) ) attr.total = Math.floor(attr.total / 2);
       attr.gen = this.#generationModifiers(key);

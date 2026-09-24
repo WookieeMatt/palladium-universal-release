@@ -6,29 +6,31 @@ Name, portrait (click to change), animal, alignment, **level**, **XP** (the shee
 New characters and NPCs get a round token with a green ring.
 
 ## Generating attributes
-Click an attribute's abbreviation (I.Q., M.E., M.A., P.S., P.P., P.E., P.B., Spd) on the Core tab. The calculation goes to chat; **nothing is saved to the sheet**.
+Attributes are rolled **once, at character creation**, with the **Roll Attributes** button on the Core tab. It rolls every attribute at once and saves the results:
 
 1. **Base:** 3D6.
 2. **Exceptional:** on 16, 17 or 18, add 1D6. With **Team Character Generation** on (world setting), if another character in the same Actors folder rolled a higher bonus die for that attribute, theirs is used.
 3. **Species:** the animal's flat bonus to that attribute, plus bonuses from its purchased options and the character's abilities / powers (e.g. Hominid attribute boosts, Extraordinary P.E.).
 4. **Size Level:** I.Q., P.S., P.E. and Spd only.
-5. **Physical skills:** P.S., P.P., P.E. and Spd only (dice bonuses such as Boxing's +1D4 are rolled if the skill hasn't stored a value).
+5. **Physical skills:** P.S., P.P., P.E. and Spd only (dice bonuses such as Boxing's +1D4 are rolled now).
 
-Steps 3–5 are the Species, Size and Physical Skills columns on the sheet, so the chat always matches what the sheet shows.
+One chat card shows all eight attributes in a table: 3D6, exceptional die, Species, Size, Physical Skills and the final Score.
 
-The card shows the result (e.g. **I.Q. = 21**); click it to expand the calculation: *Base 3D6, Exceptional 1D6, Species Bonus, Size Modifier, Physical Skill Bonus, Final Total* ("N/A" where a step doesn't apply).
+**Rolled once:** after the first roll the button becomes **Ask GM to Re-roll**. A player's request goes to the GM as a whispered card with an **Allow Re-roll** button; once allowed, the player can roll once more. The GM can re-roll any character directly (after a confirmation).
+
+During play, click an attribute's abbreviation to **show it in chat**: its score, how it's made up and what it gives (e.g. P.P. 18: +2 strike, parry, dodge). No dice are rolled.
 
 ## Core tab
 ### Attributes
-Each line shows the modifiers attribute generation adds, worked out from the character before any roll:
-
 | Column | Meaning |
 |---|---|
-| **Attribute** | Click to generate it in chat (see *Generating attributes*). |
+| **Attribute** | Click to show it in chat. |
+| **Rolled** | The 3D6 (+ exceptional die) from Roll Attributes. Not editable. |
 | **Species** | The animal's bonus to that attribute, plus purchased options and abilities / powers. |
 | **Size** | Size Level modifier (I.Q., P.S., P.E. and Spd only; N/A for the others). |
-| **Physical Skills** | Bonuses from Physical skills (P.S., P.P., P.E. and Spd only). Unrolled dice such as Boxing's +1D4 are shown as dice and rolled when you generate. |
-| **Modifier** | The sum added to the 3D6. |
+| **Physical Skills** | Bonuses from Physical skills (P.S., P.P., P.E. and Spd only). Dice such as Boxing's +1D4 are shown as dice. |
+| **Modifier** | The sum added to the roll (with dice bonuses as rolled, once rolled). |
+| **Score** | The attribute as the sheet uses it for bonuses, skills, combat and saves. Not editable; hover for the breakdown and what it gives. |
 
 ### Health & Damage
 - **Hit Points** (value/max).
