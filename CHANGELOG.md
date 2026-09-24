@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.5.1
+- The attribute table shows the generation modifiers worked out before rolling: **Species**, **Size** (I.Q., P.S., P.E., Spd), **Physical Skills** (P.S., P.P., P.E., Spd) and the total **Modifier**. Clicking an attribute rolls 3D6 (+1D6 on 16–18) and adds exactly those modifiers in chat. Nothing is typed or saved; the Misc, Total and Bonus columns and the carry line were removed from the table.
+
 ## 1.5.0
 - **Attribute generation** follows the step-by-step rules: click an attribute abbreviation to print *Base 3D6, Exceptional 1D6, Species Bonus, Size Modifier (I.Q., P.S., P.E., Spd only), Physical Skill Bonus (P.S., P.P., P.E., Spd only), Final Total* to chat. **Nothing is saved to the sheet.**
 - New world setting **Team Character Generation**: teammates (same Actors folder) share their highest exceptional bonus die per attribute.

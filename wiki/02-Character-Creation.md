@@ -14,20 +14,21 @@ Click an attribute's abbreviation (I.Q., M.E., M.A., P.S., P.P., P.E., P.B., Spd
 4. **Size Level:** I.Q., P.S., P.E. and Spd only.
 5. **Physical skills:** P.S., P.P., P.E. and Spd only (dice bonuses such as Boxing's +1D4 are rolled if the skill hasn't stored a value).
 
+Steps 3–5 are the Species, Size and Physical Skills columns on the sheet, so the chat always matches what the sheet shows.
+
 The card reads *Generating …, Base 3D6, Exceptional 1D6, Species Bonus, Size Modifier, Physical Skill Bonus, Final Total* ("N/A" where a step doesn't apply).
 
 ## Core tab
 ### Attributes
+Each line shows the modifiers attribute generation adds, worked out from the character before any roll:
+
 | Column | Meaning |
 |---|---|
-| **Attribute** | Click to generate it in chat (see above). |
-| **Size** | The Size Level modifier (Bio-E tab; can be switched off there). |
-| **Bonuses** | From the animal, background, skills and abilities (item effects). |
-| **Misc** | Your own adjustment. |
-| **Total** | Used everywhere else. A **½** mark means a Human Feature halves it (e.g. featureless Looks halves P.B.). |
-| **Bonus** | What the total grants: +% skills (I.Q.), saves (M.E., P.E.), damage (P.S.), strike/parry/dodge (P.P.), coma % and its d20 bonus (P.E.), movement (Spd). M.A. and P.B. have roll buttons for Trust/Intimidate and Charm/Impress. |
-
-Carry and lift weights are shown under the table.
+| **Attribute** | Click to generate it in chat (see *Generating attributes*). |
+| **Species** | The animal's bonus to that attribute. |
+| **Size** | Size Level modifier (I.Q., P.S., P.E. and Spd only; N/A for the others). |
+| **Physical Skills** | Bonuses from Physical skills (P.S., P.P., P.E. and Spd only). Unrolled dice such as Boxing's +1D4 are shown as dice and rolled when you generate. |
+| **Modifier** | The sum added to the 3D6. |
 
 ### Background
 Three slots: **Origin**, **Creator Organization**, **Education / Background**. Drop a Background item anywhere on the sheet and it goes into its slot (replacing the previous one of that kind). An Education sets the Education field and bonus; a background that grants Combat Training sets it if you have none.

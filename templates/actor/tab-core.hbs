@@ -2,33 +2,26 @@
   <section class="panel">
     <div class="panel-header">
       <h2>Attributes</h2>
-      <span class="hint">Click an attribute to generate it in chat (nothing is saved)</span>
+      <span class="hint">Click an attribute to roll 3D6 (+1D6 on 16–18) + its Modifier in chat. Nothing is saved.</span>
     </div>
     <table class="attribute-table">
       <thead>
-        <tr><th>Attribute</th><th>Size</th><th data-tooltip="Animal, background, skills and abilities">Bonuses</th><th>Misc</th><th>Total</th><th>Bonus</th></tr>
+        <tr><th>Attribute</th><th>Species</th><th data-tooltip="I.Q., P.S., P.E. and Spd only">Size</th>
+          <th data-tooltip="P.S., P.P., P.E. and Spd only">Physical Skills</th><th>Modifier</th></tr>
       </thead>
       <tbody>
         {{#each attributes}}
         <tr>
           <th scope="row"><a class="pu-rollable" data-action="rollAttribute" data-key="{{key}}"
-            data-tooltip="Generate {{label}} in chat: 3D6, +1D6 on 16–18, + species, size and physical skill bonuses. Nothing is saved.">{{label}}</a></th>
-          <td class="derived">{{sizeModText}}</td>
-          <td class="derived" data-tooltip="{{itemModTooltip}}">{{itemModText}}</td>
-          <td><input type="number" name="system.attributes.{{key}}.mod" value="{{mod}}" /></td>
-          <td class="total">{{total}}{{#if halved}} <span class="hint" data-tooltip="Halved by a Human Feature">½</span>{{/if}}</td>
-          <td class="bonus">
-            {{bonus}}
-            {{#if influence}}
-            <button type="button" class="icon-button" data-action="rollInfluence" data-label="{{influence.label}}"
-              data-target="{{influence.target}}" data-tooltip="Roll {{influence.label}}"><i class="fa-solid fa-dice-d20"></i></button>
-            {{/if}}
-          </td>
+            data-tooltip="Generate {{label}} in chat: 3D6, +1D6 on 16–18, + {{gen.modifier}}. Nothing is saved.">{{label}}</a></th>
+          <td class="derived">{{gen.species}}</td>
+          <td class="derived">{{gen.size}}</td>
+          <td class="derived">{{gen.physical}}</td>
+          <td class="total">{{gen.modifier}}</td>
         </tr>
         {{/each}}
       </tbody>
     </table>
-    <p class="hint">Carry {{system.carry.carry}} lb · Lift {{system.carry.lift}} lb</p>
   </section>
 
   <section class="panel">

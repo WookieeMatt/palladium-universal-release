@@ -322,9 +322,26 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
         itemModTooltip: (system.itemEffects?.sources?.[`attributes.${key}`] ?? []).filter(s => s.value)
           .map(s => `${s.source} ${signed(s.value)}`).join(", ") || "Animal, background, skills and abilities",
         rolled: attr.value !== null,
-        total: attr.total ?? "—", bonus, influence, halved: attr.halved
+        total: attr.total ?? "—", bonus, influence, halved: attr.halved,
+        gen: PalladiumCharacterSheet.#generationText(attr.gen)
       };
     });
+  }
+
+  /** Display text for an attribute's generation modifiers ("N/A" where a step doesn't apply). */
+  static #generationText(gen) {
+    const withDice = (value, dice) => {
+      const parts = [];
+      if ( value || !dice.length ) parts.push(signed(value));
+      parts.push(...dice.map(d => `+${d}`));
+      return parts.join(" ");
+    };
+    return {
+      species: withDice(gen.species, gen.speciesDice),
+      size: gen.size === null ? "N/A" : signed(gen.size),
+      physical: gen.physical === null ? "N/A" : withDice(gen.physical, gen.physicalDice),
+      modifier: withDice(gen.modifier, gen.dice)
+    };
   }
 
   /* -------------------------------------------- */

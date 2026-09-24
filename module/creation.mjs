@@ -9,24 +9,17 @@ import { signed } from "./dice.mjs";
  *  2. Exceptional: on 16, 17 or 18 add 1D6. Team rule: with team generation on (world setting), if
  *     another member of the team (same Actors folder) rolled a higher bonus die for this attribute,
  *     use theirs.
- *  3. Species: the animal item's flat bonuses to this attribute.
- *  4. Size Level: I.Q., P.S., P.E. and Spd only.
- *  5. Physical skills: P.S., P.P., P.E. and Spd only (dice bonuses without a stored value are rolled).
+ *  3–5. The modifiers the character sheet works out before any roll (CharacterData, attr.gen):
+ *     species, Size Level (I.Q., P.S., P.E., Spd) and physical skills (P.S., P.P., P.E., Spd).
+ *     Dice bonuses that haven't been rolled (e.g. Boxing +1D4) are rolled here.
  */
 
-export const SIZE_ATTRIBUTES = ["iq", "ps", "pe", "spd"];
-export const PHYSICAL_ATTRIBUTES = ["ps", "pp", "pe", "spd"];
-
-/** Sum an item's effects on an attribute; dice formulas without a stored value are rolled. */
-async function itemBonus(item, key, rolls) {
+/** Roll unrolled dice bonuses (e.g. "1D4") and return their sum. */
+async function rollDice(formulas, rolls) {
   let total = 0;
-  for ( const effect of item.system.effects ?? [] ) {
-    if ( effect.target !== `attributes.${key}` ) continue;
-    if ( Number.isFinite(effect.value) ) { total += effect.value; continue; }
-    const n = Number(effect.formula);
-    if ( Number.isFinite(n) ) { total += n; continue; }
-    if ( !effect.formula || !Roll.validate(effect.formula) ) continue;
-    const roll = await new Roll(effect.formula).evaluate();
+  for ( const formula of formulas ) {
+    if ( !Roll.validate(formula) ) continue;
+    const roll = await new Roll(formula).evaluate();
     rolls.push(roll);
     total += roll.total;
   }
@@ -88,22 +81,12 @@ export async function rollAttribute(actor, key) {
     }
   }
 
-  // Step 3: species.
-  const animal = actor.items.find(i => i.type === "animal");
-  const species = animal ? await itemBonus(animal, key, rolls) : 0;
-
-  // Step 4: Size Level (I.Q., P.S., P.E., Spd only).
-  const m = actor.system.mutation;
-  const size = SIZE_ATTRIBUTES.includes(key) ? (CONFIG.PALLADIUM.SIZE_LEVELS[m?.sizeLevel]?.[key] ?? 0) : null;
-
-  // Step 5: physical skills (P.S., P.P., P.E., Spd only).
-  let physical = null;
-  if ( PHYSICAL_ATTRIBUTES.includes(key) ) {
-    physical = 0;
-    for ( const skill of actor.items.filter(i => (i.type === "skill") && (i.system.category === "physical")) ) {
-      physical += await itemBonus(skill, key, rolls);
-    }
-  }
+  // Steps 3–5: the modifiers the sheet already worked out (species, size, physical skills); only
+  // dice bonuses nobody has rolled yet are rolled now.
+  const gen = actor.system.attributes[key].gen;
+  const species = gen.species + await rollDice(gen.speciesDice, rolls);
+  const size = gen.size;
+  const physical = gen.physical === null ? null : gen.physical + await rollDice(gen.physicalDice, rolls);
 
   const total = base.total + (exceptional ?? 0) + species + (size ?? 0) + (physical ?? 0);
   const result = { key, base: base.total, exceptional, exceptionalDie, species, size, physical, total };

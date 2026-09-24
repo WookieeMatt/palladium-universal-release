@@ -46,6 +46,15 @@ export function attributeBonuses(a) {
   };
 }
 
+/**
+ * Attribute generation (p.12): which attributes each modifier step applies to. Size Level changes
+ * only I.Q., P.S., P.E. and Spd; physical skills only P.S., P.P., P.E. and Spd.
+ */
+export const GENERATION = {
+  sizeAttributes: ["iq", "ps", "pe", "spd"],
+  physicalAttributes: ["ps", "pp", "pe", "spd"]
+};
+
 /** Movement Table (p.12). */
 export function movement(spd) {
   spd = Math.max(0, spd ?? 0);

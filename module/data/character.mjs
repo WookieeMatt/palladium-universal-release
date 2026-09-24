@@ -333,6 +333,36 @@ export default class CharacterData extends foundry.abstract.TypeDataModel {
     this.itemEffects = { totals, sources, conditional, features: featureEffects };
   }
 
+  /**
+   * The modifiers attribute generation adds to the dice, worked out before rolling: species (the
+   * animal's bonuses), Size Level (I.Q., P.S., P.E., Spd) and physical skills (P.S., P.P., P.E., Spd).
+   * Dice bonuses that haven't been rolled (e.g. Boxing +1D4) are kept as formulas.
+   * @param {string} key
+   */
+  #generationModifiers(key) {
+    const G = CONFIG.PALLADIUM.GENERATION;
+    const items = this.parent?.items ?? [];
+    const collect = list => {
+      const out = { value: 0, dice: [] };
+      for ( const item of list ) {
+        for ( const effect of item.system.effects ?? [] ) {
+          if ( effect.target !== `attributes.${key}` ) continue;
+          if ( Number.isFinite(effect.value) ) out.value += effect.value;
+          else if ( Number.isFinite(Number(effect.formula)) ) out.value += Number(effect.formula);
+          else if ( effect.formula ) out.dice.push(effect.formula);
+        }
+      }
+      return out;
+    };
+    const species = collect(items.filter(i => i.type === "animal"));
+    const size = G.sizeAttributes.includes(key) ? (CONFIG.PALLADIUM.SIZE_LEVELS[this.mutation.sizeLevel]?.[key] ?? 0) : null;
+    const physical = G.physicalAttributes.includes(key)
+      ? collect(items.filter(i => (i.type === "skill") && (i.system.category === "physical"))) : null;
+    const dice = [...species.dice, ...(physical?.dice ?? [])];
+    return { species: species.value, speciesDice: species.dice, size, physical: physical?.value ?? null,
+      physicalDice: physical?.dice ?? [], modifier: species.value + (size ?? 0) + (physical?.value ?? 0), dice };
+  }
+
   /** Sum of item effects for a target key. */
   #effect(target) {
     return this.itemEffects.totals[target] ?? 0;
@@ -356,6 +386,7 @@ export default class CharacterData extends foundry.abstract.TypeDataModel {
       attr.total = attr.value === null ? null : Math.max(0, attr.value + attr.sizeMod + attr.itemMod + attr.mod);
       attr.halved = this.#effect(`attributes.${key}.halve`) > 0;
       if ( attr.halved && (attr.total !== null) ) attr.total = Math.floor(attr.total / 2);
+      attr.gen = this.#generationModifiers(key);
     }
     const a = this.attributes;
     this.bonuses = {
