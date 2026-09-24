@@ -1,0 +1,45 @@
+<section class="item-body">
+  <section class="panel">
+    <div class="item-grid">
+      <div class="field">
+        <label>Type</label>
+        <select name="system.armorType">{{selectOptions armorTypes selected=system.armorType}}</select>
+      </div>
+      <div class="field">
+        <label>A.R.</label>
+        <input type="number" name="system.ar" value="{{system.ar}}" min="0" />
+      </div>
+      <div class="field">
+        <label>S.D.C.</label>
+        <div class="pair">
+          <input type="number" name="system.sdc.value" value="{{system.sdc.value}}" />
+          <span class="sep">/</span>
+          <input type="number" name="system.sdc.max" value="{{system.sdc.max}}" />
+        </div>
+      </div>
+      <div class="field">
+        <label>Parry Bonus (shields)</label>
+        <input type="number" name="system.parryBonus" value="{{system.parryBonus}}" />
+      </div>
+      <label class="checkbox">
+        <input type="checkbox" name="system.ballisticOnly" {{checked system.ballisticOnly}} /> Stops only handgun, SMG, shotgun
+      </label>
+      <label class="checkbox">
+        <input type="checkbox" name="system.equipped" {{checked system.equipped}} /> Equipped
+      </label>
+      <div class="field">
+        <label>Weight</label>
+        <input type="text" name="system.weight" value="{{system.weight}}" />
+      </div>
+      <div class="field">
+        <label>Cost</label>
+        <input type="text" name="system.cost" value="{{system.cost}}" />
+      </div>
+    </div>
+    <div class="field">
+      <label>Penalties</label>
+      <input type="text" name="system.penalties" value="{{system.penalties}}" placeholder="e.g. −5% Climbing, Prowl; Swimming −25%" />
+    </div>
+  </section>
+  {{> "systems/palladium-universal/templates/item/parts/description.hbs"}}
+</section>

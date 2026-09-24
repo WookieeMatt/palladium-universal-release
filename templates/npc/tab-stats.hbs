@@ -1,0 +1,110 @@
+<section class="tab sheet-body {{tab.cssClass}}" data-group="primary" data-tab="stats">
+  <section class="panel">
+    <div class="npc-attributes">
+      {{#each attributes}}
+      <div class="npc-attr" data-tooltip="{{bonus}}">
+        <label>{{label}}</label>
+        <input type="number" name="system.attributes.{{key}}.value" value="{{value}}" />
+        <span class="derived">{{total}}</span>
+      </div>
+      {{/each}}
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="npc-health">
+      <div class="field">
+        <label>Hit Points</label>
+        <div class="pair">
+          <input type="number" name="system.health.hp.value" value="{{health.hp.value}}" />
+          <span class="sep">/</span>
+          <input type="number" name="system.health.hp.max" value="{{health.hp.max}}" />
+        </div>
+      </div>
+      <div class="field">
+        <label>S.D.C.</label>
+        <div class="pair">
+          <input type="number" name="system.health.sdc.value" value="{{health.sdc.value}}" />
+          <span class="sep">/ {{health.sdc.max}}</span>
+        </div>
+      </div>
+      <div class="field">
+        <label data-tooltip="S.D.C. beyond the Size Level">S.D.C. Bonus</label>
+        <input type="number" name="system.health.sdc.bonus" value="{{health.sdc.bonus}}" />
+      </div>
+      <div class="field">
+        <label>Natural A.R.</label>
+        <input type="number" name="system.health.naturalArmor.ar" value="{{health.naturalArmor.ar}}" min="0" />
+      </div>
+      <div class="field">
+        <label>Size Level</label>
+        <input type="number" name="system.mutation.sizeLevel" value="{{system.mutation.sizeLevel}}" min="1" max="25" />
+      </div>
+    </div>
+    <p class="hint">Armor: {{#if health.armor.active.ar}}{{health.armor.active.name}} A.R. {{health.armor.active.ar}}, S.D.C. {{health.armor.active.sdc.value}}/{{health.armor.active.sdc.max}}{{else}}none{{/if}}</p>
+  </section>
+
+  <section class="panel">
+    <div class="panel-header">
+      <h2>Combat</h2>
+      <span class="hint">{{system.combat.actionsLeft}} / {{system.combat.totals.actions}} actions left · crit {{system.combat.critRange}}+
+        <button type="button" class="icon-button" data-action="resetActions" data-tooltip="Reset actions"><i class="fa-solid fa-rotate-left"></i></button></span>
+    </div>
+    <div class="npc-health">
+      <div class="field">
+        <label>Training</label>
+        <select name="system.combat.training">{{selectOptions trainingChoices selected=system.combat.training}}</select>
+      </div>
+      <div class="field">
+        <label>Misc Actions</label>
+        <input type="number" name="system.combat.mod.actions" value="{{system.combat.mod.actions}}" />
+      </div>
+    </div>
+    <div class="npc-rolls">
+      {{#each combatRolls}}
+      <button type="button" class="roll-button" data-action="rollCombat" data-roll="{{key}}"><i class="fa-solid fa-dice-d20"></i> {{label}} {{total}}</button>
+      {{/each}}
+      {{#each maneuvers}}
+      <button type="button" class="roll-button" data-action="rollManeuver" data-maneuver="{{key}}" data-tooltip="{{text}}"><i class="fa-solid fa-hand-back-fist"></i> {{label}}</button>
+      {{/each}}
+    </div>
+    <ol class="item-list">
+      {{#each items.weapons}}
+      <li class="item-row weapon-row" data-item-id="{{id}}">
+        <img src="{{img}}" alt="" class="item-icon" />
+        <div class="item-name"><a data-action="itemEdit">{{name}}</a><span class="hint">{{damage}}{{#if range}} · {{range}}{{/if}}</span></div>
+        <span class="weapon-modes">
+          {{#each modes}}
+          <button type="button" class="roll-button" data-action="rollAttack" data-mode="{{key}}"><i class="fa-solid fa-dice-d20"></i> {{label}} {{strike}}</button>
+          {{/each}}
+        </span>
+        <button type="button" class="icon-button" data-action="rollDamage" data-tooltip="Roll damage"><i class="fa-solid fa-burst"></i></button>
+        <button type="button" class="icon-button" data-action="itemDelete" data-tooltip="Delete"><i class="fa-solid fa-trash"></i></button>
+      </li>
+      {{/each}}
+      <li><button type="button" data-action="itemCreate" data-type="weapon"><i class="fa-solid fa-plus"></i> Weapon</button>
+        <button type="button" data-action="itemCreate" data-type="armor" data-armor-type="body"><i class="fa-solid fa-plus"></i> Armor</button></li>
+    </ol>
+  </section>
+
+  <section class="panel">
+    <div class="panel-header"><h2>Saves</h2></div>
+    <div class="npc-rolls">
+      {{#each saves}}
+      {{#unless (eq key "coma")}}
+      <button type="button" class="roll-button" data-action="rollSave" data-save="{{key}}"><i class="fa-solid fa-dice-d20"></i> {{label}} {{bonusText}} ({{target}}+)</button>
+      {{/unless}}
+      {{/each}}
+      <button type="button" class="roll-button" data-action="rollComa"><i class="fa-solid fa-heart-pulse"></i> vs Coma</button>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-header"><h2>Conditions</h2></div>
+    <div class="condition-grid">
+      {{#each conditions}}
+      <button type="button" class="condition {{#if active}}active{{/if}}" data-action="toggleCondition" data-condition="{{id}}" data-tooltip="{{text}}"><img src="{{img}}" alt="" /> {{label}}</button>
+      {{/each}}
+    </div>
+  </section>
+</section>

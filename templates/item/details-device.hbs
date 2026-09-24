@@ -1,0 +1,54 @@
+<section class="item-body">
+  <section class="panel">
+    <div class="item-grid">
+      <div class="field">
+        <label>Device Type</label>
+        <select name="system.deviceType">{{selectOptions deviceTypes selected=system.deviceType}}</select>
+      </div>
+      {{#if (eq system.deviceType "readout")}}
+      <div class="field">
+        <label>Assists</label>
+        <select name="system.assists">{{selectOptions assistTypes selected=system.assists}}</select>
+      </div>
+      <div class="field">
+        <label>Bonus to Operate %</label>
+        <input type="number" name="system.skillBonus" value="{{system.skillBonus}}" />
+      </div>
+      {{else}}
+      <div class="field">
+        <label>Operator Skill</label>
+        <input type="text" name="system.skill" value="{{system.skill}}" placeholder="Pilot Time Machine" />
+      </div>
+      <div class="field">
+        <label>Max Area</label>
+        <input type="text" name="system.maxArea" value="{{system.maxArea}}" placeholder="25 ft radius" />
+      </div>
+      <div class="field">
+        <label>Recharge</label>
+        <input type="text" name="system.recharge" value="{{system.recharge}}" placeholder="20 minutes" />
+      </div>
+      <label class="checkbox"><input type="checkbox" name="system.charged" {{checked system.charged}} /> Charged</label>
+      {{/if}}
+      <div class="field">
+        <label>Weight</label>
+        <input type="text" name="system.weight" value="{{system.weight}}" />
+      </div>
+      <div class="field">
+        <label>Cost</label>
+        <input type="text" name="system.cost" value="{{system.cost}}" />
+      </div>
+    </div>
+    {{#unless (eq system.deviceType "readout")}}
+    <div class="field">
+      <label>Malfunction Table</label>
+      <select name="system.malfunctionTable">{{selectOptions malfunctionTables selected=system.malfunctionTable}}</select>
+    </div>
+    <div class="large-entry-box">
+      <label>Malfunction</label>
+      <textarea name="system.malfunction" rows="3" placeholder="What happens on a failed operation roll">{{system.malfunction}}</textarea>
+    </div>
+    {{/unless}}
+    <p class="hint">Operating: roll under the operator's skill (plus the best readout device assisting this kind; only one can assist). Failure is a malfunction. Afterwards the device needs recharging.</p>
+  </section>
+  {{> "systems/palladium-universal/templates/item/parts/description.hbs"}}
+</section>

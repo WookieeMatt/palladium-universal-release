@@ -1,0 +1,127 @@
+<section class="tab sheet-body {{tab.cssClass}}" data-group="primary" data-tab="powers">
+  <section class="panel">
+    <div class="panel-header">
+      <h2>Magic</h2>
+      {{#if magic.isCaster}}
+      <span class="header-buttons">
+        <button type="button" data-action="newDay" data-tooltip="Reset the spells cast today"><i class="fa-solid fa-sun"></i> New Day</button>
+      </span>
+      {{/if}}
+    </div>
+    <div class="training-grid">
+      <div class="field">
+        <label>Tradition</label>
+        <select name="system.magic.tradition">{{selectOptions magicTraditions selected=system.magic.tradition}}</select>
+      </div>
+      {{#if magic.isCaster}}
+      <label class="checkbox" data-tooltip="Apprentice Wizard costs 30 Bio-E, Apprentice Time Lord 25 (Transdimensional p.7–9)">
+        <input type="checkbox" name="system.magic.payBioE" {{checked system.magic.payBioE}} /> Costs Bio-E
+      </label>
+      <div class="readonly-field">
+        <label>Spells Today</label>
+        <span class="derived big">{{magic.remaining}} / {{magic.spellsPerDay}}</span>
+      </div>
+      <div class="readonly-field">
+        <label>Spells per Melee</label>
+        <span class="derived big">{{magic.spellsPerMelee}}</span>
+      </div>
+      <div class="readonly-field">
+        <label data-tooltip="Targets must meet or beat this to save">Spell Strength</label>
+        <span class="derived big">{{magic.strength}}</span>
+      </div>
+      {{/if}}
+    </div>
+    {{#if magic.isCaster}}
+    <div class="circ-row">
+      <div class="field"><label>Spells Cast Today</label><input type="number" name="system.magic.spellsUsed" value="{{system.magic.spellsUsed}}" min="0" /></div>
+      <div class="field"><label>Misc Spells/Day</label><input type="number" name="system.magic.mod.spellsPerDay" value="{{system.magic.mod.spellsPerDay}}" /></div>
+      <div class="field"><label>Misc Spells/Melee</label><input type="number" name="system.magic.mod.spellsPerMelee" value="{{system.magic.mod.spellsPerMelee}}" /></div>
+      <div class="field"><label>Misc Spell Strength</label><input type="number" name="system.magic.mod.strength" value="{{system.magic.mod.strength}}" /></div>
+    </div>
+    <div class="ability-lists">
+      <div>
+        <h3>Automatic Abilities</h3>
+        <ul>
+          {{#each magic.abilities}}
+          <li>
+            {{label}}{{#if chance}} <strong>{{chance}}%</strong> <a data-action="rollMagicAbility" data-index="{{@index}}" data-tooltip="Roll"><i class="fa-solid fa-dice-d20"></i></a>{{/if}}
+            {{#if text}}<span class="hint">({{text}})</span>{{/if}}
+          </li>
+          {{/each}}
+        </ul>
+      </div>
+      <div>
+        <h3>Magic Saves</h3>
+        <ul>
+          <li>vs Magic {{saveMagic}}</li>
+          <li>vs Circles &amp; Wards {{saveCircle}}</li>
+          <li>vs T.E. Change {{saveChange}}% <a data-action="rollChange" data-tooltip="Roll Save vs T.E. Change (50+)"><i class="fa-solid fa-hourglass-half"></i></a></li>
+          <li>Temporal Mishap <a data-action="temporalMishap" data-tooltip="Roll the Temporal Mishap Table"><i class="fa-solid fa-clock-rotate-left"></i></a></li>
+        </ul>
+      </div>
+    </div>
+    <p class="hint">Casting a spell uses an action (in place of a hand to hand attack) and one of the day's spells. Selections known: {{magic.selections}} (starting allowance {{magic.startingSelections}}).</p>
+    {{else}}
+    <p class="hint">Not a spell caster. Wizards and Apprentice Time Lords come from Transdimensional backgrounds.</p>
+    {{/if}}
+  </section>
+
+  <section class="panel">
+    <div class="panel-header">
+      <h2>Spells</h2>
+      <button type="button" class="icon-button" data-action="itemCreate" data-type="spell" data-tooltip="Add a spell"><i class="fa-solid fa-plus"></i></button>
+    </div>
+    <ol class="item-list">
+      {{#each items.spells}}
+      <li class="item-row {{#unless mastered}}unequipped{{/unless}}" data-item-id="{{id}}">
+        <img src="{{img}}" alt="" class="item-icon" />
+        <div class="item-name">
+          <a data-action="itemEdit">{{name}}{{#if (gt selections 1)}} ({{selections}}){{/if}}{{#if offensive}}*{{/if}}</a>
+          <span class="hint">{{tradition}}{{#if range}} · {{range}}{{/if}}{{#if duration}} · {{duration}}{{/if}} · save: {{save}}</span>
+        </div>
+        {{#if damage}}<span class="weapon-damage" data-tooltip="Damage at this level">{{damage}}</span>{{/if}}
+        {{#if mastered}}
+        <button type="button" class="roll-button" data-action="castSpell" data-tooltip="Cast (uses one of today's spells)"><i class="fa-solid fa-wand-sparkles"></i> Cast</button>
+        {{else}}
+        <button type="button" class="roll-button" data-action="practiceSpell" data-tooltip="Roll the experimentation / self-taught table ({{successes}} of {{needed}} complete successes)"><i class="fa-solid fa-flask"></i> Practice {{successes}}/{{needed}}</button>
+        {{/if}}
+        <button type="button" class="icon-button" data-action="itemDelete" data-tooltip="Delete"><i class="fa-solid fa-trash"></i></button>
+      </li>
+      {{else}}
+      <li class="hint">No spells. Add one, or drag spells here.</li>
+      {{/each}}
+    </ol>
+  </section>
+
+  <section class="panel">
+    <div class="panel-header">
+      <h2>Psionics</h2>
+      <span class="hint">No I.S.P.: one power at a time, as an action</span>
+    </div>
+    <ol class="item-list">
+      {{#each items.psionics}}
+      <li class="item-row" data-item-id="{{id}}">
+        <img src="{{img}}" alt="" class="item-icon" />
+        <div class="item-name">
+          <a data-action="itemEdit">{{name}}</a>
+          <span class="hint">{{range}} · {{duration}} · save: {{save}}</span>
+        </div>
+        <button type="button" class="roll-button" data-action="usePsionic" data-tooltip="Use this power"><i class="fa-solid fa-brain"></i> Use</button>
+      </li>
+      {{else}}
+      <li class="hint">No psionic powers (bought with Bio-E on the Mutation tab).</li>
+      {{/each}}
+    </ol>
+  </section>
+
+  <section class="panel">
+    <div class="panel-header">
+      <h2>Strangeness</h2>
+    </div>
+    <div class="maneuver-grid">
+      <button type="button" class="roll-button" data-action="rollSave" data-save="strangeness"><i class="fa-solid fa-dice-d20"></i> Save vs Strangeness {{saveStrangeness}}</button>
+      <button type="button" class="roll-button" data-action="rollSave" data-save="psionics"><i class="fa-solid fa-dice-d20"></i> Save vs Psionics {{savePsionics}}</button>
+      <button type="button" class="roll-button" data-action="rollHorror"><i class="fa-solid fa-ghost"></i> Horror Factor</button>
+    </div>
+  </section>
+</section>

@@ -1,0 +1,1078 @@
+.palladium-universal.sheet.actor {
+  --bg: #0f131a;
+  --panel: #171c25;
+  --soft: #1f2631;
+  --line: #2f3a4a;
+  --text: #e7edf7;
+  --muted: #9fb0c8;
+  --accent: #7bb0ff;
+  color: var(--text);
+}
+
+/* Base backgrounds */
+.palladium-universal.sheet .window-content {
+  background: linear-gradient(180deg, #0d1117 0%, #101622 100%);
+  color: var(--text);
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Inputs (checkboxes keep Foundry's own styling) */
+.palladium-universal input:not([type="checkbox"]),
+.palladium-universal textarea,
+.palladium-universal select,
+.palladium-universal .window-content button {
+  background: #0f1520;
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  box-shadow: none;
+}
+
+.palladium-universal input:not([type="checkbox"]),
+.palladium-universal textarea,
+.palladium-universal select {
+  padding: 8px 10px;
+}
+
+.palladium-universal select {
+  height: auto;
+  min-height: 36px;
+  line-height: 1.3;
+}
+
+.palladium-universal textarea {
+  min-height: 88px;
+  resize: vertical;
+}
+
+/* Layout wrappers */
+.palladium-universal .sheet-header,
+.palladium-universal .sheet-body,
+.palladium-universal .sheet-tabs {
+  padding: 10px;
+}
+
+/* Header */
+.palladium-universal .sheet-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 220px;
+  gap: 18px;
+  align-items: start;
+}
+
+.palladium-universal .header-left {
+  min-width: 0;
+}
+
+.palladium-universal .header-right {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.palladium-universal .charname {
+  margin: 0 0 12px 0;
+}
+
+.palladium-universal .charname input {
+  width: 100%;
+  min-height: 54px;
+  font-size: 1.4rem;
+  font-weight: 700;
+  padding: 10px 14px;
+}
+
+/* Token portrait */
+.palladium-universal .token-box {
+  width: 200px;
+  height: 200px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.04);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
+}
+
+.palladium-universal .profile-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  cursor: pointer;
+  display: block;
+}
+
+/* Generic cards / panels */
+.palladium-universal .card,
+.palladium-universal .panel {
+  background: rgba(23, 28, 37, 0.95);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 14px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+  margin-bottom: 12px;
+}
+
+.palladium-universal .soft-panel {
+  margin-top: 10px;
+  background: var(--soft);
+  border-radius: 14px;
+  padding: 12px;
+}
+
+.palladium-universal .panel-header,
+.palladium-universal .card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.palladium-universal .panel-header h2,
+.palladium-universal .card-header h3 {
+  margin: 0;
+  color: #fff;
+}
+
+/* Utility rows */
+.palladium-universal .title-row {
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.palladium-universal .name-input {
+  font-size: 1.4rem;
+  font-weight: 700;
+  min-height: 42px;
+}
+
+/* Grids */
+.palladium-universal .tag-row,
+.palladium-universal .identity-fields,
+.palladium-universal .identity-grid,
+.palladium-universal .attribute-grid,
+.palladium-universal .attributes-grid,
+.palladium-universal .derived-grid,
+.palladium-universal .resource-grid,
+.palladium-universal .combat-grid,
+.palladium-universal .save-grid,
+.palladium-universal .saves-grid,
+.palladium-universal .toggle-grid,
+.palladium-universal .two-col,
+.palladium-universal .health-grid,
+.palladium-universal .module-grid,
+.palladium-universal .stacked-fields {
+  display: grid;
+  gap: 12px;
+}
+
+.palladium-universal .identity-fields,
+.palladium-universal .identity-grid,
+.palladium-universal .two-col {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.palladium-universal .attribute-grid,
+.palladium-universal .attributes-grid,
+.palladium-universal .resource-grid,
+.palladium-universal .combat-grid,
+.palladium-universal .toggle-grid,
+.palladium-universal .health-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.palladium-universal .derived-grid,
+.palladium-universal .save-grid,
+.palladium-universal .saves-grid,
+.palladium-universal .stacked-fields {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+/* MODULES NOW STACK IN ONE COLUMN */
+.palladium-universal .module-grid {
+  grid-template-columns: 1fr;
+}
+
+/* Field blocks */
+.palladium-universal .field,
+.palladium-universal .readonly-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.palladium-universal label,
+.palladium-universal .field label,
+.palladium-universal .readonly-field label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.palladium-universal .readonly-field input[readonly] {
+  opacity: 0.92;
+}
+
+/* Tabs */
+.palladium-universal .sheet-tabs {
+  display: flex;
+  gap: 8px;
+  border: none;
+  flex-wrap: wrap;
+  flex: none;
+  justify-content: flex-start;
+}
+
+.palladium-universal .sheet-tabs > a {
+  flex: none;
+  aspect-ratio: auto;
+  height: auto;
+  line-height: 1.2;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  border-radius: 999px;
+  padding: 8px 14px;
+  text-decoration: none;
+  transition: 0.15s ease;
+}
+
+.palladium-universal .sheet-tabs > a:hover {
+  border-color: #466b9d;
+  color: #dce9ff;
+}
+
+.palladium-universal .sheet-tabs > a.active {
+  color: #fff;
+  background: linear-gradient(180deg, #28466e 0%, #1c3150 100%);
+  border-color: #466b9d;
+}
+
+/* Collapse behavior */
+.palladium-universal .collapse-toggle {
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.palladium-universal [data-collapse].collapsed {
+  display: none;
+}
+
+/* Large entry boxes */
+.palladium-universal .large-entry-box {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.palladium-universal .large-entry-box label {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--muted);
+}
+
+.palladium-universal .large-entry-box textarea {
+  min-height: 360px;
+  resize: vertical;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #0f1520;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+/* Notes helpers */
+.palladium-universal .notes-box {
+  min-height: 420px;
+}
+
+.palladium-universal .helper {
+  color: var(--muted);
+  margin-top: 0;
+}
+
+/* Checkbox area */
+.palladium-universal .toggle-grid label {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 10px 12px;
+  color: var(--text);
+}
+
+.palladium-universal .toggle-grid input[type="checkbox"] {
+  margin: 0;
+}
+
+/* Tab bodies fill the remaining height and scroll independently */
+.palladium-universal .sheet-header {
+  flex: none;
+}
+
+.palladium-universal .sheet-body {
+  padding-top: 4px;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.palladium-universal .tab:not(.active) {
+  display: none;
+}
+
+/* -------------------------------------------- */
+/*  TMNT rules layout (v0.4)                    */
+/* -------------------------------------------- */
+
+.palladium-universal .identity-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.palladium-universal .pair {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.palladium-universal .pair > input {
+  flex: 1;
+  min-width: 0;
+}
+
+.palladium-universal .sep {
+  color: var(--muted);
+}
+
+.palladium-universal .hint {
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: normal;
+}
+
+.palladium-universal .level-up,
+.palladium-universal .warning {
+  color: #ffcf5a;
+}
+
+.palladium-universal .derived {
+  color: var(--muted);
+  text-align: center;
+}
+
+.palladium-universal .derived.big {
+  font-size: 1.6rem;
+  color: var(--text);
+  text-align: left;
+}
+
+.palladium-universal .total {
+  font-weight: 700;
+  font-size: 1.05rem;
+  text-align: center;
+  color: #fff;
+}
+
+/* Data tables */
+.palladium-universal table {
+  width: 100%;
+  border-collapse: collapse;
+  background: none;
+  border: none;
+  margin: 0;
+}
+
+.palladium-universal thead {
+  background: none;
+  text-shadow: none;
+}
+
+.palladium-universal th,
+.palladium-universal td {
+  padding: 4px 6px;
+  border-bottom: 1px solid var(--line);
+  color: var(--text);
+  text-align: left;
+}
+
+.palladium-universal thead th {
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.palladium-universal tbody tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.palladium-universal td input[type="number"] {
+  width: 70px;
+  padding: 4px 6px;
+}
+
+.palladium-universal .attribute-table .bonus {
+  color: #bfe3c3;
+  font-size: 0.9rem;
+}
+
+.palladium-universal .size-table {
+  margin-top: 10px;
+  font-size: 0.85rem;
+}
+
+.palladium-universal .size-table td {
+  padding: 2px 6px;
+}
+
+.palladium-universal .size-table tr.current td {
+  background: rgba(123, 176, 255, 0.18);
+  color: #fff;
+  font-weight: 700;
+}
+
+/* Buttons */
+.palladium-universal .icon-button {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  vertical-align: middle;
+}
+
+.palladium-universal .icon-button:hover {
+  border-color: #466b9d;
+  color: #fff;
+}
+
+/* Bio-E */
+.palladium-universal .bioe-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+.palladium-universal .bioe-remaining {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #7fe08a;
+}
+
+.palladium-universal .bioe-remaining.negative {
+  color: #ff7a7a;
+}
+
+.palladium-universal .size-controls,
+.palladium-universal .training-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: end;
+}
+
+.palladium-universal .stepper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.palladium-universal .stepper button {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  cursor: pointer;
+}
+
+.palladium-universal .size-value {
+  font-size: 1.4rem;
+  font-weight: 700;
+  min-width: 2ch;
+  text-align: center;
+}
+
+.palladium-universal label.checkbox {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  color: var(--text);
+}
+
+.palladium-universal .two-col .large-entry-box textarea {
+  min-height: 140px;
+}
+
+/* Combat */
+.palladium-universal .ability-lists {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-top: 12px;
+}
+
+.palladium-universal .ability-lists h3 {
+  margin: 0 0 4px;
+  font-size: 0.95rem;
+  color: var(--muted);
+  border: none;
+}
+
+.palladium-universal .ability-lists ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+/* Chat cards (rendered outside the sheet) */
+.pu-card .pu-card-header {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.pu-card .pu-card-header img {
+  border: none;
+  border-radius: 6px;
+  flex: none;
+}
+
+.pu-card .pu-card-header h3 {
+  margin: 0;
+  border: none;
+  font-size: 1.1rem;
+}
+
+.pu-card .pu-card-header span {
+  font-size: 0.8rem;
+  opacity: 0.8;
+}
+
+.pu-card .pu-notes {
+  margin: 4px 0 0;
+}
+
+.pu-card .pu-crit,
+.pu-card .pu-success {
+  color: #2e8b3d;
+  font-weight: 700;
+}
+
+.pu-card .pu-fumble,
+.pu-card .pu-failure {
+  color: #b33a3a;
+  font-weight: 700;
+}
+
+.pu-card .pu-coma {
+  margin: 6px 0;
+  padding-left: 20px;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .palladium-universal .bioe-grid,
+  .palladium-universal .size-controls,
+  .palladium-universal .training-grid,
+  .palladium-universal .ability-lists {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .palladium-universal .sheet-header {
+    grid-template-columns: 1fr;
+  }
+
+  .palladium-universal .header-right {
+    justify-content: flex-start;
+  }
+
+  .palladium-universal .token-box {
+    width: 160px;
+    height: 160px;
+  }
+
+  .palladium-universal .attribute-grid,
+  .palladium-universal .attributes-grid,
+  .palladium-universal .resource-grid,
+  .palladium-universal .combat-grid,
+  .palladium-universal .toggle-grid,
+  .palladium-universal .health-grid,
+  .palladium-universal .identity-fields,
+  .palladium-universal .identity-grid,
+  .palladium-universal .two-col,
+  .palladium-universal .derived-grid,
+  .palladium-universal .save-grid,
+  .palladium-universal .saves-grid,
+  .palladium-universal .stacked-fields,
+  .palladium-universal .module-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .palladium-universal .large-entry-box textarea {
+    min-height: 280px;
+  }
+}
+/* -------------------------------------------- */
+/*  Items (v0.5)                                */
+/* -------------------------------------------- */
+
+.palladium-universal .item-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.palladium-universal .item-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.palladium-universal .item-row.unequipped {
+  opacity: 0.55;
+}
+
+.palladium-universal .item-icon {
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 6px;
+  flex: none;
+}
+
+.palladium-universal .item-name {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.palladium-universal .item-name a {
+  color: var(--text);
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.palladium-universal .item-name a:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+
+.palladium-universal .skill-pct {
+  min-width: 3.5em;
+  text-align: right;
+  font-weight: 700;
+}
+
+.palladium-universal .skill-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.palladium-universal .weapon-damage {
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.palladium-universal .weapon-modes {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.palladium-universal .roll-button {
+  padding: 4px 8px;
+  cursor: pointer;
+  white-space: nowrap;
+  font-size: 0.85rem;
+}
+
+.palladium-universal .roll-button:hover,
+.palladium-universal .icon-button.active {
+  border-color: #466b9d;
+  color: #fff;
+  background: #1c3150;
+}
+
+.palladium-universal .header-buttons {
+  display: flex;
+  gap: 6px;
+}
+
+.palladium-universal .derived.left {
+  text-align: left;
+}
+
+.palladium-universal .manual-bioe {
+  margin-top: 8px;
+}
+
+.palladium-universal .manual-bioe summary {
+  cursor: pointer;
+}
+
+/* Item sheet */
+.palladium-universal.item .window-content {
+  background: linear-gradient(180deg, #0d1117 0%, #101622 100%);
+  color: var(--text);
+  padding: 10px;
+  overflow-y: auto;
+  --line: #2f3a4a;
+  --text: #e7edf7;
+  --muted: #9fb0c8;
+  --panel: #171c25;
+}
+
+.palladium-universal .item-header {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.palladium-universal .item-img {
+  width: 64px;
+  height: 64px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  cursor: pointer;
+  flex: none;
+}
+
+.palladium-universal .item-title {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.palladium-universal .item-title input {
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.palladium-universal .item-grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: end;
+  margin-bottom: 10px;
+}
+
+.palladium-universal .effects-table input,
+.palladium-universal .effects-table select {
+  width: 100%;
+}
+
+.palladium-universal prose-mirror {
+  min-height: 120px;
+  background: #0f1520;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 6px 10px;
+}
+
+.palladium-universal .source-field {
+  margin-top: 8px;
+}
+
+/* Chat card buttons */
+.pu-card .pu-buttons {
+  display: flex;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.pu-card .pu-buttons button {
+  flex: 1;
+  line-height: 1.6;
+  font-size: 0.85rem;
+}
+
+.pu-card .pu-results {
+  margin: 4px 0;
+  padding-left: 16px;
+}
+
+/* -------------------------------------------- */
+/*  Animal & Background slots (v0.6)            */
+/* -------------------------------------------- */
+
+.palladium-universal .slot-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.palladium-universal .drop-slot {
+  border: 2px dashed var(--line);
+  border-radius: 12px;
+  padding: 8px 10px;
+  min-height: 64px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.palladium-universal .drop-slot.filled {
+  border-style: solid;
+  background: rgba(123, 176, 255, 0.06);
+}
+
+.palladium-universal .drop-slot.big {
+  min-height: 90px;
+  align-items: center;
+  justify-content: center;
+}
+
+.palladium-universal .slot-empty {
+  color: var(--muted);
+  font-style: italic;
+  text-align: center;
+}
+
+.palladium-universal .slot-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.palladium-universal .slot-content a {
+  flex: 1;
+  color: var(--text);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.palladium-universal .animal-summary {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.palladium-universal .animal-summary h3 {
+  margin: 0 0 4px;
+  border: none;
+}
+
+.palladium-universal .animal-summary a {
+  color: #fff;
+  cursor: pointer;
+}
+
+.palladium-universal .animal-summary p {
+  margin: 2px 0;
+}
+
+.palladium-universal .animal-img {
+  width: 72px;
+  height: 72px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  flex: none;
+}
+
+.palladium-universal .option-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 10px;
+}
+
+.palladium-universal .option-columns h3 {
+  margin: 0 0 4px;
+  font-size: 0.95rem;
+  color: var(--muted);
+  border: none;
+}
+
+.palladium-universal .option-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.palladium-universal .option-list li {
+  padding: 3px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.palladium-universal .option-list .option-name {
+  flex: 1;
+}
+
+.palladium-universal .option-list .option-cost {
+  color: #7fe08a;
+  font-weight: 700;
+}
+
+.palladium-universal .options-table input,
+.palladium-universal .options-table select {
+  width: 100%;
+}
+
+/* Batch 1: circumstances, maneuvers, conditions, defend buttons */
+.palladium-universal .warning-banner {
+  margin: 8px 0 0;
+  padding: 6px 10px;
+  border-radius: 10px;
+  background: rgba(200, 60, 60, 0.2);
+  border: 1px solid rgba(200, 60, 60, 0.6);
+}
+
+.palladium-universal .circ-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: flex-end;
+  margin-top: 10px;
+}
+
+.palladium-universal .circ-row .field input {
+  width: 90px;
+}
+
+.palladium-universal .combat-table td input[type="number"] {
+  width: 64px;
+}
+
+.palladium-universal .maneuver-grid,
+.palladium-universal .condition-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.palladium-universal .condition-grid .condition {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: auto;
+  opacity: 0.6;
+}
+
+.palladium-universal .condition-grid .condition img {
+  width: 20px;
+  height: 20px;
+  border: none;
+}
+
+.palladium-universal .condition-grid .condition.active {
+  opacity: 1;
+  border-color: #c84b4b;
+  background: rgba(200, 75, 75, 0.25);
+}
+
+.pu-card .pu-defend {
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.pu-card .pu-defend .pu-label {
+  font-weight: 700;
+  margin-right: 4px;
+}
+
+.pu-card .pu-text {
+  font-size: 0.9em;
+  margin: 4px 0;
+}
+
+.pu-card .pu-defend button {
+  flex: 1 1 30%;
+}
+
+/* -------------------------------------------- */
+/*  NPC & Vehicle sheets (v0.12)                */
+/* -------------------------------------------- */
+
+.palladium-universal .npc-header {
+  grid-template-columns: 96px minmax(0, 1fr);
+  align-items: center;
+}
+
+.palladium-universal .npc-img {
+  width: 96px;
+  height: 96px;
+  object-fit: cover;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.palladium-universal .npc-attributes {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.palladium-universal .npc-attr {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.palladium-universal .npc-attr input {
+  width: 100%;
+  text-align: center;
+  padding: 4px;
+}
+
+.palladium-universal .npc-health {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 8px;
+  align-items: end;
+}
+
+.palladium-universal .npc-rolls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 8px 0;
+}
+
+.palladium-universal .vehicle-sheet {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+.palladium-universal .vehicle-sheet .sheet-body {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.palladium-universal .derived.warning {
+  color: #ff8a80;
+}
+
+.palladium-universal .feature-effect-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.palladium-universal .feature-effect-buttons button {
+  font-size: 0.75rem;
+  padding: 2px 6px;
+}

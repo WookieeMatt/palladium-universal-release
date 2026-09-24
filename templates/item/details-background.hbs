@@ -1,0 +1,44 @@
+<section class="item-body">
+  <section class="panel">
+    <div class="item-grid">
+      <div class="field">
+        <label>Kind</label>
+        <select name="system.kind">{{selectOptions backgroundKinds selected=system.kind}}</select>
+      </div>
+      <div class="field">
+        <label>Table Roll</label>
+        <input type="text" name="system.roll" value="{{system.roll}}" placeholder="41–90" />
+      </div>
+      <div class="field">
+        <label>Education Bonus %</label>
+        <input type="number" name="system.educationBonus" value="{{system.educationBonus}}" />
+      </div>
+      <div class="field">
+        <label>Professional Skills</label>
+        <input type="text" name="system.professionalSkills" value="{{system.professionalSkills}}" placeholder="10 at +20%" />
+      </div>
+      <div class="field">
+        <label>Amateur Skills</label>
+        <input type="text" name="system.amateurSkills" value="{{system.amateurSkills}}" />
+      </div>
+      <div class="field">
+        <label>Combat Training</label>
+        <select name="system.combatTraining">{{selectOptions trainingChoices2 selected=system.combatTraining blank="—"}}</select>
+      </div>
+      <div class="field">
+        <label>Money</label>
+        <input type="text" name="system.money" value="{{system.money}}" placeholder="3D6×$1,000" />
+      </div>
+      <div class="field">
+        <label>Hunted?</label>
+        <input type="text" name="system.hunted" value="{{system.hunted}}" />
+      </div>
+    </div>
+    <div class="field">
+      <label>Equipment</label>
+      <input type="text" name="system.equipment" value="{{system.equipment}}" />
+    </div>
+  </section>
+  {{> "systems/palladium-universal/templates/item/parts/effects.hbs"}}
+  {{> "systems/palladium-universal/templates/item/parts/description.hbs"}}
+</section>

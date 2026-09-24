@@ -1,0 +1,21 @@
+<section class="item-body">
+  <section class="panel">
+    <div class="item-grid">
+      <div class="field">
+        <label>Device Installed</label>
+        <input type="text" name="system.device" value="{{system.device}}" placeholder="Portable Time Machine" />
+      </div>
+      <div class="field">
+        <label>Vehicle Class</label>
+        <select name="system.vehicleClass">{{selectOptions vehicleClasses selected=system.vehicleClass}}</select>
+      </div>
+      <div class="field">
+        <label>Cost</label>
+        <input type="text" name="system.cost" value="{{system.cost}}" placeholder="$180,000" />
+      </div>
+      <label class="checkbox"><input type="checkbox" name="system.available" {{checked system.available}} /> Available for this vehicle class</label>
+    </div>
+    <p class="hint">Installing a trans-dimensional device means overhauling the frame and electrical system; the device itself is bought separately (Transdimensional p.56). Drop this record on a Time Machine to add its cost.</p>
+  </section>
+  {{> "systems/palladium-universal/templates/item/parts/description.hbs"}}
+</section>

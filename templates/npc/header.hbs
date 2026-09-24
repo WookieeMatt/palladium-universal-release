@@ -1,0 +1,29 @@
+<header class="sheet-header npc-header">
+  <img class="npc-img" src="{{actor.img}}" alt="{{actor.name}}" data-action="editImage" data-edit="img" data-tooltip="Change portrait" />
+  <div class="header-left">
+    <h1 class="charname"><input name="name" type="text" value="{{actor.name}}" placeholder="NPC Name" /></h1>
+    <div class="identity-grid">
+      <div class="field">
+        <label>Role / Species</label>
+        <input type="text" name="system.role" value="{{system.role}}" placeholder="Foot Clan ninja" />
+      </div>
+      <div class="field">
+        <label>Alignment</label>
+        <select name="system.identity.alignment">{{selectOptions alignments selected=system.identity.alignment blank="—"}}</select>
+      </div>
+      <div class="field">
+        <label>Level</label>
+        <input type="number" name="system.identity.level" value="{{system.identity.level}}" min="1" max="15" />
+      </div>
+      <div class="field">
+        <label>Horror Factor</label>
+        <div class="pair">
+          <input type="number" name="system.horrorFactor" value="{{system.horrorFactor}}" min="0" />
+          {{#if system.horrorFactor}}
+          <button type="button" class="icon-button" data-action="horrorFactor" data-tooltip="Selected tokens save vs this Horror Factor"><i class="fa-solid fa-ghost"></i></button>
+          {{/if}}
+        </div>
+      </div>
+    </div>
+  </div>
+</header>

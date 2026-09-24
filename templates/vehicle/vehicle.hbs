@@ -1,0 +1,173 @@
+<div class="vehicle-sheet">
+  <header class="sheet-header npc-header">
+    <img class="npc-img" src="{{actor.img}}" alt="{{actor.name}}" data-action="editImage" data-edit="img" data-tooltip="Change image" />
+    <div class="header-left">
+      <h1 class="charname"><input name="name" type="text" value="{{actor.name}}" placeholder="Vehicle Name" /></h1>
+      <div class="identity-grid">
+        <div class="field">
+          <label>Type</label>
+          <select name="system.vehicleType">{{selectOptions vehicleTypes selected=system.vehicleType}}</select>
+        </div>
+        <div class="field">
+          <label>S.D.C.</label>
+          <div class="pair">
+            <input type="number" name="system.health.sdc.value" value="{{system.health.sdc.value}}" />
+            <span class="sep">/</span>
+            <input type="number" name="system.health.sdc.max" value="{{system.health.sdc.max}}" min="0" />
+          </div>
+          {{#if system.health.sdc.bonus}}<span class="hint">+{{system.health.sdc.bonus}} from modifications (total {{system.health.sdc.total}})</span>{{/if}}
+        </div>
+        <div class="field">
+          <label data-tooltip="The vehicle's own A.R. (1st-edition stats): Strikes below it do no damage">A.R.</label>
+          <input type="number" name="system.ar" value="{{system.ar}}" min="0" />
+        </div>
+        <div class="readonly-field">
+          <label>Status</label>
+          <span class="derived {{#if system.health.incapacitated}}warning{{/if}}">{{status}}</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="sheet-body">
+    {{#if timeMachine}}{{> "systems/palladium-universal/templates/vehicle/time-machine.hbs"}}{{/if}}
+    <section class="panel">
+      <div class="npc-health">
+        <div class="field"><label>Top Speed</label><input type="text" name="system.speed" value="{{system.speed}}" /></div>
+        <div class="field"><label>Range</label><input type="text" name="system.range" value="{{system.range}}" /></div>
+        <div class="field"><label>Crew</label><input type="text" name="system.crew" value="{{system.crew}}" /></div>
+        <div class="field"><label>Passengers</label><input type="text" name="system.passengers" value="{{system.passengers}}" /></div>
+        <div class="field"><label>Cargo</label><input type="text" name="system.cargo" value="{{system.cargo}}" /></div>
+        <div class="field"><label>Cost</label><input type="text" name="system.cost" value="{{system.cost}}" /></div>
+      </div>
+      <p class="hint">S.D.C. 0 = incapacitated (major repairs); double the S.D.C. in damage = totaled.</p>
+    </section>
+
+    <section class="panel">
+      <div class="panel-header">
+        <h2>Armor</h2>
+        <span class="hint">Strikes hit the hull unless another exposed location is declared</span>
+      </div>
+      <table class="combat-table">
+        <thead><tr><th>Location</th><th>A.R.</th><th>S.D.C.</th><th>Max</th></tr></thead>
+        <tbody>
+          {{#each locations}}
+          <tr>
+            <th scope="row">{{label}}</th>
+            <td><input type="number" name="system.locations.{{key}}.ar" value="{{ar}}" min="0" /></td>
+            <td><input type="number" name="system.locations.{{key}}.sdc.value" value="{{sdc.value}}" /></td>
+            <td><input type="number" name="system.locations.{{key}}.sdc.max" value="{{sdc.max}}" min="0" /></td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+      <p class="hint">Armor absorbs Strikes below its A.R. while it has S.D.C.; Strikes that meet or beat it get through.</p>
+    </section>
+
+    <section class="panel">
+      <div class="panel-header">
+        <h2>Piloting</h2>
+        <span class="header-buttons">
+          <button type="button" data-action="rollControl" {{#if system.modControlBonus}}data-tooltip="Includes +{{system.modControlBonus}}% from modifications"{{/if}}><i class="fa-solid fa-car"></i> Control Roll {{system.controlTarget}}%</button>
+          <button type="button" data-action="rollEvade"><i class="fa-solid fa-route"></i> Evade</button>
+        </span>
+      </div>
+      <div class="npc-health">
+        <div class="field"><label>Pilot</label><input type="text" name="system.pilot" value="{{system.pilot}}" /></div>
+        <div class="field"><label>Pilot Skill %</label><input type="number" name="system.controlSkill" value="{{system.controlSkill}}" min="0" /></div>
+        <div class="field"><label data-tooltip="e.g. Vehicle Active Suspension +15%">Control Bonus %</label><input type="number" name="system.controlBonus" value="{{system.controlBonus}}" /></div>
+        <div class="field"><label>Evade Bonus</label><input type="number" name="system.evadeBonus" value="{{system.evadeBonus}}" /></div>
+        <div class="field"><label>Gunner Strike Bonus</label><input type="number" name="system.gunnerBonus" value="{{system.gunnerBonus}}" /></div>
+        <div class="field"><label>Initiative</label><input type="number" name="system.initiative" value="{{system.initiative}}" /></div>
+      </div>
+      <p class="hint">One maneuver per round (costs an action); Control Rolls don't cost an action. Evade: Strikes must meet or beat the roll until the next maneuver.</p>
+    </section>
+
+    <section class="panel">
+      <div class="panel-header">
+        <h2>Weapons</h2>
+        <button type="button" class="icon-button" data-action="itemCreate" data-type="weapon" data-tooltip="Add a weapon"><i class="fa-solid fa-plus"></i></button>
+      </div>
+      <ol class="item-list">
+        {{#each weapons}}
+        <li class="item-row weapon-row" data-item-id="{{id}}">
+          <img src="{{img}}" alt="" class="item-icon" />
+          <div class="item-name"><a data-action="itemEdit">{{name}}</a><span class="hint">{{type}}{{#if range}} · {{range}}{{/if}}</span></div>
+          <span class="weapon-damage">{{damage}}</span>
+          <button type="button" class="roll-button" data-action="rollAttack"><i class="fa-solid fa-dice-d20"></i> Fire {{strike}}</button>
+          <button type="button" class="icon-button" data-action="rollDamage" data-tooltip="Roll damage"><i class="fa-solid fa-burst"></i></button>
+          <button type="button" class="icon-button" data-action="itemDelete" data-tooltip="Delete"><i class="fa-solid fa-trash"></i></button>
+        </li>
+        {{else}}
+        <li class="hint">No mounted weapons.</li>
+        {{/each}}
+      </ol>
+    </section>
+
+    {{#unless timeMachine}}
+    <section class="panel">
+      <div class="panel-header">
+        <h2>Devices</h2>
+        <button type="button" class="icon-button" data-action="itemCreate" data-type="device" data-tooltip="Add a device"><i class="fa-solid fa-plus"></i></button>
+      </div>
+      <ol class="item-list">
+        {{#each devices}}
+        <li class="item-row {{#unless charged}}unequipped{{/unless}}" data-item-id="{{id}}">
+          <img src="{{img}}" alt="" class="item-icon" />
+          <div class="item-name"><a data-action="itemEdit">{{name}}</a><span class="hint">{{type}}{{#if maxArea}} · {{maxArea}}{{/if}}{{#if readout}} · +{{bonus}}%{{/if}}</span></div>
+          {{#unless readout}}
+          {{#if charged}}
+          <button type="button" class="roll-button" data-action="operate" data-tooltip="Select the operator's token first"><i class="fa-solid fa-clock-rotate-left"></i> Operate</button>
+          {{else}}
+          <button type="button" class="roll-button" data-action="recharge" data-tooltip="{{recharge}}"><i class="fa-solid fa-battery-half"></i> Recharge</button>
+          {{/if}}
+          {{/unless}}
+          <button type="button" class="icon-button" data-action="itemDelete" data-tooltip="Delete"><i class="fa-solid fa-trash"></i></button>
+        </li>
+        {{else}}
+        <li class="hint">No time machines or cross-dimensional devices installed.</li>
+        {{/each}}
+      </ol>
+    </section>
+    {{/unless}}
+
+    <section class="panel">
+      <div class="panel-header">
+        <h2>Modifications</h2>
+        <button type="button" class="icon-button" data-action="itemCreate" data-type="vehicleMod" data-tooltip="Add a modification"><i class="fa-solid fa-plus"></i></button>
+      </div>
+      <ol class="item-list">
+        {{#each mods}}
+        <li class="item-row" data-item-id="{{id}}">
+          <img src="{{img}}" alt="" class="item-icon" />
+          <div class="item-name"><a data-action="itemEdit">{{name}}</a><span class="hint">{{category}}{{#if effect}} · {{effect}}{{/if}}</span></div>
+          {{#if cost}}<span class="derived">{{cost}}</span>{{/if}}
+          <button type="button" class="icon-button" data-action="itemDelete" data-tooltip="Delete"><i class="fa-solid fa-trash"></i></button>
+        </li>
+        {{else}}
+        <li class="hint">No armor, equipment or capabilities. Dropping an armor modification installs it on its location.</li>
+        {{/each}}
+      </ol>
+    </section>
+
+    {{#if others.length}}
+    <section class="panel">
+      <div class="panel-header"><h2>Equipment</h2></div>
+      <ol class="item-list">
+        {{#each others}}
+        <li class="item-row" data-item-id="{{id}}">
+          <img src="{{img}}" alt="" class="item-icon" />
+          <div class="item-name"><a data-action="itemEdit">{{name}}</a></div>
+          <button type="button" class="icon-button" data-action="itemDelete" data-tooltip="Delete"><i class="fa-solid fa-trash"></i></button>
+        </li>
+        {{/each}}
+      </ol>
+    </section>
+    {{/if}}
+
+    <section class="panel">
+      <div class="panel-header"><h2>Notes</h2></div>
+      <prose-mirror name="system.notes" value="{{system.notes}}" toggled="true">{{{enrichedNotes}}}</prose-mirror>
+    </section>
+  </section>
+</div>

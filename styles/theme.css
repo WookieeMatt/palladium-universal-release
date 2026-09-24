@@ -1,0 +1,522 @@
+/* ============================================================
+   Palladium Universal — comic parchment theme
+   Parchment panels, dark green headers and pill tabs, comic lettering.
+   Loaded after actor-sheet.css; overrides its dark colors.
+   Fonts: Bangers and Comic Neue (SIL Open Font License, see assets/fonts).
+   ============================================================ */
+
+@font-face {
+  font-family: "PU Bangers";
+  src: url("../assets/fonts/Bangers-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "PU Comic Neue";
+  src: url("../assets/fonts/ComicNeue-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "PU Comic Neue";
+  src: url("../assets/fonts/ComicNeue-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-display: swap;
+}
+
+.palladium-universal.sheet,
+.pu-card {
+  --pu-green: #234d2f;
+  --pu-green-light: #3d7a4d;
+  --pu-green-pale: #dfe8d6;
+  --pu-parchment: #efece0;
+  --pu-paper: #f8f5ea;
+  --pu-ink: #2b2a24;
+  --pu-ink-soft: #5d5a4b;
+  --pu-rule: #a39d80;
+  --pu-red: #a8322d;
+  --pu-gold: #9a6b00;
+  --pu-heading: "PU Bangers", "Bangers", "Impact", sans-serif;
+  --pu-body: "PU Comic Neue", "Comic Neue", "Comic Sans MS", sans-serif;
+}
+
+/* Base sheet variables used by actor-sheet.css */
+.palladium-universal.sheet.actor,
+.palladium-universal.item .window-content {
+  --bg: var(--pu-parchment);
+  --panel: var(--pu-paper);
+  --soft: var(--pu-green-pale);
+  --line: var(--pu-rule);
+  --text: var(--pu-ink);
+  --muted: var(--pu-ink-soft);
+  --accent: var(--pu-green);
+}
+
+/* Window frame */
+.palladium-universal.sheet .window-header {
+  background: var(--pu-green);
+  color: var(--pu-parchment);
+  font-family: var(--pu-heading);
+  letter-spacing: 0.04em;
+  border-bottom: 2px solid #16301d;
+}
+
+.palladium-universal.sheet .window-header .header-control {
+  color: var(--pu-parchment);
+  background: transparent;
+  border: none;
+}
+
+.palladium-universal.sheet .window-header .header-control:hover {
+  color: #fff;
+  background: var(--pu-green-light);
+}
+
+.palladium-universal.sheet .window-header .window-title {
+  font-family: var(--pu-heading);
+  font-size: 1.15rem;
+}
+
+.palladium-universal.sheet .window-content,
+.palladium-universal.item .window-content {
+  background: radial-gradient(ellipse at top, #f6f2e3 0%, var(--pu-parchment) 60%, #e4dfcb 100%);
+  color: var(--pu-ink);
+  font-family: var(--pu-body);
+}
+
+.palladium-universal.sheet {
+  font-family: var(--pu-body);
+  color: var(--pu-ink);
+}
+
+/* Headings */
+.palladium-universal h1,
+.palladium-universal h2,
+.palladium-universal h3,
+.palladium-universal .panel-header h2,
+.palladium-universal .card-header h3 {
+  font-family: var(--pu-heading);
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  color: var(--pu-green);
+  text-transform: uppercase;
+}
+
+.palladium-universal .panel-header {
+  border-bottom: 2px solid var(--pu-green);
+  padding-bottom: 4px;
+}
+
+.palladium-universal .panel-header h2 {
+  font-size: 1.35rem;
+}
+
+.palladium-universal .ability-lists h3,
+.palladium-universal .option-columns h3 {
+  color: var(--pu-green);
+  font-size: 1.05rem;
+}
+
+/* Panels */
+.palladium-universal .card,
+.palladium-universal .panel {
+  background: var(--pu-paper);
+  border: 1px solid var(--pu-rule);
+  border-radius: 12px;
+  box-shadow: 0 2px 0 rgba(43, 42, 36, 0.15), 0 6px 14px rgba(43, 42, 36, 0.08);
+}
+
+.palladium-universal .soft-panel {
+  background: var(--pu-green-pale);
+}
+
+/* Inputs: form-on-paper */
+.palladium-universal input:not([type="checkbox"]),
+.palladium-universal textarea,
+.palladium-universal select {
+  background: #fffdf5;
+  color: var(--pu-ink);
+  border: 1px solid #c9c2a3;
+  border-bottom: 2px solid var(--pu-ink-soft);
+  border-radius: 6px;
+  font-family: var(--pu-body);
+}
+
+.palladium-universal input:not([type="checkbox"]):focus,
+.palladium-universal textarea:focus,
+.palladium-universal select:focus {
+  border-color: var(--pu-green);
+  box-shadow: 0 0 0 2px rgba(35, 77, 47, 0.2);
+  outline: none;
+}
+
+.palladium-universal .charname input {
+  font-family: var(--pu-heading);
+  font-weight: 400;
+  font-size: 1.9rem;
+  letter-spacing: 0.05em;
+  color: var(--pu-green);
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid var(--pu-green);
+  border-radius: 0;
+}
+
+.palladium-universal .large-entry-box textarea,
+.palladium-universal prose-mirror {
+  background: #fffdf5;
+  border: 1px solid #c9c2a3;
+}
+
+.palladium-universal label,
+.palladium-universal .field label,
+.palladium-universal .readonly-field label,
+.palladium-universal .large-entry-box label {
+  color: var(--pu-ink-soft);
+  font-weight: 700;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.palladium-universal label.checkbox,
+.palladium-universal .toggle-grid label {
+  text-transform: none;
+  color: var(--pu-ink);
+  font-size: 0.9rem;
+}
+
+.palladium-universal .toggle-grid label {
+  background: #fffdf5;
+}
+
+/* Buttons (inside the sheet only: the window's header controls keep Foundry's icon font) */
+.palladium-universal .window-content button {
+  background: var(--pu-green);
+  color: var(--pu-parchment);
+  border: 1px solid #16301d;
+  border-radius: 8px;
+  font-family: var(--pu-body);
+  font-weight: 700;
+}
+
+.palladium-universal .window-content button:hover,
+.palladium-universal .roll-button:hover,
+.palladium-universal .icon-button:hover {
+  background: var(--pu-green-light);
+  color: #fff;
+  border-color: #16301d;
+  box-shadow: none;
+}
+
+.palladium-universal .icon-button {
+  background: transparent;
+  color: var(--pu-green);
+  border: 1px solid var(--pu-rule);
+}
+
+.palladium-universal .icon-button.active {
+  background: var(--pu-green);
+  color: var(--pu-parchment);
+  border-color: #16301d;
+}
+
+.palladium-universal .condition-grid .condition {
+  background: #fffdf5;
+  color: var(--pu-ink);
+  border: 1px solid var(--pu-rule);
+}
+
+.palladium-universal .condition-grid .condition.active {
+  background: #f3d9d4;
+  color: var(--pu-red);
+  border-color: var(--pu-red);
+}
+
+/* Pill tabs */
+.palladium-universal .sheet-tabs {
+  background: var(--pu-green);
+  padding: 6px 10px;
+  gap: 6px;
+  border-bottom: 2px solid #16301d;
+}
+
+.palladium-universal .sheet-tabs > a {
+  background: transparent;
+  border: 1px solid rgba(239, 236, 224, 0.35);
+  color: var(--pu-parchment);
+  font-family: var(--pu-heading);
+  letter-spacing: 0.06em;
+  font-size: 1rem;
+  text-transform: uppercase;
+  padding: 4px 14px;
+}
+
+.palladium-universal .sheet-tabs > a:hover {
+  border-color: var(--pu-parchment);
+  color: #fff;
+}
+
+.palladium-universal .sheet-tabs > a.active {
+  background: var(--pu-green-light);
+  border-color: var(--pu-parchment);
+  color: #fff;
+}
+
+/* Values */
+.palladium-universal .hint,
+.palladium-universal .derived,
+.palladium-universal .sep,
+.palladium-universal .weapon-damage,
+.palladium-universal .slot-empty,
+.palladium-universal .helper {
+  color: var(--pu-ink-soft);
+}
+
+.palladium-universal .derived.big,
+.palladium-universal .size-value {
+  font-family: var(--pu-heading);
+  font-weight: 400;
+  color: var(--pu-green);
+}
+
+.palladium-universal .total,
+.palladium-universal .skill-pct {
+  color: var(--pu-green);
+  font-weight: 700;
+}
+
+.palladium-universal .attribute-table .bonus {
+  color: var(--pu-green-light);
+}
+
+.palladium-universal .level-up,
+.palladium-universal .warning {
+  color: var(--pu-gold);
+  font-weight: 700;
+}
+
+.palladium-universal .derived.warning,
+.palladium-universal .bioe-remaining.negative {
+  color: var(--pu-red);
+}
+
+.palladium-universal .bioe-remaining,
+.palladium-universal .option-list .option-cost {
+  color: var(--pu-green);
+}
+
+.palladium-universal .warning-banner {
+  background: #f3d9d4;
+  border-color: var(--pu-red);
+  color: var(--pu-red);
+  font-weight: 700;
+}
+
+/* Tables */
+.palladium-universal th,
+.palladium-universal td {
+  color: var(--pu-ink);
+  border-bottom: 1px solid #d6cfb2;
+}
+
+.palladium-universal thead th {
+  color: var(--pu-parchment);
+  background: var(--pu-green);
+  font-family: var(--pu-heading);
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  font-size: 0.9rem;
+}
+
+.palladium-universal tbody tr:nth-child(even) {
+  background: rgba(35, 77, 47, 0.05);
+}
+
+.palladium-universal .size-table tr.current td {
+  background: var(--pu-green-pale);
+  color: var(--pu-green);
+}
+
+/* Lists */
+.palladium-universal .item-row {
+  border-bottom: 1px dashed #c9c2a3;
+}
+
+.palladium-universal .item-name a,
+.palladium-universal .slot-content a,
+.palladium-universal .animal-summary a {
+  color: var(--pu-ink);
+}
+
+.palladium-universal .item-name a:hover,
+.palladium-universal .animal-summary a:hover {
+  color: var(--pu-green);
+}
+
+.palladium-universal .item-icon,
+.palladium-universal .animal-img,
+.palladium-universal .item-img {
+  border: 1px solid var(--pu-rule);
+  background: #fffdf5;
+}
+
+.palladium-universal .drop-slot {
+  border-color: var(--pu-rule);
+}
+
+.palladium-universal .drop-slot.filled {
+  background: var(--pu-green-pale);
+  border-color: var(--pu-green);
+}
+
+/* Portrait: round with a green ring */
+.palladium-universal .token-box {
+  border-radius: 50%;
+  border: 6px solid var(--pu-green);
+  box-shadow: 0 0 0 3px var(--pu-parchment), 0 0 0 5px var(--pu-green-light), 0 6px 14px rgba(0, 0, 0, 0.25);
+}
+
+.palladium-universal .npc-img {
+  border-radius: 50%;
+  border: 4px solid var(--pu-green);
+}
+
+/* ------------------------------------------------------------
+   Chat cards: green header strip, parchment body
+   ------------------------------------------------------------ */
+
+.chat-message .message-content .pu-card,
+.pu-card {
+  background: var(--pu-paper);
+  color: var(--pu-ink);
+  border: 1px solid var(--pu-rule);
+  border-radius: 8px;
+  overflow: hidden;
+  font-family: var(--pu-body);
+}
+
+.pu-card .pu-card-header {
+  background: var(--pu-green);
+  color: var(--pu-parchment);
+  padding: 6px 8px;
+  margin: 0;
+}
+
+.pu-card .pu-card-header img {
+  border-radius: 50%;
+  border: 2px solid var(--pu-parchment);
+  background: var(--pu-parchment);
+}
+
+.pu-card .pu-card-header h3 {
+  font-family: var(--pu-heading);
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--pu-parchment);
+  font-size: 1.2rem;
+}
+
+.pu-card .pu-card-header span {
+  color: var(--pu-parchment);
+  opacity: 0.9;
+}
+
+.pu-card > h3 {
+  margin: 0;
+  padding: 6px 8px;
+  background: var(--pu-green);
+  color: var(--pu-parchment);
+  font-family: var(--pu-heading);
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border: none;
+}
+
+.pu-card .pu-notes,
+.pu-card .pu-text,
+.pu-card .pu-results,
+.pu-card .pu-coma {
+  padding: 0 8px;
+}
+
+.pu-card .pu-notes {
+  margin: 6px 0;
+}
+
+.pu-card .pu-buttons {
+  padding: 0 8px 8px;
+}
+
+.pu-card .pu-buttons button {
+  background: var(--pu-green);
+  color: var(--pu-parchment);
+  border: 1px solid #16301d;
+  border-radius: 6px;
+  font-family: var(--pu-body);
+  font-weight: 700;
+}
+
+.pu-card .pu-buttons button:hover {
+  background: var(--pu-green-light);
+  box-shadow: none;
+}
+
+.pu-card .pu-crit,
+.pu-card .pu-success {
+  color: #1f6b2e;
+}
+
+.pu-card .pu-fumble,
+.pu-card .pu-failure {
+  color: var(--pu-red);
+}
+
+.pu-card .hint {
+  color: var(--pu-ink-soft);
+}
+
+/* The roll formula and total under a themed card */
+.chat-message .pu-card + .dice-roll .dice-total {
+  font-family: var(--pu-heading);
+  font-weight: 400;
+  font-size: 1.6rem;
+  color: var(--pu-green);
+  letter-spacing: 0.05em;
+}
+
+/* Bonus breakdown, one line per source */
+.pu-card .pu-bonuses {
+  list-style: none;
+  margin: 0;
+  padding: 4px 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 10px;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  color: var(--pu-ink-soft);
+  border-bottom: 1px dashed var(--pu-rule);
+}
+
+.pu-card .pu-bonuses li {
+  white-space: nowrap;
+}
+
+/* Time Machine drop zones */
+.palladium-universal .tm-zone {
+  border: 2px dashed var(--pu-rule);
+  border-radius: 10px;
+  padding: 6px 10px;
+  margin-top: 10px;
+  background: #fffdf5;
+}
+
+.palladium-universal .tm-zone h3 {
+  margin: 0 0 4px;
+  font-size: 1.05rem;
+}

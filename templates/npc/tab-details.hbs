@@ -1,0 +1,86 @@
+<section class="tab sheet-body {{tab.cssClass}}" data-group="primary" data-tab="details">
+  {{#*inline "npcSkill"}}
+  <li class="item-row" data-item-id="{{id}}">
+    <img src="{{img}}" alt="" class="item-icon" />
+    <div class="item-name"><a data-action="itemEdit">{{name}}</a></div>
+    {{#unless passive}}
+    <span class="skill-pct">{{pct}}%</span>
+    <button type="button" class="icon-button" data-action="rollSkill" data-tooltip="Roll"><i class="fa-solid fa-dice-d20"></i></button>
+    {{/unless}}
+    <button type="button" class="icon-button" data-action="itemDelete" data-tooltip="Delete"><i class="fa-solid fa-trash"></i></button>
+  </li>
+  {{/inline}}
+
+  <section class="panel">
+    <div class="panel-header">
+      <h2>Skills</h2>
+      <button type="button" class="icon-button" data-action="itemCreate" data-type="skill" data-tooltip="Add a skill"><i class="fa-solid fa-plus"></i></button>
+    </div>
+    <ol class="item-list">
+      {{#each items.professional}}{{> npcSkill}}{{/each}}
+      {{#each items.amateur}}{{> npcSkill}}{{/each}}
+    </ol>
+  </section>
+
+
+  <section class="panel">
+    <div class="panel-header"><h2>Powers &amp; Abilities</h2></div>
+    <ol class="item-list">
+      {{#each items.abilities}}
+      <li class="item-row" data-item-id="{{id}}">
+        <img src="{{img}}" alt="" class="item-icon" />
+        <div class="item-name"><a data-action="itemEdit">{{name}}</a></div>
+        <button type="button" class="icon-button" data-action="itemDelete" data-tooltip="Delete"><i class="fa-solid fa-trash"></i></button>
+      </li>
+      {{/each}}
+      {{#each items.psionics}}
+      <li class="item-row" data-item-id="{{id}}">
+        <img src="{{img}}" alt="" class="item-icon" />
+        <div class="item-name"><a data-action="itemEdit">{{name}}</a><span class="hint">{{range}} · save: {{save}}</span></div>
+        <button type="button" class="roll-button" data-action="usePsionic"><i class="fa-solid fa-brain"></i> Use</button>
+      </li>
+      {{/each}}
+      {{#each items.spells}}
+      <li class="item-row" data-item-id="{{id}}">
+        <img src="{{img}}" alt="" class="item-icon" />
+        <div class="item-name"><a data-action="itemEdit">{{name}}</a><span class="hint">{{range}} · save: {{save}}</span></div>
+        {{#if mastered}}<button type="button" class="roll-button" data-action="castSpell"><i class="fa-solid fa-wand-sparkles"></i> Cast</button>
+        {{else}}<button type="button" class="roll-button" data-action="practiceSpell"><i class="fa-solid fa-flask"></i> Practice {{successes}}/{{needed}}</button>{{/if}}
+      </li>
+      {{/each}}
+    </ol>
+    <div class="npc-health">
+      <div class="field">
+        <label>Magic Tradition</label>
+        <select name="system.magic.tradition">{{selectOptions magicTraditions selected=system.magic.tradition}}</select>
+      </div>
+      {{#if magic.isCaster}}
+      <div class="readonly-field"><label>Spells Today</label><span class="derived">{{magic.remaining}} / {{magic.spellsPerDay}}</span></div>
+      <div class="readonly-field"><label>Spell Strength</label><span class="derived">{{magic.strength}}</span></div>
+      <button type="button" data-action="newDay"><i class="fa-solid fa-sun"></i> New Day</button>
+      {{/if}}
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-header">
+      <h2>Gear</h2>
+      <button type="button" class="icon-button" data-action="itemCreate" data-type="gear" data-tooltip="Add gear"><i class="fa-solid fa-plus"></i></button>
+    </div>
+    <ol class="item-list">
+      {{#each items.gear}}
+      <li class="item-row" data-item-id="{{id}}">
+        <img src="{{img}}" alt="" class="item-icon" />
+        <div class="item-name"><a data-action="itemEdit">{{name}}</a></div>
+        <span class="derived">×{{quantity}}</span>
+        <button type="button" class="icon-button" data-action="itemDelete" data-tooltip="Delete"><i class="fa-solid fa-trash"></i></button>
+      </li>
+      {{/each}}
+    </ol>
+  </section>
+
+  <section class="panel">
+    <div class="panel-header"><h2>Notes</h2></div>
+    <prose-mirror name="system.notes" value="{{system.notes}}" toggled="true">{{{enrichedNotes}}}</prose-mirror>
+  </section>
+</section>

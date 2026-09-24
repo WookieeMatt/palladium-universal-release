@@ -1,0 +1,244 @@
+<section class="tab sheet-body {{tab.cssClass}}" data-group="primary" data-tab="combat">
+  <section class="panel">
+    <div class="panel-header">
+      <h2>Combat Training</h2>
+      <span class="hint">Effective level {{combatInfo.effectiveLevel}}</span>
+    </div>
+    <div class="training-grid">
+      <div class="field">
+        <label>Training</label>
+        <select name="system.combat.training">
+          {{selectOptions trainingChoices selected=system.combat.training}}
+        </select>
+      </div>
+      <div class="field">
+        <label data-tooltip="Team Characters: +1 level per additional team member (p.19)">Team Bonus Levels</label>
+        <input type="number" name="system.combat.bonusLevels" value="{{system.combat.bonusLevels}}" min="0" />
+      </div>
+      <div class="readonly-field">
+        <label>Actions Left / per Round</label>
+        <span class="derived big">{{system.combat.actionsLeft}} / {{system.combat.totals.actions}}
+          <button type="button" class="icon-button" data-action="resetActions" data-tooltip="Reset actions (automatic each new combat round)"><i class="fa-solid fa-rotate-left"></i></button></span>
+      </div>
+      <div class="field">
+        <label>Misc Actions</label>
+        <input type="number" name="system.combat.mod.actions" value="{{system.combat.mod.actions}}" data-tooltip="Boxing, Hyper Metabolism, etc." />
+      </div>
+    </div>
+    {{#if combatInfo.stunned}}<p class="warning-banner">Stunned: 1 action per round and no combat bonuses.</p>{{/if}}
+    {{#if combatInfo.featureNotes.length}}<p class="hint">Human Features: {{#each combatInfo.featureNotes}}{{this}}{{#unless @last}} · {{/unless}}{{/each}}</p>{{/if}}
+    {{#if combatInfo.noDefense}}<p class="warning-banner">Can't react while {{combatInfo.noDefense}}.</p>{{/if}}
+
+    <div class="ability-lists">
+      <div>
+        <h3>Attack Actions</h3>
+        <ul>{{#each combatInfo.actions}}<li>{{this}}</li>{{/each}}</ul>
+      </div>
+      <div>
+        <h3>Reactions</h3>
+        <ul>
+          {{#each combatInfo.reactions}}<li>{{this}}</li>{{/each}}
+          {{#if combatInfo.autoParry}}<li><strong>Automatic Parry</strong> (no action)</li>{{else}}<li class="hint">Parrying uses an action (untrained)</li>{{/if}}
+        </ul>
+      </div>
+      <div>
+        <h3>Unlocked by Training</h3>
+        <ul>{{#each combatInfo.unlocks}}<li>{{this}}</li>{{else}}<li class="hint">None yet</li>{{/each}}</ul>
+      </div>
+      <div>
+        <h3>Criticals</h3>
+        <ul>{{#each combatInfo.crits}}<li>{{this}}</li>{{/each}}</ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-header">
+      <h2>Combat Bonuses</h2>
+      <span class="hint">Total = Training + Attribute + Skills + Misc + Circumstance + Conditions</span>
+    </div>
+    <table class="combat-table">
+      <thead><tr><th>Roll</th><th>Training</th><th>Attribute</th><th>Skills</th><th>Misc</th><th data-tooltip="Temporary situational modifier">Circ.</th><th>Cond.</th><th>Total</th><th></th></tr></thead>
+      <tbody>
+        {{#each combatRolls}}
+        <tr>
+          <th scope="row">{{label}}</th>
+          <td class="derived">{{training}}</td>
+          <td class="derived">{{attribute}}</td>
+          <td class="derived">{{skills}}</td>
+          <td><input type="number" name="system.combat.mod.{{key}}" value="{{mod}}" /></td>
+          <td>{{#if circKey}}<input type="number" name="system.combat.circ.{{circKey}}" value="{{circ}}" />{{else}}<span class="hint">{{#if (eq key "disarm")}}= Strike{{else}}—{{/if}}</span>{{/if}}</td>
+          <td class="derived">{{conditions}}</td>
+          <td class="total">{{total}}</td>
+          <td><button type="button" class="icon-button" data-action="rollCombat" data-roll="{{key}}" data-tooltip="Roll {{label}}"><i class="fa-solid fa-dice-d20"></i></button></td>
+        </tr>
+        {{/each}}
+        <tr>
+          <th scope="row">Damage</th>
+          <td class="derived">{{system.combat.breakdown.damage.training}}</td>
+          <td class="derived">{{system.combat.breakdown.damage.attribute}}</td>
+          <td class="derived">{{system.combat.breakdown.damage.skills}}</td>
+          <td><input type="number" name="system.combat.mod.damage" value="{{system.combat.mod.damage}}" /></td>
+          <td><input type="number" name="system.combat.circ.damage" value="{{system.combat.circ.damage}}" /></td>
+          <td class="derived">{{system.combat.breakdown.damage.conditions}}</td>
+          <td class="total">{{system.combat.totals.damage}}</td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="circ-row">
+      {{#each circumstances}}
+      <div class="field">
+        <label>Circ. {{label}}</label>
+        <input type="number" name="system.combat.circ.{{key}}" value="{{value}}" {{#if (eq key "critical")}}data-tooltip="+1 widens the Critical range by one (e.g. 19–20)"{{/if}} />
+      </div>
+      {{/each}}
+      <button type="button" data-action="clearCircumstances" data-tooltip="Reset every circumstantial modifier to 0"><i class="fa-solid fa-eraser"></i> Clear Circumstances</button>
+    </div>
+    <p class="hint">Strikes of 4 or less miss; 5+ hits unless the defender meets or beats it. Against a natural Critical, the defender needs a natural roll equal or higher. Pull Punch: 10+.</p>
+  </section>
+
+  <section class="panel">
+    <div class="panel-header">
+      <h2>Maneuvers</h2>
+      <span class="hint">Rolled with the melee Strike bonus</span>
+    </div>
+    <div class="maneuver-grid">
+      {{#each maneuvers}}
+      <button type="button" class="roll-button" data-action="rollManeuver" data-maneuver="{{key}}" data-tooltip="{{text}}">
+        <i class="fa-solid fa-dice-d20"></i> {{label}} {{strike}}
+      </button>
+      {{/each}}
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-header">
+      <h2>Conditions</h2>
+      <span class="hint">Also on the token HUD</span>
+    </div>
+    <div class="condition-grid">
+      {{#each conditions}}
+      <button type="button" class="condition {{#if active}}active{{/if}}" data-action="toggleCondition" data-condition="{{id}}" data-tooltip="{{text}}">
+        <img src="{{img}}" alt="" /> {{label}}
+      </button>
+      {{/each}}
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-header">
+      <h2>Weapons</h2>
+      <span class="header-buttons">
+        <button type="button" class="icon-button" data-action="itemCreate" data-type="weapon" data-tooltip="Add a weapon"><i class="fa-solid fa-plus"></i></button>
+      </span>
+    </div>
+    <ol class="item-list">
+      {{#each items.weapons}}
+      <li class="item-row weapon-row {{#unless equipped}}unequipped{{/unless}}" data-item-id="{{id}}">
+        <img src="{{img}}" alt="" class="item-icon" />
+        <div class="item-name">
+          <a data-action="itemEdit">{{name}}</a>
+          <span class="hint">{{type}}{{#if range}} · {{range}}{{/if}}{{#if (ne misfire null)}} · misfire {{misfire}}%{{/if}}{{#if overload}} · overloaded{{/if}}{{#if reload}} · reload: {{reload}}{{/if}}{{#if needsWP}}{{#unless proficient}} · <span class="warning">no WP</span>{{/unless}}{{/if}}</span>
+        </div>
+        <span class="weapon-damage" data-tooltip="Damage">{{damage}}{{#if burstDamage}} / {{burstDamage}} burst{{/if}}</span>
+        <span class="weapon-modes">
+          {{#each modes}}
+          <button type="button" class="roll-button" data-action="rollAttack" data-mode="{{key}}" data-tooltip="Roll to Strike">
+            <i class="fa-solid fa-dice-d20"></i> {{label}} {{strike}}
+          </button>
+          {{/each}}
+        </span>
+        <button type="button" class="icon-button" data-action="rollDamage" data-tooltip="Roll damage"><i class="fa-solid fa-burst"></i></button>
+        <button type="button" class="icon-button {{#if equipped}}active{{/if}}" data-action="itemEquip" data-tooltip="{{#if equipped}}Equipped{{else}}Not equipped{{/if}}"><i class="fa-solid fa-hand-fist"></i></button>
+        <button type="button" class="icon-button" data-action="itemDelete" data-tooltip="Delete"><i class="fa-solid fa-trash"></i></button>
+      </li>
+      {{else}}
+      <li class="hint">No weapons. Add one, or drag weapons here.</li>
+      {{/each}}
+    </ol>
+  </section>
+
+  <section class="panel">
+    <div class="panel-header">
+      <h2>Weapon Proficiencies</h2>
+      <button type="button" class="icon-button" data-action="itemCreate" data-type="wp" data-tooltip="Add a W.P."><i class="fa-solid fa-plus"></i></button>
+    </div>
+    <ol class="item-list">
+      {{#each items.wps}}
+      <li class="item-row" data-item-id="{{id}}">
+        <img src="{{img}}" alt="" class="item-icon" />
+        <div class="item-name">
+          <a data-action="itemEdit">{{name}}</a>
+          <span class="hint">{{kind}}{{#if group}} · group: {{group}}{{/if}}</span>
+        </div>
+        <span class="derived">{{text}}</span>
+        <button type="button" class="icon-button" data-action="itemDelete" data-tooltip="Delete"><i class="fa-solid fa-trash"></i></button>
+      </li>
+      {{else}}
+      <li class="hint">No weapon proficiencies. Without one, a weapon gets no W.P. bonus.</li>
+      {{/each}}
+    </ol>
+  </section>
+
+  <section class="panel">
+    <div class="panel-header">
+      <h2>Armor &amp; Shields</h2>
+      <span class="header-buttons">
+        <button type="button" class="icon-button" data-action="itemCreate" data-type="armor" data-armor-type="body" data-tooltip="Add body armor"><i class="fa-solid fa-shirt"></i></button>
+        <button type="button" class="icon-button" data-action="itemCreate" data-type="armor" data-armor-type="shield" data-tooltip="Add a shield"><i class="fa-solid fa-shield"></i></button>
+      </span>
+    </div>
+    <ol class="item-list">
+      {{#each items.armor}}
+      <li class="item-row {{#unless equipped}}unequipped{{/unless}}" data-item-id="{{id}}">
+        <img src="{{img}}" alt="" class="item-icon" />
+        <div class="item-name">
+          <a data-action="itemEdit">{{name}}</a>
+          <span class="hint">{{type}}{{#if parry}} · Parry +{{parry}}{{/if}}</span>
+        </div>
+        <span class="derived">A.R. {{ar}} · S.D.C. {{sdc.value}}/{{sdc.max}}</span>
+        <button type="button" class="icon-button {{#if equipped}}active{{/if}}" data-action="itemEquip" data-tooltip="{{#if equipped}}Worn{{else}}Not worn{{/if}}"><i class="fa-solid fa-shield-halved"></i></button>
+        <button type="button" class="icon-button" data-action="itemDelete" data-tooltip="Delete"><i class="fa-solid fa-trash"></i></button>
+      </li>
+      {{else}}
+      <li class="hint">No armor. Equipped body armor absorbs Strikes below its A.R.</li>
+      {{/each}}
+    </ol>
+  </section>
+
+  <section class="panel">
+    <div class="panel-header">
+      <h2>Saving Throws</h2>
+      <label class="checkbox"><input type="checkbox" name="system.saves.isPsychic" {{checked system.saves.isPsychic}} /> Psychic (saves vs psionics on 10+)</label>
+    </div>
+    <table class="combat-table">
+      <thead><tr><th>Save</th><th>Target</th><th>Misc</th><th>Bonus</th><th></th></tr></thead>
+      <tbody>
+        {{#each saves}}
+        <tr>
+          <th scope="row">{{label}}</th>
+          <td class="derived">{{target}}+</td>
+          <td><input type="number" name="system.saves.mod.{{key}}" value="{{mod}}" /></td>
+          <td class="total">{{bonusText}}</td>
+          <td>
+            {{#if (eq key "coma")}}
+            <button type="button" class="icon-button" data-action="rollComa" data-tooltip="Roll Save vs Coma (2 of 3)"><i class="fa-solid fa-heart-pulse"></i></button>
+            {{else}}
+            <button type="button" class="icon-button" data-action="rollSave" data-save="{{key}}" data-tooltip="Roll Save {{label}}"><i class="fa-solid fa-dice-d20"></i></button>
+            {{/if}}
+          </td>
+        </tr>
+        {{/each}}
+        <tr>
+          <th scope="row">vs Horror Factor</th>
+          <td class="derived">over H.F.</td>
+          <td class="hint">= Strangeness</td>
+          <td class="total">{{system.saves.totals.strangeness.bonus}}</td>
+          <td><button type="button" class="icon-button" data-action="rollHorror" data-tooltip="Roll vs a Horror Factor (must roll above it)"><i class="fa-solid fa-ghost"></i></button></td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="hint">Toxins: 14+ lethal, 16+ non-lethal, 15+ drugs. Magic: 12+ apprentice, 16+ master.</p>
+  </section>
+</section>

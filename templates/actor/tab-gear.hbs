@@ -1,0 +1,53 @@
+<section class="tab sheet-body {{tab.cssClass}}" data-group="primary" data-tab="gear">
+  <section class="panel">
+    <div class="panel-header">
+      <h2>Equipment</h2>
+      <button type="button" class="icon-button" data-action="itemCreate" data-type="gear" data-tooltip="Add gear"><i class="fa-solid fa-plus"></i></button>
+    </div>
+    <ol class="item-list">
+      {{#each items.gear}}
+      <li class="item-row" data-item-id="{{id}}">
+        <img src="{{img}}" alt="" class="item-icon" />
+        <div class="item-name"><a data-action="itemEdit">{{name}}</a></div>
+        <span class="derived">×{{quantity}}</span>
+        <button type="button" class="icon-button" data-action="itemDelete" data-tooltip="Delete"><i class="fa-solid fa-trash"></i></button>
+      </li>
+      {{else}}
+      <li class="hint">No gear yet. Weapons and armor live on the Combat tab.</li>
+      {{/each}}
+    </ol>
+  </section>
+
+  <section class="panel">
+    <div class="panel-header">
+      <h2>Devices</h2>
+      <button type="button" class="icon-button" data-action="itemCreate" data-type="device" data-tooltip="Add a device"><i class="fa-solid fa-plus"></i></button>
+    </div>
+    <ol class="item-list">
+      {{#each items.devices}}
+      <li class="item-row {{#unless charged}}unequipped{{/unless}}" data-item-id="{{id}}">
+        <img src="{{img}}" alt="" class="item-icon" />
+        <div class="item-name"><a data-action="itemEdit">{{name}}</a><span class="hint">{{type}}{{#if readout}} · +{{bonus}}%{{/if}}</span></div>
+        {{#unless readout}}
+        {{#if charged}}
+        <button type="button" class="roll-button" data-action="operate"><i class="fa-solid fa-clock-rotate-left"></i> Operate</button>
+        {{else}}
+        <button type="button" class="roll-button" data-action="recharge" data-tooltip="{{recharge}}"><i class="fa-solid fa-battery-half"></i> Recharge</button>
+        {{/if}}
+        {{/unless}}
+        <button type="button" class="icon-button" data-action="itemDelete" data-tooltip="Delete"><i class="fa-solid fa-trash"></i></button>
+      </li>
+      {{else}}
+      <li class="hint">No time machines, cross-dimensional devices or readouts.</li>
+      {{/each}}
+    </ol>
+  </section>
+
+  <section class="panel">
+    <div class="panel-header"><h2>Notes</h2></div>
+    <div class="large-entry-box">
+      <label>Money / other possessions</label>
+      <textarea name="system.gear" rows="10">{{system.gear}}</textarea>
+    </div>
+  </section>
+</section>

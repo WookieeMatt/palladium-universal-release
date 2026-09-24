@@ -1,0 +1,49 @@
+<section class="panel time-machine">
+  <div class="panel-header">
+    <h2>Time Machine</h2>
+    <span class="header-buttons">
+      {{#if system.charged}}
+      <button type="button" data-action="operateMachine" data-tooltip="Select the operator's token first"><i class="fa-solid fa-clock-rotate-left"></i> Operate</button>
+      {{else}}
+      <button type="button" data-action="rechargeMachine" data-tooltip="{{#if system.device}}{{system.device.recharge}}{{/if}}"><i class="fa-solid fa-battery-half"></i> Recharge</button>
+      {{/if}}
+      <button type="button" data-action="temporalMishap" data-tooltip="Roll the Temporal Mishap Table"><i class="fa-solid fa-shuffle"></i> Mishap</button>
+    </span>
+  </div>
+  <div class="npc-health">
+    <div class="field"><label>Current Time / Dimension</label><input type="text" name="system.currentTime" value="{{system.currentTime}}" placeholder="Cycle Prime, 1988 A.D." /></div>
+    <div class="field"><label>Destination</label><input type="text" name="system.destination" value="{{system.destination}}" placeholder="Twist B, 1738 A.D." /></div>
+    <div class="readonly-field"><label>Status</label><span class="derived {{#unless system.charged}}warning{{/unless}}">{{#if system.charged}}Charged{{else}}Needs recharging{{/if}}</span></div>
+    <div class="readonly-field"><label>Total Cost</label><span class="derived">{{system.totalCost}}</span></div>
+  </div>
+
+  {{#each tmZones as |zone|}}
+  <div class="tm-zone" data-drop-zone="{{zone.key}}">
+    <h3>{{zone.label}}</h3>
+    <ol class="item-list">
+      {{#each zone.entries}}
+      <li class="item-row" data-entry-id="{{id}}">
+        <img src="{{img}}" alt="" class="item-icon" />
+        <div class="item-name">
+          {{#if sourceUuid}}<a data-action="openEntry" data-uuid="{{sourceUuid}}">{{name}}</a>{{else}}<strong>{{name}}</strong>{{/if}}
+          {{#if details}}<span class="hint">{{details}}</span>{{/if}}
+        </div>
+        {{#if cost}}<span class="derived">{{cost}}</span>{{/if}}
+        <button type="button" class="icon-button" data-action="removeEntry" data-zone="{{zone.key}}" data-tooltip="Remove"><i class="fa-solid fa-xmark"></i></button>
+      </li>
+      {{else}}
+      <li class="slot-empty">{{zone.hint}}</li>
+      {{/each}}
+    </ol>
+  </div>
+  {{/each}}
+
+  {{#if system.jumpLog.length}}
+  <details class="manual-bioe">
+    <summary class="hint">Jump log ({{system.jumpLog.length}})</summary>
+    <ol class="item-list">
+      {{#each system.jumpLog}}<li class="hint">{{from}} → {{to}}: {{result}}</li>{{/each}}
+    </ol>
+  </details>
+  {{/if}}
+</section>

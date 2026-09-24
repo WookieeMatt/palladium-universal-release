@@ -1,0 +1,106 @@
+<section class="item-body">
+  <section class="panel">
+    <div class="item-grid">
+      <div class="field">
+        <label>Bio-E</label>
+        <input type="number" name="system.bioe" value="{{system.bioe}}" min="0" />
+      </div>
+      <div class="field">
+        <label>Size Level</label>
+        <input type="number" name="system.sizeLevel" value="{{system.sizeLevel}}" min="1" max="25" />
+      </div>
+      <div class="field">
+        <label>Build</label>
+        <select name="system.build">{{selectOptions buildChoices selected=system.build}}</select>
+      </div>
+      <div class="field">
+        <label>Length / Height</label>
+        <input type="text" name="system.length" value="{{system.length}}" />
+      </div>
+      <div class="field">
+        <label>Weight</label>
+        <input type="text" name="system.weight" value="{{system.weight}}" />
+      </div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-header"><h2>Human Features</h2></div>
+    <table>
+      <thead><tr><th>Feature</th><th>Automatic</th><th data-tooltip="Only used below an automatic level: negative = Bio-E gained">None</th><th>Partial</th><th>Full</th><th>Full available</th></tr></thead>
+      <tbody>
+        {{#each featureRows}}
+        <tr>
+          <th scope="row">{{label}}</th>
+          <td><select name="system.features.{{key}}.auto">{{selectOptions @root.featureLevels selected=auto}}</select></td>
+          <td><input type="number" name="system.features.{{key}}.none" value="{{none}}" max="0" /></td>
+          <td><input type="number" name="system.features.{{key}}.partial" value="{{partial}}" /></td>
+          <td><input type="number" name="system.features.{{key}}.full" value="{{full}}" min="0" /></td>
+          <td><input type="checkbox" name="system.features.{{key}}.fullAvailable" {{checked fullAvailable}} /></td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+    <p class="hint">"Auto Partial, 5 Full" = Automatic Partial, Full 5. Costs are what the book lists for this animal.</p>
+  </section>
+
+  <section class="panel">
+    <div class="panel-header">
+      <h2>Feature Effects</h2>
+      <span class="hint">Applied while the character has the feature at that level</span>
+    </div>
+    <table class="effects-table">
+      <thead><tr><th>Feature</th><th>Applies to</th><th>Formula</th><th>Group / Skill</th><th></th></tr></thead>
+      <tbody>
+        {{#each featureEffectRows as |row|}}
+        {{#each row.effects as |effect i|}}
+        <tr>
+          <th scope="row">{{row.label}}</th>
+          <td><select name="system.features.{{row.key}}.{{row.level}}Effects.{{i}}.target">{{selectOptions @root.effectTargets selected=effect.target}}</select></td>
+          <td><input type="text" name="system.features.{{row.key}}.{{row.level}}Effects.{{i}}.formula" value="{{effect.formula}}" /></td>
+          <td><input type="text" name="system.features.{{row.key}}.{{row.level}}Effects.{{i}}.group" value="{{effect.group}}" /></td>
+          <td><button type="button" class="icon-button" data-action="deleteFeatureEffect" data-feature="{{row.key}}" data-level="{{row.level}}" data-index="{{i}}" data-tooltip="Remove"><i class="fa-solid fa-trash"></i></button></td>
+        </tr>
+        {{/each}}
+        {{/each}}
+      </tbody>
+    </table>
+    <div class="feature-effect-buttons">
+      {{#each featureEffectRows}}
+      <button type="button" data-action="addFeatureEffect" data-feature="{{key}}" data-level="{{level}}"><i class="fa-solid fa-plus"></i> {{label}}</button>
+      {{/each}}
+    </div>
+    <p class="hint">E.g. Human: Hands Partial = All skills −20, Hand-held Strike −3, Parry −3; Looks Partial = P.B. −1; Looks None = P.B. halved. With no Partial Hands effects listed, the Redux default applies (−4 Strike with hand-held weapons).</p>
+  </section>
+
+  <section class="panel">
+    <div class="panel-header">
+      <h2>Abilities &amp; Natural Weapons</h2>
+      <button type="button" class="icon-button" data-action="addOption" data-tooltip="Add an option"><i class="fa-solid fa-plus"></i></button>
+    </div>
+    <table class="options-table">
+      <thead><tr><th>Name</th><th>Kind</th><th>Bio-E</th><th>Damage</th><th>A.R.</th><th>Choice Group</th><th></th></tr></thead>
+      <tbody>
+        {{#each system.options as |option i|}}
+        <tr>
+          <td><input type="text" name="system.options.{{i}}.name" value="{{option.name}}" /></td>
+          <td><select name="system.options.{{i}}.kind">{{selectOptions @root.optionKinds selected=option.kind}}</select></td>
+          <td><input type="number" name="system.options.{{i}}.bioe" value="{{option.bioe}}" min="0" /></td>
+          <td><input type="text" name="system.options.{{i}}.damage" value="{{option.damage}}" /></td>
+          <td><input type="number" name="system.options.{{i}}.naturalAR" value="{{option.naturalAR}}" min="0" /></td>
+          <td>
+            <input type="text" name="system.options.{{i}}.choiceGroup" value="{{option.choiceGroup}}" />
+            <input type="hidden" name="system.options.{{i}}.id" value="{{option.id}}" />
+            <input type="hidden" name="system.options.{{i}}.notes" value="{{option.notes}}" />
+          </td>
+          <td><button type="button" class="icon-button" data-action="deleteOption" data-index="{{i}}" data-tooltip="Remove"><i class="fa-solid fa-trash"></i></button></td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+    <p class="hint">Options in the same Choice Group are alternatives, e.g. Claws 1D6 (5) / Claws 1D10 (10).</p>
+  </section>
+
+  {{> "systems/palladium-universal/templates/item/parts/effects.hbs"}}
+  {{> "systems/palladium-universal/templates/item/parts/description.hbs"}}
+</section>

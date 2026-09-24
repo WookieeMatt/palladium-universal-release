@@ -1,0 +1,194 @@
+<section class="tab sheet-body {{tab.cssClass}}" data-group="primary" data-tab="mutation">
+  <section class="panel animal-panel">
+    <div class="panel-header">
+      <h2>Animal</h2>
+      {{#if animal}}
+      <button type="button" class="icon-button" data-action="removeAnimal" data-tooltip="Remove animal"><i class="fa-solid fa-xmark"></i></button>
+      {{/if}}
+    </div>
+    {{#if animal}}
+    <div class="animal-summary" data-item-id="{{animal.id}}">
+      <img src="{{animal.img}}" alt="" class="animal-img" />
+      <div>
+        <h3><a data-action="itemEdit">{{animal.name}}</a></h3>
+        <p class="hint">Bio-E {{animal.bioe}} · Size Level {{animal.sizeLevel}} · Build {{animal.build}}{{#if animal.length}} · {{animal.length}}{{/if}}{{#if animal.weight}} · {{animal.weight}}{{/if}}</p>
+        {{#if animal.bonuses}}<p>Attribute bonuses: <strong>{{animal.bonuses}}</strong></p>{{/if}}
+        <p class="hint">{{#each animal.features}}{{this}}{{#unless @last}} · {{/unless}}{{/each}}</p>
+      </div>
+    </div>
+    <div class="option-columns">
+      <div>
+        <h3>Animal Abilities</h3>
+        <ul class="option-list">
+          {{#each animal.abilities}}
+          <li>
+            <label class="checkbox">
+              <input type="checkbox" data-action="buyOption" data-option-id="{{id}}" {{checked purchased}} />
+              <span class="option-name">{{name}}</span>
+              <span class="option-cost">{{bioe}}</span>
+            </label>
+            {{#if detail}}<span class="hint">{{detail}}</span>{{/if}}
+          </li>
+          {{else}}<li class="hint">None listed.</li>{{/each}}
+        </ul>
+      </div>
+      <div>
+        <h3>Natural Weapons</h3>
+        <ul class="option-list">
+          {{#each animal.weapons}}
+          <li>
+            <label class="checkbox">
+              <input type="checkbox" data-action="buyOption" data-option-id="{{id}}" {{checked purchased}} />
+              <span class="option-name">{{name}}</span>
+              <span class="option-cost">{{bioe}}</span>
+            </label>
+            {{#if detail}}<span class="hint">{{detail}}</span>{{/if}}
+          </li>
+          {{else}}<li class="hint">None listed.</li>{{/each}}
+        </ul>
+      </div>
+    </div>
+    {{else}}
+    <div class="drop-slot big"><div class="slot-empty">Drag an Animal here (or anywhere on the sheet) to set Bio-E, size and features.</div></div>
+    {{/if}}
+  </section>
+
+  <section class="panel">
+    <div class="panel-header">
+      <h2>Bio-E</h2>
+      <span class="bioe-remaining {{bioeRemainingClass}}">{{#if (eq system.mutation.bioe.remaining 0)}}✓ All Bio-E spent{{else}}Remaining: {{system.mutation.bioe.remaining}}{{/if}}</span>
+    </div>
+    <div class="bioe-grid">
+      <div class="field">
+        <label>Starting Bio-E</label>
+        <input type="number" name="system.mutation.bioeTotal" value="{{system.mutation.bioeTotal}}" min="0" />
+      </div>
+      <div class="readonly-field"><label>Size</label><span class="derived">{{system.mutation.bioe.size}}</span></div>
+      <div class="readonly-field"><label>Human Features</label><span class="derived">{{system.mutation.bioe.features}}</span></div>
+      <div class="readonly-field"><label>Animal Abilities</label><span class="derived">{{system.mutation.bioe.abilities}}</span></div>
+      <div class="readonly-field"><label>Natural Weapons</label><span class="derived">{{system.mutation.bioe.weapons}}</span></div>
+      <div class="readonly-field"><label>Psionics</label><span class="derived">{{system.mutation.bioe.psionics}}</span></div>
+      <div class="field"><label data-tooltip="Bio-E gained (+) or lost (−) to T.E. evolution/devolution from time travel">T.E. Change</label><input type="number" name="system.mutation.teDrift" value="{{system.mutation.teDrift}}" step="5" /></div>
+      {{#if system.mutation.bioe.bonus}}<div class="readonly-field"><label>Bonus (items)</label><span class="derived">+{{system.mutation.bioe.bonus}}</span></div>{{/if}}
+      {{#if system.mutation.bioe.magic}}<div class="readonly-field"><label>Magic Training</label><span class="derived">{{system.mutation.bioe.magic}}</span></div>{{/if}}
+    </div>
+    <details class="manual-bioe">
+      <summary class="hint">Extra Bio-E not tracked by items</summary>
+      <div class="bioe-grid">
+        <div class="field"><label>Abilities</label><input type="number" name="system.mutation.spentAbilities" value="{{system.mutation.spentAbilities}}" min="0" /></div>
+        <div class="field"><label>Natural Weapons</label><input type="number" name="system.mutation.spentWeapons" value="{{system.mutation.spentWeapons}}" min="0" /></div>
+        <div class="field"><label>Psionics</label><input type="number" name="system.mutation.spentPsionics" value="{{system.mutation.spentPsionics}}" min="0" /></div>
+      </div>
+    </details>
+    <p class="hint">Unspent Bio-E is lost after character creation (p.16).</p>
+  </section>
+
+  <section class="panel">
+    <div class="panel-header">
+      <h2>Size Level</h2>
+    </div>
+    <div class="size-controls">
+      <div class="field">
+        <label>Animal's Original Size Level</label>
+        <input type="number" name="system.mutation.originalSizeLevel" value="{{system.mutation.originalSizeLevel}}" min="1" max="25" />
+      </div>
+      <div class="field">
+        <label>Current Size Level</label>
+        <div class="stepper">
+          <button type="button" data-action="changeSize" data-delta="-1" aria-label="Decrease size"><i class="fa-solid fa-minus"></i></button>
+          <span class="size-value">{{system.mutation.sizeLevel}}</span>
+          <button type="button" data-action="changeSize" data-delta="1" aria-label="Increase size"><i class="fa-solid fa-plus"></i></button>
+        </div>
+      </div>
+      <div class="field">
+        <label>Build</label>
+        <select name="system.mutation.build">
+          {{selectOptions buildChoices selected=system.mutation.build}}
+        </select>
+      </div>
+      <label class="checkbox">
+        <input type="checkbox" name="system.mutation.applySizeModifiers" {{checked system.mutation.applySizeModifiers}} />
+        Apply size modifiers to attributes
+      </label>
+    </div>
+    <table class="size-table">
+      <thead><tr><th>SL</th><th>Weight</th><th>IQ</th><th>PS</th><th>PE</th><th>Spd</th><th>SDC</th></tr></thead>
+      <tbody>
+        {{#each sizeTable}}
+        <tr class="{{#if current}}current{{/if}}">
+          <td>{{level}}</td><td>{{weight}}</td><td>{{iq}}</td><td>{{ps}}</td><td>{{pe}}</td><td>{{spd}}</td><td>{{sdc}}</td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </section>
+
+  <section class="panel">
+    <div class="panel-header">
+      <h2>Human Features</h2>
+      <span class="hint">Costs are relative to the animal's automatic level (0 = automatic; negative = Bio-E gained)</span>
+    </div>
+    <table class="feature-table">
+      <thead><tr><th>Feature</th><th>Level</th><th>None Cost</th><th>Partial Cost</th><th>Full Cost</th><th>Spent</th></tr></thead>
+      <tbody>
+        {{#each features}}
+        <tr>
+          <th scope="row">{{label}}</th>
+          <td>
+            <select name="system.mutation.features.{{key}}.level">
+              {{selectOptions levels selected=level}}
+            </select>
+          </td>
+          <td><input type="number" name="system.mutation.features.{{key}}.noneCost" value="{{noneCost}}" max="0" /></td>
+          <td><input type="number" name="system.mutation.features.{{key}}.partialCost" value="{{partialCost}}" /></td>
+          <td><input type="number" name="system.mutation.features.{{key}}.fullCost" value="{{fullCost}}" /></td>
+          <td class="derived">{{cost}}</td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </section>
+
+  {{#*inline "bioeList"}}
+  <section class="panel">
+    <div class="panel-header">
+      <h2>{{title}}</h2>
+      <button type="button" class="icon-button" data-action="itemCreate" data-type="{{type}}" {{#if weaponType}}data-weapon-type="{{weaponType}}"{{/if}} data-tooltip="Add"><i class="fa-solid fa-plus"></i></button>
+    </div>
+    <ol class="item-list">
+      {{#each list}}
+      <li class="item-row" data-item-id="{{id}}">
+        <img src="{{img}}" alt="" class="item-icon" />
+        <div class="item-name">
+          <a data-action="itemEdit">{{name}}</a>
+          {{#if damage}}<span class="hint">{{damage}}</span>{{/if}}
+          {{#if range}}<span class="hint">{{range}} · {{duration}} · save: {{save}}</span>{{/if}}
+        </div>
+        <span class="derived">{{bioe}} Bio-E</span>
+        <button type="button" class="icon-button" data-action="itemDelete" data-tooltip="Delete"><i class="fa-solid fa-trash"></i></button>
+      </li>
+      {{else}}
+      <li class="hint">{{empty}}</li>
+      {{/each}}
+    </ol>
+  </section>
+  {{/inline}}
+
+  {{> bioeList title="Animal Abilities" type="ability" list=items.abilities empty="None. Only the animal's own abilities can be bought (p.19)."}}
+  {{> bioeList title="Natural Weapons" type="weapon" weaponType="natural" list=items.naturalWeapons empty="None. Natural weapons also appear on the Combat tab."}}
+  {{> bioeList title="Psionic Powers" type="psionic" list=items.psionics empty="None. Requires M.E. 12+."}}
+
+  <section class="panel">
+    <div class="panel-header"><h2>Mutation Notes</h2></div>
+    <div class="two-col">
+      <div class="large-entry-box">
+        <label>Abilities (notes)</label>
+        <textarea name="system.mutation.abilities" rows="4">{{system.mutation.abilities}}</textarea>
+      </div>
+      <div class="large-entry-box">
+        <label>Natural Weapons (notes)</label>
+        <textarea name="system.mutation.naturalWeapons" rows="4">{{system.mutation.naturalWeapons}}</textarea>
+      </div>
+    </div>
+  </section>
+</section>

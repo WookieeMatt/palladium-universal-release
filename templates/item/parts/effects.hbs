@@ -1,0 +1,28 @@
+<section class="panel">
+  <div class="panel-header">
+    <h2>Bonuses</h2>
+    <button type="button" class="icon-button" data-action="addEffect" data-tooltip="Add a bonus"><i class="fa-solid fa-plus"></i></button>
+  </div>
+  {{#if system.effects.length}}
+  <table class="effects-table">
+    <thead><tr><th>Applies to</th><th>Formula</th><th>Rolled</th><th>Group / Skill</th><th></th></tr></thead>
+    <tbody>
+      {{#each system.effects as |effect i|}}
+      <tr>
+        <td>
+          <select name="system.effects.{{i}}.target">
+            {{selectOptions @root.effectTargets selected=effect.target}}
+          </select>
+        </td>
+        <td><input type="text" name="system.effects.{{i}}.formula" value="{{effect.formula}}" placeholder="1 or 1D6" /></td>
+        <td><input type="number" name="system.effects.{{i}}.value" value="{{effect.value}}" data-tooltip="Dice are rolled when the item is added to a character" /></td>
+        <td><input type="text" name="system.effects.{{i}}.group" value="{{effect.group}}" placeholder="e.g. Sword, Prowl" /></td>
+        <td><button type="button" class="icon-button" data-action="deleteEffect" data-index="{{i}}" data-tooltip="Remove"><i class="fa-solid fa-trash"></i></button></td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+  {{else}}
+  <p class="hint">No bonuses. Physical skills and abilities list theirs here (e.g. Boxing: Actions +1, Parry +1, S.D.C. 1D12).</p>
+  {{/if}}
+</section>

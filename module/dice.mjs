@@ -1,0 +1,143 @@
+import { COMA_TREATMENT } from "./config.mjs";
+
+const { DialogV2 } = foundry.applications.api;
+
+/** Format a signed bonus, e.g. +3 / −2. */
+export const signed = n => (n >= 0 ? `+${n}` : `−${Math.abs(n)}`);
+
+/** Render a bonus breakdown as "Training +3 · Attribute +2". */
+function breakdownText(breakdown = {}) {
+  const labels = { training: "Training", attribute: "Attribute", skills: "Skills", mod: "Misc", treatment: "Treatment",
+    circ: "Circumstance", conditions: "Conditions" };
+  if ( breakdown.stunned ) return "Stunned: no combat bonuses";
+  return Object.entries(breakdown)
+    .filter(([, v]) => v)
+    .map(([k, v]) => `${labels[k] ?? k} ${signed(v)}`)
+    .join(" · ");
+}
+
+/**
+ * Build the header of a chat card: a green strip with the portrait and title. A subtitle made of
+ * several " · "-separated parts (a bonus breakdown) is listed line by line under the header.
+ * @param {Actor} actor
+ * @param {string} title
+ * @param {string} [subtitle]
+ */
+export function cardHeader(actor, title, subtitle = "") {
+  const parts = subtitle ? subtitle.split(" · ") : [];
+  const lines = parts.length > 1
+    ? `<ul class="pu-bonuses">${parts.map(p => `<li>${p}</li>`).join("")}</ul>` : "";
+  return `<header class="pu-card-header">
+    <img src="${actor.img}" alt="" width="36" height="36">
+    <div><h3>${title}</h3>${parts.length === 1 ? `<span>${subtitle}</span>` : ""}</div>
+  </header>${lines}`;
+}
+
+/* -------------------------------------------- */
+
+/**
+ * Roll a d20 check (Strike, Parry, Dodge, Initiative, saves...) and post it to chat.
+ * @param {Actor} actor
+ * @param {object} options
+ * @param {string} options.label          Card title
+ * @param {number} options.bonus          Total bonus added to the d20
+ * @param {object} [options.breakdown]    Bonus components for display
+ * @param {number} [options.target]       Target number (meet or beat)
+ * @param {number} [options.critRange]    Natural roll at or above which the result is a critical
+ */
+export async function rollD20(actor, { label, bonus = 0, breakdown, target, critRange, above = false, note = "" }) {
+  const roll = await new Roll(`1d20 + ${bonus}`).evaluate();
+  const natural = roll.dice[0].total;
+  const notes = [];
+  if ( critRange && (natural >= critRange) ) notes.push(`<strong class="pu-crit">Natural ${natural}: Critical!</strong>`);
+  else if ( natural === 20 ) notes.push(`<strong class="pu-crit">Natural 20!</strong>`);
+  if ( natural === 1 ) notes.push(`<strong class="pu-fumble">Natural 1</strong>`);
+  let success = null;
+  if ( target !== undefined ) {
+    success = above ? roll.total > target : roll.total >= target;
+    const needs = above ? `needs over ${target}` : `needs ${target}+`;
+    notes.push(`<span class="${success ? "pu-success" : "pu-failure"}">${success ? "Success" : "Failure"} (${needs})</span>`);
+  }
+  if ( note ) notes.push(note);
+  const flavor = `<div class="pu-card">${cardHeader(actor, label, breakdownText(breakdown))}
+    ${notes.length ? `<p class="pu-notes">${notes.join(" ")}</p>` : ""}</div>`;
+  await roll.toMessage({ speaker: ChatMessage.getSpeaker({ actor }), flavor });
+  return { roll, natural, success };
+}
+
+/* -------------------------------------------- */
+
+/**
+ * Roll a percentile check and post it to chat. Skill checks cap at 95%; 96–100 always fail (p.54).
+ * @param {Actor} actor
+ * @param {object} options
+ * @param {string} options.label
+ * @param {number} options.target        Percentage chance
+ * @param {boolean} [options.skill=true] Apply the 95% skill cap
+ */
+export async function rollPercent(actor, { label, target, skill = true }) {
+  const chance = skill ? Math.min(target, 95) : target;
+  const roll = await new Roll("1d100").evaluate();
+  const success = (roll.total <= chance) && !(skill && (roll.total >= 96));
+  const flavor = `<div class="pu-card">${cardHeader(actor, label, `${chance}%`)}
+    <p class="pu-notes"><span class="${success ? "pu-success" : "pu-failure"}">${success ? "Success" : "Failure"}</span></p></div>`;
+  return roll.toMessage({ speaker: ChatMessage.getSpeaker({ actor }), flavor });
+}
+
+/* -------------------------------------------- */
+
+/**
+ * Roll a skill check for an owned skill item.
+ * @param {Actor} actor
+ * @param {Item} skill
+ * @param {boolean} [secondary=false]   Roll the skill's second percentage (e.g. Medical Doctor "Treat")
+ */
+export async function rollSkill(actor, skill, secondary = false) {
+  const pct = actor.system.skillPercentages(skill);
+  const target = secondary ? pct.secondary : pct.primary;
+  const label = secondary && skill.system.label2 ? `${skill.name}: ${skill.system.label2}` : skill.name;
+  return rollPercent(actor, { label, target, skill: true });
+}
+
+/* -------------------------------------------- */
+
+/**
+ * Automated Save vs Coma (p.93, with house ruling): three d20 rolls at 16+, adding the converted
+ * PE bonus and a treatment bonus. Two successes out of three restore the character to 1 HP.
+ * @param {Actor} actor
+ */
+export async function rollSaveVsComa(actor) {
+  const options = Object.entries(COMA_TREATMENT)
+    .map(([value, label]) => `<option value="${value}">${label}</option>`).join("");
+  const treatment = await DialogV2.prompt({
+    window: { title: `${actor.name}: Save vs Coma` },
+    content: `<div class="form-group"><label>Treatment</label>
+      <div class="form-fields"><select name="treatment">${options}</select></div></div>`,
+    ok: { label: "Roll", callback: (event, button) => Number(button.form.elements.treatment.value) },
+    rejectClose: false
+  });
+  if ( treatment === null || treatment === undefined ) return null;
+
+  const save = actor.system.saves.totals.coma;
+  const bonus = save.bonus + treatment;
+  const rolls = [];
+  for ( let i = 0; i < 3; i++ ) rolls.push(await new Roll(`1d20 + ${bonus}`).evaluate());
+  const successes = rolls.filter(r => r.total >= save.target).length;
+  const recovered = successes >= 2;
+
+  const list = rolls.map((r, i) => {
+    const ok = r.total >= save.target;
+    return `<li>Try ${i + 1}: ${r.dice[0].total} ${signed(bonus)} = <strong>${r.total}</strong>
+      <span class="${ok ? "pu-success" : "pu-failure"}">${ok ? "✔" : "✘"}</span></li>`;
+  }).join("");
+  const breakdown = breakdownText({ attribute: save.bonus - actor.system.saves.mod.coma,
+    mod: actor.system.saves.mod.coma, treatment });
+  const content = `<div class="pu-card">${cardHeader(actor, "Save vs Coma", breakdown)}
+    <ol class="pu-coma">${list}</ol>
+    <p class="pu-notes"><span class="${recovered ? "pu-success" : "pu-failure"}">
+      ${recovered ? "Recovers: stabilised at 1 HP." : "Still in a coma."}</span>
+      (${successes} of 3 at ${save.target}+)</p></div>`;
+
+  if ( recovered && (actor.system.health.hp.value < 1) ) await actor.update({ "system.health.hp.value": 1 });
+  return ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content, rolls });
+}

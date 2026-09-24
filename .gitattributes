@@ -1,0 +1,22 @@
+# Keep LF line endings in the repo and working tree on every platform
+* text=auto eol=lf
+
+# Binary assets
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.gif binary
+*.svg text eol=lf
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.otf binary
+*.ogg binary
+*.mp3 binary
+*.webm binary
+*.mp4 binary
+*.db binary
+
+# Compiled LevelDB compendium packs
+packs/** binary

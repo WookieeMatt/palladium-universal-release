@@ -1,0 +1,67 @@
+<header class="sheet-header">
+  <div class="header-left">
+    <h1 class="charname">
+      <input name="name" type="text" value="{{actor.name}}" placeholder="Character Name" />
+    </h1>
+    <div class="identity-grid">
+      <div class="field">
+        <label>Animal</label>
+        <input type="text" name="system.identity.species" value="{{system.identity.species}}" />
+      </div>
+      <div class="field">
+        <label>Alignment</label>
+        <select name="system.identity.alignment">
+          {{selectOptions alignments selected=system.identity.alignment blank="— Choose —"}}
+        </select>
+      </div>
+      <div class="field">
+        <label>Level</label>
+        <input type="number" name="system.identity.level" value="{{system.identity.level}}" min="1" max="15" />
+      </div>
+      <div class="field">
+        <label>XP</label>
+        <input type="number" name="system.identity.xp" value="{{system.identity.xp}}" min="0" />
+        {{#if (gt system.identity.xpLevel system.identity.level)}}<span class="hint level-up">Level {{system.identity.xpLevel}} earned!</span>{{/if}}
+      </div>
+      <div class="field">
+        <label>Origin</label>
+        <input type="text" name="system.identity.origin" value="{{system.identity.origin}}" />
+      </div>
+      <div class="field">
+        <label>Education</label>
+        <input type="text" name="system.identity.education" value="{{system.identity.education}}" />
+      </div>
+      <div class="field">
+        <label>Education Bonus %</label>
+        <input type="number" name="system.identity.educationBonus" value="{{system.identity.educationBonus}}" />
+      </div>
+      <div class="field">
+        <label>Age / Sex</label>
+        <div class="pair">
+          <input type="text" name="system.identity.age" value="{{system.identity.age}}" placeholder="Age" />
+          <input type="text" name="system.identity.sex" value="{{system.identity.sex}}" placeholder="Sex" />
+        </div>
+      </div>
+      <div class="field">
+        <label>Height / Weight</label>
+        <div class="pair">
+          <input type="text" name="system.identity.height" value="{{system.identity.height}}" placeholder="Height" />
+          <input type="text" name="system.identity.weight" value="{{system.identity.weight}}" placeholder="Weight" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="header-right">
+    <div class="token-box">
+      <img
+        class="profile-img"
+        src="{{actor.img}}"
+        alt="{{actor.name}}"
+        data-action="editImage"
+        data-edit="img"
+        data-tooltip="Click to change portrait"
+      />
+    </div>
+  </div>
+</header>

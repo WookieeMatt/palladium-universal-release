@@ -1,0 +1,24 @@
+<section class="item-body">
+  <section class="panel">
+    <div class="item-grid">
+      <div class="field">
+        <label>Bio-E Cost</label>
+        <input type="number" name="system.bioe" value="{{system.bioe}}" min="0" />
+      </div>
+      <div class="field">
+        <label>Range</label>
+        <input type="text" name="system.range" value="{{system.range}}" />
+      </div>
+      <div class="field">
+        <label>Duration</label>
+        <input type="text" name="system.duration" value="{{system.duration}}" />
+      </div>
+      <div class="field">
+        <label>Saving Throw</label>
+        <input type="text" name="system.save" value="{{system.save}}" />
+      </div>
+    </div>
+    <p class="hint">Requires M.E. 12+. No I.S.P.: usable as an action as often as desired, one power at a time (p.19–20).</p>
+  </section>
+  {{> "systems/palladium-universal/templates/item/parts/description.hbs"}}
+</section>

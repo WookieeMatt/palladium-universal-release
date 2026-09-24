@@ -1,0 +1,47 @@
+<section class="item-body">
+  <section class="panel">
+    <div class="item-grid">
+      <div class="field">
+        <label>Category</label>
+        <select name="system.category">{{selectOptions skillCategories selected=system.category}}</select>
+      </div>
+      <div class="field">
+        <label>Training</label>
+        <select name="system.training">{{selectOptions trainingChoices selected=system.training}}</select>
+      </div>
+      <label class="checkbox">
+        <input type="checkbox" name="system.passive" {{checked system.passive}} /> Passive (no roll)
+      </label>
+      <div class="field">
+        <label>Base %</label>
+        <input type="number" name="system.base" value="{{system.base}}" />
+      </div>
+      <div class="field">
+        <label>Per Level %</label>
+        <input type="number" name="system.perLevel" value="{{system.perLevel}}" />
+      </div>
+      <div class="field">
+        <label>Level Acquired</label>
+        <input type="number" name="system.levelAcquired" value="{{system.levelAcquired}}" min="1" max="15" />
+      </div>
+      <div class="field">
+        <label>Second Roll Label</label>
+        <input type="text" name="system.label2" value="{{system.label2}}" placeholder="e.g. Treat" />
+      </div>
+      <div class="field">
+        <label>Second Base %</label>
+        <input type="number" name="system.base2" value="{{system.base2}}" />
+      </div>
+      <div class="field">
+        <label>Misc Bonus %</label>
+        <input type="number" name="system.bonus" value="{{system.bonus}}" data-tooltip="Origin bonus, Team Characters levels, etc." />
+      </div>
+    </div>
+    <div class="field">
+      <label>Requires</label>
+      <input type="text" name="system.requires" value="{{system.requires}}" />
+    </div>
+  </section>
+  {{> "systems/palladium-universal/templates/item/parts/effects.hbs"}}
+  {{> "systems/palladium-universal/templates/item/parts/description.hbs"}}
+</section>

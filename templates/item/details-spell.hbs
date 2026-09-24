@@ -1,0 +1,48 @@
+<section class="item-body">
+  <section class="panel">
+    <div class="item-grid">
+      <div class="field">
+        <label>Spell List</label>
+        <select name="system.tradition">{{selectOptions spellTraditions selected=system.tradition}}</select>
+      </div>
+      <div class="field">
+        <label data-tooltip="Some spells count as 2 or 3 selections">Selections</label>
+        <input type="number" name="system.selections" value="{{system.selections}}" min="1" max="3" />
+      </div>
+      <div class="field">
+        <label>Range</label>
+        <input type="text" name="system.range" value="{{system.range}}" />
+      </div>
+      <div class="field">
+        <label>Duration</label>
+        <input type="text" name="system.duration" value="{{system.duration}}" placeholder="5 melees per level" />
+      </div>
+      <div class="field">
+        <label>Saving Throw</label>
+        <select name="system.saveType">{{selectOptions spellSaves selected=system.saveType}}</select>
+      </div>
+      {{#if (eq system.saveType "dodge")}}
+      <div class="field">
+        <label>Dodge Needed</label>
+        <input type="number" name="system.dodgeTarget" value="{{system.dodgeTarget}}" min="1" />
+      </div>
+      {{/if}}
+      <div class="field">
+        <label>Save Notes</label>
+        <input type="text" name="system.save" value="{{system.save}}" placeholder="e.g. only 18–20 saves" />
+      </div>
+      <div class="field">
+        <label data-tooltip="@level = caster level, e.g. @levelD6">Damage</label>
+        <input type="text" name="system.damage" value="{{system.damage}}" placeholder="@levelD6" />
+      </div>
+      <label class="checkbox"><input type="checkbox" name="system.offensive" {{checked system.offensive}} /> Strictly offensive</label>
+      <label class="checkbox" data-tooltip="Time Lord spells need two complete successes on the Temporal Spell Experimentation Table"><input type="checkbox" name="system.mastered" {{checked system.mastered}} /> Mastered (castable)</label>
+      <div class="field">
+        <label>Practice Successes</label>
+        <input type="number" name="system.successes" value="{{system.successes}}" min="0" />
+      </div>
+    </div>
+    <p class="hint">Targets save by meeting or beating the caster's spell strength (12 + bonuses). Casting uses one of the day's spells and one spell attack.</p>
+  </section>
+  {{> "systems/palladium-universal/templates/item/parts/description.hbs"}}
+</section>

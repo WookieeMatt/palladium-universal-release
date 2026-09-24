@@ -1,0 +1,96 @@
+<section class="item-body">
+  <section class="panel">
+    <div class="item-grid">
+      <div class="field">
+        <label>Type</label>
+        <select name="system.weaponType">{{selectOptions weaponTypes selected=system.weaponType}}</select>
+      </div>
+      <div class="field">
+        <label>Proficiency (WP group)</label>
+        <input type="text" name="system.proficiency" value="{{system.proficiency}}" placeholder="Sword" />
+      </div>
+      <div class="field">
+        <label>Damage</label>
+        <input type="text" name="system.damage" value="{{system.damage}}" />
+      </div>
+      <div class="field">
+        <label>Burst Damage</label>
+        <input type="text" name="system.burstDamage" value="{{system.burstDamage}}" placeholder="Automatic weapons" />
+      </div>
+      <div class="field">
+        <label>Range</label>
+        <input type="text" name="system.range" value="{{system.range}}" />
+      </div>
+      <label class="checkbox">
+        <input type="checkbox" name="system.twoHanded" {{checked system.twoHanded}} /> Two-handed
+      </label>
+      <div class="field">
+        <label>Strike Bonus</label>
+        <input type="number" name="system.strikeBonus" value="{{system.strikeBonus}}" />
+      </div>
+      <div class="field">
+        <label>Parry Bonus</label>
+        <input type="number" name="system.parryBonus" value="{{system.parryBonus}}" />
+      </div>
+      <div class="field">
+        <label>Damage Bonus</label>
+        <input type="number" name="system.damageBonus" value="{{system.damageBonus}}" />
+      </div>
+      <div class="field">
+        <label>Ammo</label>
+        <div class="pair">
+          <input type="number" name="system.ammo.value" value="{{system.ammo.value}}" />
+          <span class="sep">/</span>
+          <input type="number" name="system.ammo.max" value="{{system.ammo.max}}" />
+        </div>
+      </div>
+      <div class="field">
+        <label>Reload</label>
+        <input type="text" name="system.reload" value="{{system.reload}}" placeholder="1 melee round" />
+      </div>
+      <div class="field">
+        <label>Bio-E (natural weapons)</label>
+        <input type="number" name="system.bioe" value="{{system.bioe}}" min="0" />
+      </div>
+      <label class="checkbox">
+        <input type="checkbox" name="system.equipped" {{checked system.equipped}} /> Equipped
+      </label>
+      <div class="field">
+        <label>Quantity</label>
+        <input type="number" name="system.quantity" value="{{system.quantity}}" min="0" />
+      </div>
+      <div class="field">
+        <label>Weight</label>
+        <input type="text" name="system.weight" value="{{system.weight}}" />
+      </div>
+      <div class="field">
+        <label>Cost</label>
+        <input type="text" name="system.cost" value="{{system.cost}}" />
+      </div>
+    </div>
+  </section>
+  {{#if (eq system.weaponType "blackPowder")}}
+  <section class="panel">
+    <div class="panel-header"><h2>Black Powder</h2></div>
+    <div class="item-grid">
+      <div class="field">
+        <label>Mechanism</label>
+        <select name="system.powder.lock">{{selectOptions powderLocks selected=system.powder.lock}}</select>
+      </div>
+      <div class="field">
+        <label>Misfire %</label>
+        <input type="number" name="system.powder.misfire" value="{{system.powder.misfire}}" min="0" max="100" />
+      </div>
+      <div class="field">
+        <label>Penetration</label>
+        <select name="system.powder.penetration">{{selectOptions penetrationChoices selected=system.powder.penetration}}</select>
+      </div>
+      <label class="checkbox"><input type="checkbox" name="system.powder.longarm" {{checked system.powder.longarm}} /> Rifle / musket (not a pistol)</label>
+      <label class="checkbox" data-tooltip="+2D6 pistol / +3D6 rifle damage, +25% misfire; needs the weapon's W.P."><input type="checkbox" name="system.powder.overload" {{checked system.powder.overload}} /> Deliberately overloaded</label>
+    </div>
+    <p class="hint">Misfires are rolled before the Strike; the GM's weather setting adds to the chance. Typical misfire: Arquebus 20%, Matchlock 15%, Wheel lock/Flintlock 10%, Percussion/Cap-and-Ball 5%.</p>
+  </section>
+  {{/if}}
+  {{> "systems/palladium-universal/templates/item/parts/effects.hbs"}}
+  {{> "systems/palladium-universal/templates/item/parts/description.hbs"}}
+</section>

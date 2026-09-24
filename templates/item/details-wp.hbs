@@ -1,0 +1,32 @@
+<section class="item-body">
+  <section class="panel">
+    <div class="item-grid">
+      <div class="field">
+        <label>Kind</label>
+        <select name="system.kind">{{selectOptions wpKinds selected=system.kind}}</select>
+      </div>
+      <div class="field">
+        <label>Weapon Group</label>
+        <input type="text" name="system.group" value="{{system.group}}" placeholder="Sword, Knife, Handgun…" />
+      </div>
+      {{#if (eq system.kind "blackPowder")}}
+      <div class="field">
+        <label>Black Powder Family</label>
+        <select name="system.powderLock">{{selectOptions powderWPs selected=system.powderLock}}</select>
+      </div>
+      {{/if}}
+      <div class="field">
+        <label>Team Bonus Levels</label>
+        <input type="number" name="system.bonusLevels" value="{{system.bonusLevels}}" min="0" />
+      </div>
+    </div>
+    <p class="hint">
+      Ancient / Shield: +1 Strike and Parry at levels 1, 4, 7, 10, 13.
+      Targeting: +1 ranged Strike at levels 1, 4, 7, 10, 13.
+      Modern: Aimed +3, Burst +1, Wild +0, then +1 at levels 4, 7, 10, 13 (untrained: Burst −3, Wild −6).
+      Black Powder: Aimed +1 (Arquebus/Matchlock), +2 (Wheel lock, Flintlock), +3 (Percussion, Cap-and-Ball), general +0, then +1 at levels 4, 7, 10, 13; applies to its family automatically.
+      Weapons use this WP when their Proficiency matches the Weapon Group.
+    </p>
+  </section>
+  {{> "systems/palladium-universal/templates/item/parts/description.hbs"}}
+</section>

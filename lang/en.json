@@ -1,0 +1,43 @@
+{
+  "TYPES": {
+    "Actor": {
+      "character": "Character",
+      "npc": "NPC",
+      "vehicle": "Vehicle",
+      "timeMachine": "Time Machine"
+    },
+    "Item": {
+      "skill": "Skill",
+      "wp": "Weapon Proficiency",
+      "weapon": "Weapon",
+      "armor": "Armor / Shield",
+      "psionic": "Psionic Power",
+      "spell": "Spell",
+      "ability": "Ability / Power",
+      "gear": "Gear",
+      "animal": "Animal",
+      "background": "Background",
+      "device": "Device",
+      "installation": "Installation Cost",
+      "vehicleMod": "Vehicle Modification"
+    }
+  },
+  "PALLADIUMUNIVERSAL": {
+    "SheetName": "Palladium Universal Sheet",
+    "Tabs": {
+      "core": "Core",
+      "mutation": "Bio-E / Mutation",
+      "combat": "Combat",
+      "powers": "Powers",
+      "skills": "Skills",
+      "gear": "Gear",
+      "modules": "Modules",
+      "stats": "Stats",
+      "details": "Details"
+    },
+    "ItemSheetName": "Palladium Universal Item Sheet",
+    "NpcSheetName": "Palladium Universal NPC Sheet",
+    "VehicleSheetName": "Palladium Universal Vehicle Sheet",
+    "TimeMachineSheetName": "Palladium Universal Time Machine Sheet"
+  }
+}

@@ -1,0 +1,47 @@
+{{#*inline "skillList"}}
+<section class="panel">
+  <div class="panel-header">
+    <h2>{{title}}</h2>
+    <button type="button" class="icon-button" data-action="itemCreate" data-type="skill" data-training="{{training}}" data-tooltip="Add a skill"><i class="fa-solid fa-plus"></i></button>
+  </div>
+  <ol class="item-list">
+    {{#each list}}
+    <li class="item-row" data-item-id="{{id}}">
+      <img src="{{img}}" alt="" class="item-icon" />
+      <div class="item-name">
+        <a data-action="itemEdit">{{name}}</a>
+        <span class="hint">{{category}}</span>
+      </div>
+      {{#if passive}}
+      <span class="skill-pct derived">—</span>
+      {{else}}
+      <span class="skill-pct" data-tooltip="{{tooltip}}">{{pct}}%</span>
+      <button type="button" class="icon-button" data-action="rollSkill" data-tooltip="Roll {{name}}"><i class="fa-solid fa-dice-d20"></i></button>
+      {{#if (ne pct2 null)}}
+      <span class="skill-pct">{{pct2}}%</span>
+      <button type="button" class="icon-button" data-action="rollSkill" data-secondary="true" data-tooltip="Roll {{label2}}"><i class="fa-solid fa-dice-d20"></i></button>
+      {{/if}}
+      {{/if}}
+      <button type="button" class="icon-button" data-action="itemDelete" data-tooltip="Delete"><i class="fa-solid fa-trash"></i></button>
+    </li>
+    {{else}}
+    <li class="hint">None yet. Add one, or drag skills here from a compendium.</li>
+    {{/each}}
+  </ol>
+</section>
+{{/inline}}
+
+<section class="tab sheet-body {{tab.cssClass}}" data-group="primary" data-tab="skills">
+  <div class="skill-columns">
+    {{> skillList title="Professional Skills" training="professional" list=items.professional}}
+    {{> skillList title="Amateur Skills" training="amateur" list=items.amateur}}
+  </div>
+  <p class="hint">Skill % = base + 5% per level + I.Q. bonus + Education bonus (Professional only) + misc. Checks cap at 95%; 96–100 always fail.</p>
+
+  <section class="panel">
+    <div class="panel-header"><h2>Skill Notes</h2></div>
+    <div class="large-entry-box">
+      <textarea name="system.skills" rows="6">{{system.skills}}</textarea>
+    </div>
+  </section>
+</section>

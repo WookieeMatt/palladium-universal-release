@@ -1,0 +1,16 @@
+<section class="item-body">
+  <section class="panel">
+    <div class="item-grid">
+      <div class="field">
+        <label>Bio-E Cost</label>
+        <input type="number" name="system.bioe" value="{{system.bioe}}" min="0" />
+      </div>
+      <div class="field">
+        <label>Natural Armor A.R.</label>
+        <input type="number" name="system.naturalAR" value="{{system.naturalAR}}" min="0" data-tooltip="Only for Natural Armor abilities; add its S.D.C. as a bonus below" />
+      </div>
+    </div>
+  </section>
+  {{> "systems/palladium-universal/templates/item/parts/effects.hbs"}}
+  {{> "systems/palladium-universal/templates/item/parts/description.hbs"}}
+</section>

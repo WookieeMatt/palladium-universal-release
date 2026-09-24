@@ -1,0 +1,165 @@
+{
+  "id": "palladium-universal",
+  "title": "Palladium Universal",
+  "description": "Teenage Mutant Ninja Turtles & Other Strangeness (Redux) for Foundry VTT v14, with the Transdimensional material: automated attribute bonuses, Bio-E and mutation, Combat Training, defend buttons, armor and damage, magic, psionics, black powder weapons, NPCs, vehicles and time machines. Includes an in-game System Guide.",
+  "version": "1.0.0",
+  "compatibility": {
+    "minimum": "14",
+    "verified": "14.368"
+  },
+  "authors": [
+    {
+      "name": "WookieeMatt",
+      "url": "https://github.com/WookieeMatt",
+      "flags": {}
+    }
+  ],
+  "url": "https://github.com/WookieeMatt/palladium-universal-release",
+  "manifest": "https://github.com/WookieeMatt/palladium-universal-release/releases/latest/download/system.json",
+  "download": "https://github.com/WookieeMatt/palladium-universal-release/releases/download/v1.0.0/palladium-universal.zip",
+  "readme": "https://github.com/WookieeMatt/palladium-universal-release#readme",
+  "bugs": "https://github.com/WookieeMatt/palladium-universal-release/issues",
+  "changelog": "https://github.com/WookieeMatt/palladium-universal-release/releases",
+  "background": "systems/palladium-universal/assets/icon.png",
+  "esmodules": [
+    "module/system.js"
+  ],
+  "styles": [
+    "styles/actor-sheet.css",
+    "styles/theme.css"
+  ],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    }
+  ],
+  "media": [
+    {
+      "type": "icon",
+      "path": "assets/icon.png"
+    }
+  ],
+  "primaryTokenAttribute": "health.hp",
+  "secondaryTokenAttribute": "health.sdc",
+  "documentTypes": {
+    "Actor": {
+      "character": {
+        "htmlFields": [
+          "notes"
+        ]
+      },
+      "npc": {
+        "htmlFields": [
+          "notes"
+        ]
+      },
+      "vehicle": {
+        "htmlFields": [
+          "notes"
+        ]
+      },
+      "timeMachine": {
+        "htmlFields": [
+          "notes"
+        ]
+      }
+    },
+    "Item": {
+      "skill": {
+        "htmlFields": [
+          "description"
+        ]
+      },
+      "wp": {
+        "htmlFields": [
+          "description"
+        ]
+      },
+      "weapon": {
+        "htmlFields": [
+          "description"
+        ]
+      },
+      "armor": {
+        "htmlFields": [
+          "description"
+        ]
+      },
+      "psionic": {
+        "htmlFields": [
+          "description"
+        ]
+      },
+      "spell": {
+        "htmlFields": [
+          "description"
+        ]
+      },
+      "ability": {
+        "htmlFields": [
+          "description"
+        ]
+      },
+      "gear": {
+        "htmlFields": [
+          "description"
+        ]
+      },
+      "animal": {
+        "htmlFields": [
+          "description"
+        ]
+      },
+      "background": {
+        "htmlFields": [
+          "description"
+        ]
+      },
+      "device": {
+        "htmlFields": [
+          "description"
+        ]
+      },
+      "installation": {
+        "htmlFields": [
+          "description"
+        ]
+      },
+      "vehicleMod": {
+        "htmlFields": [
+          "description"
+        ]
+      }
+    }
+  },
+  "socket": false,
+  "grid": {
+    "distance": 5,
+    "units": "ft"
+  },
+  "packs": [
+    {
+      "name": "system-guide",
+      "label": "Palladium Universal Guide",
+      "path": "packs/system-guide",
+      "type": "JournalEntry",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {}
+    }
+  ],
+  "packFolders": [
+    {
+      "name": "Palladium Universal",
+      "sorting": "a",
+      "color": "#234d2f",
+      "packs": [
+        "system-guide"
+      ]
+    }
+  ]
+}

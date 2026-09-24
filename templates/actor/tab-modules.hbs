@@ -1,0 +1,138 @@
+<section class="tab sheet-body {{tab.cssClass}}" data-group="primary" data-tab="modules">
+  <section class="panel">
+    <div class="panel-header">
+      <h2>Module Toggles</h2>
+    </div>
+    <div class="toggle-grid">
+      <label><input type="checkbox" name="system.toggles.useMdc" {{checked system.toggles.useMdc}} /> Use MDC</label>
+      <label><input type="checkbox" name="system.toggles.useMagic" {{checked system.toggles.useMagic}} /> Magic</label>
+      <label><input type="checkbox" name="system.toggles.usePsionics" {{checked system.toggles.usePsionics}} /> Psionics</label>
+          <label><input type="checkbox" name="system.toggles.useSuperPowers" {{checked system.toggles.useSuperPowers}} /> Super Powers</label>
+      <label><input type="checkbox" name="system.toggles.useMecha" {{checked system.toggles.useMecha}} /> Mecha / Vehicle</label>
+      <label><input type="checkbox" name="system.toggles.useSurvivalHorror" {{checked system.toggles.useSurvivalHorror}} /> Survival / Horror</label>
+    </div>
+  </section>
+
+  {{#if system.toggles.useMagic}}
+  <section class="panel">
+    <div class="panel-header">
+      <h2>P.P.E. Magic (other Palladium settings)</h2>
+    </div>
+    <div class="module-grid">
+      <div class="field">
+        <label>PPE Current</label>
+        <input type="number" name="system.magic.ppe.value" value="{{system.magic.ppe.value}}" />
+      </div>
+      <div class="field">
+        <label>PPE Max</label>
+        <input type="number" name="system.magic.ppe.max" value="{{system.magic.ppe.max}}" />
+      </div>
+      <div class="field">
+        <label>Spell Strength</label>
+        <input type="text" name="system.magic.spellStrength" value="{{system.magic.spellStrength}}" />
+      </div>
+      <div class="large-entry-box">
+        <label>Spells</label>
+        <textarea name="system.magic.spells" rows="8">{{system.magic.spells}}</textarea>
+      </div>
+    </div>
+  </section>
+  {{/if}}
+
+  {{#if system.toggles.usePsionics}}
+  <section class="panel">
+    <div class="panel-header">
+      <h2>Psionics</h2>
+    </div>
+    <div class="module-grid">
+      <div class="field">
+        <label>ISP Current</label>
+        <input type="number" name="system.psionics.isp.value" value="{{system.psionics.isp.value}}" />
+      </div>
+      <div class="field">
+        <label>ISP Max</label>
+        <input type="number" name="system.psionics.isp.max" value="{{system.psionics.isp.max}}" />
+      </div>
+      <div class="large-entry-box">
+        <label>Powers</label>
+        <textarea name="system.psionics.powers" rows="8">{{system.psionics.powers}}</textarea>
+      </div>
+    </div>
+  </section>
+  {{/if}}
+
+
+  {{#if system.toggles.useSuperPowers}}
+  <section class="panel">
+    <div class="panel-header">
+      <h2>Super Powers</h2>
+    </div>
+    <div class="module-grid">
+      <div class="field">
+        <label>Category</label>
+        <input type="text" name="system.superPowers.category" value="{{system.superPowers.category}}" />
+      </div>
+      <div class="large-entry-box">
+        <label>Powers</label>
+        <textarea name="system.superPowers.powers" rows="8">{{system.superPowers.powers}}</textarea>
+      </div>
+      <div class="large-entry-box">
+        <label>Weaknesses</label>
+        <textarea name="system.superPowers.weaknesses" rows="6">{{system.superPowers.weaknesses}}</textarea>
+      </div>
+    </div>
+  </section>
+  {{/if}}
+
+  {{#if system.toggles.useMecha}}
+  <section class="panel">
+    <div class="panel-header">
+      <h2>Mecha / Vehicle</h2>
+    </div>
+    <div class="module-grid">
+      <div class="field">
+        <label>Name</label>
+        <input type="text" name="system.mecha.name" value="{{system.mecha.name}}" />
+      </div>
+      <div class="field">
+        <label>Speed</label>
+        <input type="text" name="system.mecha.speed" value="{{system.mecha.speed}}" />
+      </div>
+      <div class="field">
+        <label>Handling</label>
+        <input type="text" name="system.mecha.handling" value="{{system.mecha.handling}}" />
+      </div>
+      <div class="large-entry-box">
+        <label>MDC by Location</label>
+        <textarea name="system.mecha.mdcByLocation" rows="6">{{system.mecha.mdcByLocation}}</textarea>
+      </div>
+      <div class="large-entry-box">
+        <label>Weapon Systems</label>
+        <textarea name="system.mecha.weaponSystems" rows="6">{{system.mecha.weaponSystems}}</textarea>
+      </div>
+    </div>
+  </section>
+  {{/if}}
+
+  {{#if system.toggles.useSurvivalHorror}}
+  <section class="panel">
+    <div class="panel-header">
+      <h2>Survival / Horror</h2>
+    </div>
+    <div class="module-grid">
+      <div class="field">
+        <label>Infection Level</label>
+        <input type="text" name="system.survival.infectionLevel" value="{{system.survival.infectionLevel}}" />
+      </div>
+      <div class="large-entry-box">
+        <label>Supplies</label>
+        <textarea name="system.survival.supplies" rows="6">{{system.survival.supplies}}</textarea>
+      </div>
+      <div class="large-entry-box">
+        <label>Insanity / Effects</label>
+        <textarea name="system.survival.insanityEffects" rows="6">{{system.survival.insanityEffects}}</textarea>
+      </div>
+    </div>
+  </section>
+  {{/if}}
+</section>

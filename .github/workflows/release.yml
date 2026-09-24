@@ -1,0 +1,47 @@
+name: Release
+
+# Publishes a GitHub Release (system.json + palladium-universal.zip) whenever system.json changes on main,
+# or on demand. Foundry installs from:
+#   https://github.com/<owner>/<repo>/releases/latest/download/system.json
+on:
+  push:
+    branches: [main]
+    paths: [system.json]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Read version
+        id: v
+        run: echo "version=$(jq -r .version system.json)" >> "$GITHUB_OUTPUT"
+
+      - name: Point the download at this release
+        run: |
+          url="https://github.com/${GITHUB_REPOSITORY}/releases/download/v${{ steps.v.outputs.version }}/palladium-universal.zip"
+          jq --arg u "$url" '.download = $u' system.json > system.tmp && mv system.tmp system.json
+
+      - name: Package
+        run: |
+          zip -r palladium-universal.zip system.json README.md lang module templates styles assets packs \
+            -x "packs/*/LOCK" "packs/*/LOG" "packs/*/LOG.old"
+          unzip -l palladium-universal.zip | tail -1
+
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.v.outputs.version }}
+          name: Palladium Universal v${{ steps.v.outputs.version }}
+          make_latest: true
+          body: |
+            Install or update in Foundry VTT v14 with the manifest URL:
+            https://github.com/${{ github.repository }}/releases/latest/download/system.json
+          files: |
+            system.json
+            palladium-universal.zip

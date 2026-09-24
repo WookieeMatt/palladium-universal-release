@@ -1,0 +1,115 @@
+<section class="tab sheet-body {{tab.cssClass}}" data-group="primary" data-tab="core">
+  <section class="panel">
+    <div class="panel-header">
+      <h2>Attributes</h2>
+      <span class="hint">Total = Rolled + Size ({{#if system.mutation.applySizeModifiers}}applied{{else}}off{{/if}}) + Bonuses + Misc</span>
+    </div>
+    <table class="attribute-table">
+      <thead>
+        <tr><th>Attribute</th><th>Rolled</th><th>Size</th><th data-tooltip="Animal, background, skills and abilities">Bonuses</th><th>Misc</th><th>Total</th><th>Bonus</th></tr>
+      </thead>
+      <tbody>
+        {{#each attributes}}
+        <tr>
+          <th scope="row">{{label}}</th>
+          <td><input type="number" name="system.attributes.{{key}}.value" value="{{value}}" /></td>
+          <td class="derived">{{sizeModText}}</td>
+          <td class="derived">{{itemModText}}</td>
+          <td><input type="number" name="system.attributes.{{key}}.mod" value="{{mod}}" /></td>
+          <td class="total">{{total}}{{#if halved}} <span class="hint" data-tooltip="Halved by a Human Feature">½</span>{{/if}}</td>
+          <td class="bonus">
+            {{bonus}}
+            {{#if influence}}
+            <button type="button" class="icon-button" data-action="rollInfluence" data-label="{{influence.label}}"
+              data-target="{{influence.target}}" data-tooltip="Roll {{influence.label}}"><i class="fa-solid fa-dice-d20"></i></button>
+            {{/if}}
+          </td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+    <p class="hint">Carry {{system.carry.carry}} lb · Lift {{system.carry.lift}} lb</p>
+  </section>
+
+  <section class="panel">
+    <div class="panel-header">
+      <h2>Background</h2>
+      <span class="hint">Drag an Origin, Creator Organization or Education item onto the sheet</span>
+    </div>
+    <div class="slot-grid">
+      {{#each backgrounds}}
+      <div class="drop-slot {{#if item}}filled{{/if}}" {{#if item}}data-item-id="{{item.id}}"{{/if}}>
+        <span class="hint">{{label}}</span>
+        {{#if item}}
+        <div class="slot-content">
+          <img src="{{item.img}}" alt="" class="item-icon" />
+          <a data-action="itemEdit">{{item.name}}</a>
+          <button type="button" class="icon-button" data-action="itemDelete" data-tooltip="Remove"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        {{else}}
+        <div class="slot-empty">Drop here</div>
+        {{/if}}
+      </div>
+      {{/each}}
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-header">
+      <h2>Health &amp; Damage</h2>
+    </div>
+    <div class="health-grid">
+      <div class="field">
+        <label>Hit Points</label>
+        <div class="pair">
+          <input type="number" name="system.health.hp.value" value="{{system.health.hp.value}}" />
+          <span class="sep">/</span>
+          <input type="number" name="system.health.hp.max" value="{{system.health.hp.max}}" data-tooltip="PE + 1D6, +1D6 per level" />
+        </div>
+      </div>
+      <div class="field">
+        <label>S.D.C.</label>
+        <div class="pair">
+          <input type="number" name="system.health.sdc.value" value="{{system.health.sdc.value}}" />
+          <span class="sep">/</span>
+          <span class="derived">{{system.health.sdc.max}}</span>
+        </div>
+      </div>
+      <div class="field">
+        <label>S.D.C. Bonus <span class="hint">(size {{system.health.sdc.base}}{{#if system.health.sdc.doubled}} doubled{{/if}}, skills {{system.health.sdc.items}})</span></label>
+        <input type="number" name="system.health.sdc.bonus" value="{{system.health.sdc.bonus}}" data-tooltip="Anything not tracked by items, e.g. Natural Armor S.D.C." />
+      </div>
+      <div class="field">
+        <label>Natural Armor A.R. <span class="hint">(in use: {{system.health.naturalArmor.total}})</span></label>
+        <input type="number" name="system.health.naturalArmor.ar" value="{{system.health.naturalArmor.ar}}" data-tooltip="Animal ability items with an A.R. override this if higher" />
+      </div>
+      {{#if system.health.armor.item}}
+      <div class="field">
+        <label>Body Armor (equipped item)</label>
+        <span class="derived left">{{system.health.armor.active.name}}: A.R. {{system.health.armor.active.ar}}, S.D.C. {{system.health.armor.active.sdc.value}}/{{system.health.armor.active.sdc.max}}</span>
+      </div>
+      {{else}}
+      <div class="field">
+        <label>Body Armor</label>
+        <input type="text" name="system.health.armor.name" value="{{system.health.armor.name}}" placeholder="None (or equip an armor item)" />
+      </div>
+      <div class="field">
+        <label>Body Armor A.R.</label>
+        <input type="number" name="system.health.armor.ar" value="{{system.health.armor.ar}}" />
+      </div>
+      <div class="field">
+        <label>Body Armor S.D.C.</label>
+        <div class="pair">
+          <input type="number" name="system.health.armor.sdc.value" value="{{system.health.armor.sdc.value}}" />
+          <span class="sep">/</span>
+          <input type="number" name="system.health.armor.sdc.max" value="{{system.health.armor.sdc.max}}" />
+        </div>
+      </div>
+      {{/if}}
+    </div>
+    <p class="hint">
+      Coma at 0 HP · dies below {{system.health.deathThreshold}} HP · survives a coma {{system.health.comaHours}} hours untreated.
+      {{#if system.health.inComa}}<strong class="warning">In a coma!</strong>{{else if system.health.bleedingOut}}<strong class="warning">Bleeding out: 1 HP per minute until first aid.</strong>{{/if}}
+    </p>
+  </section>
+</section>
