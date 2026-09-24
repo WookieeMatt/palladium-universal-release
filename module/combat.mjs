@@ -42,9 +42,56 @@ export function powderWeather(key = "dry") {
   return CONFIG.PALLADIUM.POWDER_WEATHER[key] ?? CONFIG.PALLADIUM.POWDER_WEATHER.dry;
 }
 
-/** The weather last chosen on this client (the prompt's default). */
+/** The weather last chosen on this client (the prompt's default when the scene has none). */
 function lastPowderWeather() {
   try { return game.settings.get("palladium-universal", "powderWeatherLast") || "dry"; } catch(err) { return "dry"; }
+}
+
+/**
+ * The black powder weather the GM set for a scene (the "Scene Weather" macro), or null.
+ * @param {Scene} [scene]   Defaults to the viewed scene
+ */
+export function scenePowderWeather(scene = globalThis.canvas?.scene) {
+  const key = scene?.getFlag?.("palladium-universal", "powderWeather");
+  return (key && CONFIG.PALLADIUM.POWDER_WEATHER[key]) ? key : null;
+}
+
+/**
+ * GM only: set (or clear, with null) a scene's black powder weather: the default in every character's
+ * weather prompt in that scene. Announces it in chat.
+ * @param {string|null} key
+ * @param {Scene} [scene]
+ */
+export async function setScenePowderWeather(key, scene = globalThis.canvas?.scene) {
+  if ( !game.user.isGM ) return ui.notifications.warn("Only the GM can set the scene's weather.");
+  if ( !scene ) return ui.notifications.warn("No scene is active.");
+  if ( key && !CONFIG.PALLADIUM.POWDER_WEATHER[key] ) return ui.notifications.warn(`Unknown weather "${key}".`);
+  if ( key ) await scene.setFlag("palladium-universal", "powderWeather", key);
+  else await scene.unsetFlag("palladium-universal", "powderWeather");
+  const w = key ? powderWeather(key) : null;
+  await ChatMessage.create({ speaker: { alias: "Weather" }, content: `<div class="pu-card"><header class="pu-card-header"><div><h3>Scene Weather</h3></div></header>
+    <p class="pu-notes">${key ? `<strong>${w.label}</strong> in ${foundry.utils.escapeHTML(scene.name)}: black powder misfires ${w.misfire ? `+${w.misfire}%` : "at their normal chance"}.`
+      : `Weather cleared in ${foundry.utils.escapeHTML(scene.name)}: each player picks it when firing.`}</p></div>` });
+  return key;
+}
+
+/** GM only: the "Scene Weather" macro's dialog. */
+export async function sceneWeatherDialog(scene = globalThis.canvas?.scene) {
+  if ( !game.user.isGM ) return ui.notifications.warn("Only the GM can set the scene's weather.");
+  if ( !scene ) return ui.notifications.warn("No scene is active.");
+  const current = scenePowderWeather(scene) ?? "";
+  const options = [`<option value=""${current ? "" : " selected"}>Not set: players choose</option>`,
+    ...Object.entries(CONFIG.PALLADIUM.POWDER_WEATHER).map(([key, w]) =>
+      `<option value="${key}"${key === current ? " selected" : ""}>${w.label}${w.misfire ? ` (+${w.misfire}% misfire)` : ""}</option>`)].join("");
+  const key = await DialogV2.prompt({
+    window: { title: `Scene Weather: ${scene.name}` },
+    content: `<div class="form-group"><label>Weather</label><div class="form-fields"><select name="weather" autofocus>${options}</select></div></div>
+      <p class="hint">Sets the default in every character's black powder weather prompt in this scene.</p>`,
+    ok: { label: "Set Weather", icon: "fa-solid fa-cloud-rain", callback: (event, button) => button.form.elements.weather.value },
+    rejectClose: false
+  });
+  if ( key === null || key === undefined ) return null;
+  return setScenePowderWeather(key || null, scene);
 }
 
 /**
@@ -63,13 +110,14 @@ export function misfireChance(weapon, weather = "dry") {
  * @returns {Promise<string|null>}  The weather key, or null if cancelled
  */
 export async function askPowderWeather(weapon) {
-  const last = lastPowderWeather();
+  const sceneKey = scenePowderWeather();
+  const last = sceneKey ?? lastPowderWeather();
   const options = Object.entries(CONFIG.PALLADIUM.POWDER_WEATHER).map(([key, w]) =>
     `<option value="${key}"${key === last ? " selected" : ""}>${w.label}${w.misfire ? ` (+${w.misfire}%)` : ""} — misfire ${misfireChance(weapon, key)}%</option>`).join("");
   const weather = await DialogV2.prompt({
     window: { title: `${weapon.name}: Weather` },
     content: `<div class="form-group"><label>Weather</label><div class="form-fields"><select name="weather" autofocus>${options}</select></div></div>
-      <p class="hint">Damp powder misfires more often: humid +5%, rain +15%, downpour or dunking +35%.</p>`,
+      <p class="hint">${sceneKey ? `The GM set this scene's weather: <strong>${powderWeather(sceneKey).label}</strong>. ` : ""}Damp powder misfires more often: humid +5%, rain +15%, downpour or dunking +35%.</p>`,
     ok: { label: "Fire", icon: "fa-solid fa-fire", callback: (event, button) => button.form.elements.weather.value },
     rejectClose: false
   });

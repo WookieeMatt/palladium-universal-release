@@ -2,7 +2,7 @@
   "id": "palladium-universal",
   "title": "Palladium Universal",
   "description": "Teenage Mutant Ninja Turtles & Other Strangeness (Redux) for Foundry VTT v14, with the Transdimensional material: automated attribute bonuses, Bio-E and mutation, Combat Training, defend buttons, armor and damage, magic, psionics, black powder weapons, NPCs, vehicles and time machines. Includes an in-game System Guide.",
-  "version": "1.14.0",
+  "version": "1.15.0",
   "compatibility": {
     "minimum": "14",
     "verified": "14.368"
@@ -200,6 +200,17 @@
         "ASSISTANT": "OWNER"
       },
       "flags": {}
+    },
+    {
+      "name": "macros",
+      "label": "Palladium Universal Macros (GM)",
+      "path": "packs/macros",
+      "type": "Macro",
+      "ownership": {
+        "PLAYER": "NONE",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {}
     }
   ],
   "packFolders": [
@@ -208,7 +219,8 @@
       "sorting": "a",
       "color": "#234d2f",
       "packs": [
-        "system-guide"
+        "system-guide",
+        "macros"
       ]
     }
   ]

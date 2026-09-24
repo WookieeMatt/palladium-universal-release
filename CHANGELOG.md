@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.15.0
+- **Scene Weather macro (GM)** in the new *Palladium Universal Macros (GM)* compendium (hidden from players): sets the current scene's black powder weather, announces it in chat, and makes it the default in everyone's weather prompt in that scene (they can still change it per shot). "Not set" clears it. API: `scenePowderWeather`, `setScenePowderWeather`, `sceneWeatherDialog`.
+
 ## 1.14.0
 - **Black powder weather is asked when you fire** instead of being a world setting: a prompt lists dry, humid (+5%), rain (+15%) and downpour or dunking (+35%), each with the resulting misfire chance; your last pick is the default. Cancelling fires nothing and spends no action. The misfire card and the attack card note the weather; the weapon list shows the dry chance "+ weather".
 - The Black Powder Weather setting is gone from the settings menu. Modules can still add weather options to `CONFIG.PALLADIUM.POWDER_WEATHER`; `rollAttack(actor, weapon, mode, {weather})` skips the prompt.

@@ -54,7 +54,7 @@ Follow the shape of the existing entries: log `CONFIG.PALLADIUM.CONDITIONS` in t
 | Group | Functions |
 |---|---|
 | Rolls | `rollD20(actor, {label, bonus, target})`, `rollPercent(actor, {label, target})`, `rollSkill(actor, skillItem)`, `rollSaveVsComa(actor)` |
-| Combat | `strikeBonus(actor, weapon, mode)`, `rollAttack(actor, weapon, mode, {weather})` (black powder: `weather` skips the prompt), `askPowderWeather(weapon)`, `rollDamage(actor, weapon, options)`, `applyDamage(actor, amount, {strike, mode})`, `rollManeuver(actor, key)`, `rollDefense(defender, key, attack)`, `rollHorrorFactor(actor, hf)`, `spendActions(actor, count)` |
+| Combat | `strikeBonus(actor, weapon, mode)`, `rollAttack(actor, weapon, mode, {weather})` (black powder: `weather` skips the prompt), `askPowderWeather(weapon)`, `scenePowderWeather(scene)`, `setScenePowderWeather(key, scene)` (GM), `sceneWeatherDialog(scene)` (GM), `rollDamage(actor, weapon, options)`, `applyDamage(actor, amount, {strike, mode})`, `rollManeuver(actor, key)`, `rollDefense(defender, key, attack)`, `rollHorrorFactor(actor, hf)`, `spendActions(actor, count)` |
 | Magic | `castSpell(actor, spell)`, `newDay(actor)`, `rollChangeSave(actor)`, `usePsionic(actor, power)` |
 | Time travel | `temporalMishap()`, `rollTemporalMishap(actor)`, `deviceMalfunction(key)`, `practiceSpell(actor, spell)` |
 | Vehicles | `applyVehicleDamage(actor, amount, options)`, `rollControl(actor)`, `rollEvade(actor)`, `operateDevice(device)`, `operateTimeMachine(actor)` |

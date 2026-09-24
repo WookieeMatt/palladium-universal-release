@@ -22,7 +22,9 @@ All gain +1 at levels 4, 7, 10 and 13. There is no P.P. bonus with guns.
 - No bursts. A natural 20 does double damage.
 
 ## Misfires
-Before the Strike the system asks for the **weather** (dry, humid +5%, rain +15%, downpour or dunking +35%; each choice shows the resulting misfire chance, and your last pick is the default; cancel and nothing is fired or spent), then rolls for a misfire: the weapon's % + the weather + 25% if overloaded. The weapon list shows the dry chance ("misfire 10% + weather"); the attack card notes the weather used. On a misfire the **Mishaps table** is rolled:
+Before the Strike the system asks for the **weather** (dry, humid +5%, rain +15%, downpour or dunking +35%; each choice shows the resulting misfire chance, and your last pick is the default; cancel and nothing is fired or spent), then rolls for a misfire: the weapon's % + the weather + 25% if overloaded. The weapon list shows the dry chance ("misfire 10% + weather"); the attack card notes the weather used.
+
+**Scene weather (GM):** run the **Scene Weather (black powder)** macro from the *Palladium Universal Macros (GM)* compendium (drag it to your hotbar). It sets the current scene's weather, announces it in chat, and makes it the default in every character's weather prompt in that scene; players can still change it for a shot. Choose "Not set" to clear it. On a misfire the **Mishaps table** is rolled:
 | Result | Effect |
 |---|---|
 | Misfire, Bad Load, Jammed, Fizzle, Handfire | No shot (the card explains the delay) |

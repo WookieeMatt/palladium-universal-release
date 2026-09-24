@@ -7,6 +7,10 @@
 
 **Configure Settings → System Settings → TMNT Journal Style** (on by default): journals and journal pages, including the compendium journals and this guide, use the character sheet look: green title bar, parchment pages, comic headings, green-headed striped tables and green link chips. Turn it off to keep Foundry's own journal style (e.g. with a journal module that has its own theme).
 
+## GM macros
+The **Palladium Universal Macros (GM)** compendium (hidden from players) holds ready-made macros; drag one to your hotbar:
+- **Scene Weather (black powder)**: sets this scene's black powder weather (dry, humid +5%, rain +15%, downpour or dunking +35%), the default in every character's weather prompt when they fire black powder here. Announced in chat; "Not set" clears it.
+
 ## Animations (Automated Animations)
 Install and enable **Automated Animations**, **Sequencer** and **JB2A** (the free *JB2A_DnD5e* or the Patreon version). The system then plays an animation when something is used:
 
