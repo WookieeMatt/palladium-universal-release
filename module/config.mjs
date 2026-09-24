@@ -94,34 +94,6 @@ export const SIZE_LEVELS = {
   25: { weight: "to 100,000 lb", iq: -10, ps: 19, pe: 17, spd: -30, sdc: 200 }
 };
 
-/**
- * Height & Weight Table (p.17): Foundry dice formulas by Size Level. Weight in pounds (Size Level 1
- * in ounces); height in inches by build. "2D%" = two percentile rolls added. No entries above 20:
- * the GM sets the size of giant dinosaurs.
- */
-export const HEIGHT_WEIGHT = {
-  1: { weight: "3d6", unit: "oz", short: "1d6", medium: "2d6", long: "3d6" },
-  2: { weight: "1d6", unit: "lb", short: "3d6", medium: "12+2d6", long: "12+2d6" },
-  3: { weight: "4+1d6", unit: "lb", short: "12+1d6", medium: "12+3d6", long: "12+3d6" },
-  4: { weight: "10+2d6", unit: "lb", short: "12+3d6", medium: "24+2d6", long: "24+3d6" },
-  5: { weight: "20+4d6", unit: "lb", short: "24+1d6", medium: "36+1d6", long: "36+3d6" },
-  6: { weight: "40+6d6", unit: "lb", short: "24+2d6", medium: "36+2d6", long: "48+3d6" },
-  7: { weight: "75+3d10", unit: "lb", short: "24+3d6", medium: "48+1d6", long: "60+2d6" },
-  8: { weight: "100+6d10", unit: "lb", short: "36+1d6", medium: "48+2d6", long: "60+3d6" },
-  9: { weight: "150+3d10", unit: "lb", short: "36+2d6", medium: "60+2d6", long: "72+2d6" },
-  10: { weight: "175+3d10", unit: "lb", short: "36+3d6", medium: "60+3d6", long: "72+3d6" },
-  11: { weight: "200+6d10", unit: "lb", short: "48+1d6", medium: "72+1d6", long: "84+2d6" },
-  12: { weight: "250+6d10", unit: "lb", short: "48+2d6", medium: "72+2d6", long: "84+3d6" },
-  13: { weight: "300+6d10", unit: "lb", short: "48+3d6", medium: "72+3d6", long: "96+2d6" },
-  14: { weight: "350+6d10", unit: "lb", short: "60+1d6", medium: "84+1d6", long: "96+3d6" },
-  15: { weight: "400+1d100", unit: "lb", short: "60+2d6", medium: "84+2d6", long: "108+2d6" },
-  16: { weight: "500+1d100", unit: "lb", short: "60+3d6", medium: "84+3d6", long: "108+3d6" },
-  17: { weight: "600+2d100", unit: "lb", short: "72+1d6", medium: "96+1d6", long: "120+2d6" },
-  18: { weight: "800+2d100", unit: "lb", short: "72+2d6", medium: "96+2d6", long: "120+3d6" },
-  19: { weight: "1000+5d100", unit: "lb", short: "72+3d6", medium: "96+3d6", long: "132+2d6" },
-  20: { weight: "1500+(1d100*100)", unit: "lb", short: "72+4d6", medium: "108+1d6", long: "132+3d6" }
-};
-
 /** Highest Size Level (Transdimensional expanded chart). */
 export const MAX_SIZE_LEVEL = 25;
 

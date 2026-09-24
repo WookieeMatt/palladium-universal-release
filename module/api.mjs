@@ -77,11 +77,6 @@ export function buildApi() {
 
     // Character building
     rollAttribute: creation.rollAttribute,
-    rollAllAttributes: creation.rollAllAttributes,
-    rollHitPoints: creation.rollHitPoints,
-    rollHeightWeight: creation.rollHeightWeight,
-    rollMoney: creation.rollMoney,
-    rollBackgroundTable: creation.rollBackgroundTable,
     applyAnimal: animal.applyAnimal,
     removeAnimal: animal.removeAnimal,
     applyBackground: animal.applyBackground,

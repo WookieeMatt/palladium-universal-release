@@ -2,7 +2,7 @@ import { castSpell, newDay, rollChangeSave, rollMagicAbility, usePsionic } from 
 import { operateDevice } from "../vehicle.mjs";
 import { practiceSpell, rollTemporalMishap } from "../timetravel.mjs";
 import { rollD20, rollPercent, rollSaveVsComa, rollSkill, signed } from "../dice.mjs";
-import { moneyFormula, rollAllAttributes, rollAttribute, rollBackgroundTable, rollHeightWeight, rollHitPoints, rollMoney } from "../creation.mjs";
+import { rollAttribute } from "../creation.mjs";
 import {
   FIRE_MODES, MELEE_MODES, POWDER_MODES, misfireChance, rollAttack, rollDamage, rollHorrorFactor, rollManeuver, strikeBonus
 } from "../combat.mjs";
@@ -48,11 +48,6 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
       rollComa: PalladiumCharacterSheet.#onRollComa,
       rollInfluence: PalladiumCharacterSheet.#onRollInfluence,
       rollAttribute: PalladiumCharacterSheet.#onRollAttribute,
-      rollAllAttributes: PalladiumCharacterSheet.#onRollAllAttributes,
-      rollHitPoints: PalladiumCharacterSheet.#onRollHitPoints,
-      rollHeightWeight: PalladiumCharacterSheet.#onRollHeightWeight,
-      rollMoney: PalladiumCharacterSheet.#onRollMoney,
-      rollBackgroundTable: PalladiumCharacterSheet.#onRollBackgroundTable,
       changeSize: PalladiumCharacterSheet.#onChangeSize,
       itemCreate: PalladiumCharacterSheet.#onItemCreate,
       itemEdit: PalladiumCharacterSheet.#onItemEdit,
@@ -156,8 +151,7 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
       animal: this.#prepareAnimal(),
       backgrounds: Object.entries(BACKGROUND_KINDS).map(([kind, label]) => {
         const item = actor.items.find(i => (i.type === "background") && (i.system.kind === kind));
-        return { kind, label, item: item ? { id: item.id, name: item.name, img: item.img, roll: item.system.roll,
-          money: moneyFormula(item.system.money) ? item.system.money : "" } : null };
+        return { kind, label, item: item ? { id: item.id, name: item.name, img: item.img, roll: item.system.roll } : null };
       })
     });
   }
@@ -325,6 +319,9 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
         key, label, value: attr.value, mod: attr.mod, sizeMod: attr.sizeMod,
         sizeModText: attr.sizeMod ? signed(attr.sizeMod) : "—",
         itemModText: attr.itemMod ? signed(attr.itemMod) : "—",
+        itemModTooltip: (system.itemEffects?.sources?.[`attributes.${key}`] ?? []).filter(s => s.value)
+          .map(s => `${s.source} ${signed(s.value)}`).join(", ") || "Animal, background, skills and abilities",
+        rolled: attr.value !== null,
         total: attr.total ?? "—", bonus, influence, halved: attr.halved
       };
     });
@@ -494,31 +491,6 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
   /** @this {PalladiumCharacterSheet} */
   static #onRollAttribute(event, target) {
     return rollAttribute(this.actor, target.dataset.key);
-  }
-
-  /** @this {PalladiumCharacterSheet} */
-  static #onRollAllAttributes() {
-    return rollAllAttributes(this.actor);
-  }
-
-  /** @this {PalladiumCharacterSheet} */
-  static #onRollHitPoints() {
-    return rollHitPoints(this.actor);
-  }
-
-  /** @this {PalladiumCharacterSheet} */
-  static #onRollHeightWeight() {
-    return rollHeightWeight(this.actor);
-  }
-
-  /** @this {PalladiumCharacterSheet} */
-  static #onRollMoney(event, target) {
-    return rollMoney(this.actor, this.#itemFromEvent(target));
-  }
-
-  /** @this {PalladiumCharacterSheet} */
-  static #onRollBackgroundTable(event, target) {
-    return rollBackgroundTable(this.actor, target.dataset.kind);
   }
 
   /** @this {PalladiumCharacterSheet} */

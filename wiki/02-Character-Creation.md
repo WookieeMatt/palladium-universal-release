@@ -5,25 +5,14 @@ Name, portrait (click to change), animal, alignment, **level**, **XP** (the shee
 
 New characters and NPCs get a round token with a green ring.
 
-## Rolling a character
-Every roll posts to chat (and shows as 3D dice with Dice So Nice) and fills in the sheet. A roll that would replace something you already have asks first.
-
-| Click | Rolls |
-|---|---|
-| An attribute's name (I.Q., M.E. …) | That attribute: **3D6**; on 16, 17 or 18 add **one more 1D6**. Goes into *Rolled*. |
-| **Roll All** (Attributes panel) | All eight attributes at once. Also on the NPC sheet. |
-| 🎲 next to a **Background** slot | That slot's table: pick a table from your compendiums (e.g. *Mutant Animal Origins*, *Wild Animal Education*), roll it, and click **Apply** on the chat card to add the result. |
-| 🪙 on a filled Background slot | The background's starting money (e.g. 3D6×$1,000), added to *Money / other possessions* on the Gear tab. |
-| 🎲 next to **Height / Weight** | Height by build and weight from the Size Level table (Size Levels 1–20; the GM sets giants above 20). Set the animal and Size Level first. |
-| 🎲 next to **Hit Points** | P.E. + 1D6, plus 1D6 for each level above first. Roll after P.E. |
-
-Background tables are built from Background items that have a percentile range (*Roll* field), grouped by their compendium folder. Any content module's background items work the same way.
+## Rolling attributes
+Click an attribute's name (I.Q., M.E. …) on the Core tab to roll it: **3D6**, plus **one more 1D6** on 16, 17 or 18, plus every modifier on that line (animal, background and skill bonuses, Size Level, Misc). The chat card lists each part and the final score. The sheet keeps the score for all its bonuses; rolling an attribute again asks first.
 
 ## Core tab
 ### Attributes
 | Column | Meaning |
 |---|---|
-| **Rolled** | The dice roll. Leave blank until rolled. |
+| **Attribute** | Click to roll it (see above). |
 | **Size** | The Size Level modifier (Bio-E tab; can be switched off there). |
 | **Bonuses** | From the animal, background, skills and abilities (item effects). |
 | **Misc** | Your own adjustment. |
@@ -61,4 +50,4 @@ Features below Full can carry **effects** defined on the Animal item (e.g. Human
 Animal Abilities, Natural Weapons and Psionic Powers owned by the character, with their Bio-E cost. Use **+** to create one, or drag items in.
 
 ## Leveling up
-Raise **Level** in the header. Skills, W.P.s, Combat Training, magic progressions and anything "per level" update automatically. When the Level goes up, the sheet offers to roll the new Hit Points (+1D6 per level gained) and adds them to the current and maximum.
+Raise **Level** in the header. Skills, W.P.s, Combat Training, magic progressions and anything "per level" update automatically. Roll new Hit Points yourself (+1D6 per level) and raise the max.

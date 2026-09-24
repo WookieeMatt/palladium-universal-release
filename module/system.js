@@ -13,7 +13,6 @@ import { onRenderChatMessage } from "./combat.mjs";
 import { onDeleteCombat, onUpdateCombat } from "./actions.mjs";
 import { buildApi } from "./api.mjs";
 import { registerTcriDice, TCRI_FINISHES } from "./dice-so-nice.mjs";
-import { offerLevelHitPoints } from "./creation.mjs";
 
 Hooks.once("init", function () {
   console.log("Palladium Universal | Initializing system");
@@ -125,16 +124,6 @@ Hooks.once("setup", function () {
     choices: Object.fromEntries(Object.entries(CONFIG.PALLADIUM.POWDER_WEATHER).map(([k, v]) => [k, v.label])),
     default: "dry"
   });
-});
-
-// Level up: offer the extra Hit Points to the user who raised the level.
-Hooks.on("preUpdateActor", (actor, changes, options) => {
-  if ( foundry.utils.hasProperty(changes, "system.identity.level") ) options.puOldLevel = actor.system.identity?.level;
-});
-Hooks.on("updateActor", (actor, changes, options, userId) => {
-  if ( (userId !== game.user.id) || !Number.isFinite(options.puOldLevel) ) return;
-  const gained = (actor.system.identity?.level ?? 0) - options.puOldLevel;
-  if ( gained > 0 ) offerLevelHitPoints(actor, gained);
 });
 
 // Dice So Nice: the T.C.R.I. Dice (theme and animated dice system).

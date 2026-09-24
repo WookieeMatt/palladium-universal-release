@@ -301,12 +301,16 @@ export default class CharacterData extends foundry.abstract.TypeDataModel {
    */
   #prepareItemEffects() {
     const totals = {};
+    const sources = {};   // target → [{source, value}], for breakdowns
     const conditional = [];
     const add = (effect, source) => {
       if ( !effect.target ) return;
       const value = effectValue(effect);
       if ( effect.target.startsWith("weapon.") || (effect.target === "skill") ) conditional.push({ ...effect, value, source });
-      else totals[effect.target] = (totals[effect.target] ?? 0) + value;
+      else {
+        totals[effect.target] = (totals[effect.target] ?? 0) + value;
+        (sources[effect.target] ??= []).push({ source, value });
+      }
     };
     const items = this.parent?.items ?? [];
     for ( const item of items ) {
@@ -326,7 +330,7 @@ export default class CharacterData extends foundry.abstract.TypeDataModel {
         if ( effect.target ) featureEffects.push({ source, target: effect.target, value: effectValue(effect) });
       }
     }
-    this.itemEffects = { totals, conditional, features: featureEffects };
+    this.itemEffects = { totals, sources, conditional, features: featureEffects };
   }
 
   /** Sum of item effects for a target key. */
