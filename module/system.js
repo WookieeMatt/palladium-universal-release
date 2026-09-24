@@ -71,6 +71,15 @@ Hooks.once("init", function () {
   });
 
   // Automated Animations (with Sequencer and JB2A): play animations when things are used.
+  game.settings.register("palladium-universal", "journalTheme", {
+    name: "TMNT Journal Style",
+    hint: "Journals (including the compendium journals and the System Guide) use the character sheet look: green title bar, parchment pages, comic headings and green tables. Turn off to keep Foundry's journal style.",
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: true
+  });
+
   game.settings.register("palladium-universal", "animations", {
     name: "Automated Animations",
     hint: "With the Automated Animations module active, attacks, maneuvers, spells, psionics, item rolls and devices play animations (JB2A via Sequencer). Damage, saves and skill checks don't.",
@@ -154,6 +163,16 @@ Hooks.once("diceSoNiceReady", dice3d => registerTcriDice(dice3d));
 // Actions per Round reset each new round
 Hooks.on("updateCombat", onUpdateCombat);
 Hooks.on("deleteCombat", onDeleteCombat);
+
+// Journals and journal pages take the sheet look (world setting "journalTheme").
+function styleJournal(app, element) {
+  let on = true;
+  try { on = game.settings.get("palladium-universal", "journalTheme"); } catch(err) { on = true; }
+  const root = element instanceof HTMLElement ? element : app.element;
+  root?.classList.toggle("pu-journal", on);
+}
+Hooks.on("renderJournalEntrySheet", styleJournal);
+Hooks.on("renderJournalEntryPageSheet", styleJournal);
 
 // Buttons on attack and damage chat cards
 Hooks.on("renderChatMessageHTML", onRenderChatMessage);

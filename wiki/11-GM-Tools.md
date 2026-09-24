@@ -5,6 +5,8 @@
 
 **Configure Settings → System Settings → Team Character Generation**: when on, a character generating an attribute with an exceptional roll (16–18) uses the highest bonus die a teammate (a character in the same Actors folder) rolled for that attribute, if it's higher than their own.
 
+**Configure Settings → System Settings → TMNT Journal Style** (on by default): journals and journal pages, including the compendium journals and this guide, use the character sheet look: green title bar, parchment pages, comic headings, green-headed striped tables and green link chips. Turn it off to keep Foundry's own journal style (e.g. with a journal module that has its own theme).
+
 ## Animations (Automated Animations)
 Install and enable **Automated Animations**, **Sequencer** and **JB2A** (the free *JB2A_DnD5e* or the Patreon version). The system then plays an animation when something is used:
 

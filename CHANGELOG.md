@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.11.0
+- **Journals take the sheet look**: green title bar, parchment background, comic headings, each page on a paper panel, green-headed striped tables, a green table of contents and green link chips. Applies to every journal, the compendium journals and the System Guide included. World setting **TMNT Journal Style** (on by default) to switch it off.
+
 ## 1.10.0
 - **Air & space combat** (TMNT Guide to the Universe) on the vehicle sheet: Drive, **Speed Class** (0–50 with its top speed), **T.M.F.**, payload, the pilot's Air-to-Air %, current Mach (over Mach 5 in atmosphere is a penalty) and In Space (energy weapon range ×10, projectiles ×2).
 - Tactic buttons: **Dog Tail, Jink, Roll-Over, Speed Escape** (d20 + Speed Class + T.M.F.), **Maneuver Escape**, dodges; **Veer Off** for the chicken games (Mid-Air Ram, Dodge 'Em, Divebomber, Skimming Atmosphere), **Pull-Out** save, **Emergency Landing**, **Crash** damage and **Dumb Luck**.

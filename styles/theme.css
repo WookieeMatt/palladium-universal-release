@@ -27,7 +27,8 @@
 }
 
 .palladium-universal.sheet,
-.pu-card {
+.pu-card,
+.pu-journal {
   --pu-green: #234d2f;
   --pu-green-light: #3d7a4d;
   --pu-green-pale: #dfe8d6;
@@ -733,3 +734,170 @@
   white-space: nowrap;
 }
 .palladium-universal .pu-air .npc-health input[type="checkbox"] { width: auto; }
+
+/* -------------------------------------------- */
+/*  Journals (v1.11.0): the sheet look          */
+/*  (class pu-journal, world setting journalTheme) */
+/* -------------------------------------------- */
+
+.pu-journal .window-header {
+  background: var(--pu-green);
+  color: var(--pu-parchment);
+  border-bottom: 2px solid #16301d;
+}
+.pu-journal .window-header .header-control {
+  color: var(--pu-parchment);
+  background: transparent;
+  border: none;
+}
+.pu-journal .window-header .header-control:hover { color: #fff; background: var(--pu-green-light); }
+.pu-journal .window-header .window-title {
+  font-family: var(--pu-heading);
+  letter-spacing: 0.04em;
+  font-size: 1.15rem;
+}
+.pu-journal .window-content {
+  background: radial-gradient(ellipse at top, #f6f2e3 0%, var(--pu-parchment) 60%, #e4dfcb 100%);
+  color: var(--pu-ink);
+  font-family: var(--pu-body);
+  --color-text-primary: var(--pu-ink);
+  --color-text-secondary: var(--pu-ink-soft);
+  --color-text-emphatic: var(--pu-green);
+  --color-border: var(--pu-rule);
+}
+
+/* Table of contents */
+.pu-journal .journal-sidebar {
+  background: var(--pu-green-pale);
+  border-right: 2px solid var(--pu-green);
+  color: var(--pu-ink);
+}
+.pu-journal .journal-sidebar .toc .page-heading,
+.pu-journal .journal-sidebar .toc a,
+.pu-journal .journal-sidebar .toc .page-title {
+  color: var(--pu-green);
+  font-weight: 700;
+}
+.pu-journal .journal-sidebar .toc li { border-radius: 8px; }
+.pu-journal .journal-sidebar .toc li.active,
+.pu-journal .journal-sidebar .toc li:hover {
+  background: var(--pu-green-light);
+}
+.pu-journal .journal-sidebar .toc li.active a,
+.pu-journal .journal-sidebar .toc li.active .page-title,
+.pu-journal .journal-sidebar .toc li.active .page-number,
+.pu-journal .journal-sidebar .toc li:hover a,
+.pu-journal .journal-sidebar .toc li:hover .page-title,
+.pu-journal .journal-sidebar .toc li:hover .page-number { color: #fff; }
+.pu-journal .journal-sidebar input[type="search"] {
+  background: var(--pu-paper);
+  color: var(--pu-ink);
+  border: 1px solid var(--pu-rule);
+  border-radius: 10px;
+}
+.pu-journal .journal-sidebar button {
+  background: var(--pu-paper);
+  color: var(--pu-green);
+  border: 1px solid var(--pu-rule);
+  border-radius: 8px;
+}
+.pu-journal .journal-sidebar button:hover { background: var(--pu-green-light); color: #fff; }
+
+/* Each page is a paper panel */
+.pu-journal .journal-entry-page {
+  background: var(--pu-paper);
+  border: 1px solid var(--pu-rule);
+  border-radius: 12px;
+  box-shadow: 0 2px 0 rgba(43, 42, 36, 0.15), 0 6px 14px rgba(43, 42, 36, 0.08);
+  padding: 10px 16px 14px;
+  margin: 10px;
+  color: var(--pu-ink);
+}
+.pu-journal .journal-page-header h1,
+.pu-journal .journal-entry-page h1,
+.pu-journal .journal-entry-page h2,
+.pu-journal .journal-entry-page h3,
+.pu-journal .journal-entry-page h4 {
+  font-family: var(--pu-heading);
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--pu-green);
+  border: none;
+}
+.pu-journal .journal-page-header h1,
+.pu-journal .journal-entry-page h1 {
+  font-size: 1.9rem;
+  border-bottom: 3px solid var(--pu-green);
+  padding-bottom: 2px;
+}
+.pu-journal .journal-entry-page h2 {
+  font-size: 1.4rem;
+  border-bottom: 2px solid var(--pu-green);
+  padding-bottom: 2px;
+  margin-top: 1em;
+}
+.pu-journal .journal-entry-page h3 { font-size: 1.15rem; margin-top: 0.8em; }
+.pu-journal .journal-entry-page h4 { font-size: 1rem; color: var(--pu-green-light); }
+.pu-journal .journal-entry-page strong { color: var(--pu-green); }
+.pu-journal .journal-entry-page em { color: var(--pu-ink-soft); }
+.pu-journal .journal-entry-page li::marker { color: var(--pu-green-light); }
+.pu-journal .journal-entry-page hr { border: none; border-top: 2px dashed var(--pu-rule); }
+.pu-journal .journal-entry-page code {
+  background: var(--pu-green-pale);
+  color: var(--pu-green);
+  border-radius: 4px;
+  padding: 0 4px;
+}
+.pu-journal .journal-entry-page blockquote {
+  margin: 0.6em 0;
+  padding: 6px 12px;
+  background: var(--pu-green-pale);
+  border-left: 4px solid var(--pu-green-light);
+  border-radius: 0 8px 8px 0;
+}
+
+/* Tables like the sheet tables */
+.pu-journal .journal-entry-page table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 8px 0 12px;
+  border: 1px solid var(--pu-rule);
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fffdf6;
+  font-size: 0.92em;
+}
+.pu-journal .journal-entry-page thead th {
+  background: var(--pu-green);
+  color: var(--pu-parchment);
+  font-family: var(--pu-heading);
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-align: left;
+  padding: 5px 8px;
+  border: none;
+}
+.pu-journal .journal-entry-page td,
+.pu-journal .journal-entry-page tbody th {
+  padding: 4px 8px;
+  border: none;
+  border-top: 1px solid rgba(163, 157, 128, 0.45);
+  text-align: left;
+  color: var(--pu-ink);
+}
+.pu-journal .journal-entry-page tbody tr:nth-child(even) { background: rgba(223, 232, 214, 0.55); }
+.pu-journal .journal-entry-page tbody tr:hover { background: var(--pu-green-pale); }
+
+/* Links and inline rolls */
+.pu-journal .journal-entry-page a.content-link,
+.pu-journal .journal-entry-page a.inline-roll {
+  background: var(--pu-green-pale);
+  color: var(--pu-green);
+  border: 1px solid var(--pu-green-light);
+  border-radius: 6px;
+  padding: 0 4px;
+}
+.pu-journal .journal-entry-page a:not(.content-link):not(.inline-roll) { color: var(--pu-green-light); text-decoration: underline; }
