@@ -3,6 +3,7 @@ import * as animal from "./animal.mjs";
 import * as combat from "./combat.mjs";
 import * as creation from "./creation.mjs";
 import * as dice from "./dice.mjs";
+import * as welcome from "./welcome.mjs";
 import * as itemRolls from "./item-rolls.mjs";
 import * as animations from "./animations.mjs";
 import * as air from "./air-combat.mjs";
@@ -37,6 +38,8 @@ export function buildApi() {
     rollPercent: dice.rollPercent,
     rollSkill: dice.rollSkill,
     rollSave: dice.rollSave,
+    showRecommendedModules: welcome.showRecommendedModules,
+    recommendedModules: welcome.recommendedModules,
     rollSaveVsComa: dice.rollSaveVsComa,
     cardHeader: dice.cardHeader,
     postCard: dice.postCard,

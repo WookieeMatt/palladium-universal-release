@@ -105,11 +105,12 @@ export function bonusLines(parts = {}) {
  * @param {object} [card.flags]                Message flags
  * @param {object} [card.speaker]
  * @param {Item} [card.item]                   The item the card is about: its title opens a read-only view
+ * @param {string[]} [card.whisper]           User ids to whisper to (skips the roll mode)
  * @param {boolean} [card.inlineRolls]         Make dice written in the notes and body clickable (table results
  *                                             that call for another roll, e.g. "2D6 melee rounds")
  */
 export async function postCard(actor, { title, label, result, lines = [], caption = "", notes = [], body = "",
-  buttons = "", rolls = [], flags, speaker, item, inlineRolls = false } = {}) {
+  buttons = "", rolls = [], flags, speaker, item, inlineRolls = false, whisper } = {}) {
   if ( inlineRolls ) {
     notes = await Promise.all(notes.map(enrichDice));
     body = await enrichDice(body);
@@ -122,7 +123,8 @@ export async function postCard(actor, { title, label, result, lines = [], captio
     ${notes.length ? `<p class="pu-notes">${notes.join(" ")}</p>` : ""}${body}${buttons}</div>`;
   const data = { speaker: speaker ?? ChatMessage.getSpeaker({ actor }), content, rolls };
   if ( flags ) data.flags = flags;
-  try { ChatMessage.applyRollMode?.(data, game.settings.get("core", "rollMode")); } catch(err) { /* default mode */ }
+  if ( whisper ) data.whisper = whisper;
+  else try { ChatMessage.applyRollMode?.(data, game.settings.get("core", "rollMode")); } catch(err) { /* default mode */ }
   return ChatMessage.create(data);
 }
 

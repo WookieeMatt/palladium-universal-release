@@ -13,6 +13,7 @@ import { onRenderChatMessage } from "./combat.mjs";
 import { onDeleteCombat, onUpdateCombat } from "./actions.mjs";
 import { buildApi } from "./api.mjs";
 import { registerTcriDice, TCRI_FINISHES } from "./dice-so-nice.mjs";
+import { welcomeOnce } from "./welcome.mjs";
 
 Hooks.once("init", function () {
   console.log("Palladium Universal | Initializing system");
@@ -166,7 +167,18 @@ Hooks.once("setup", function () {
     type: String,
     default: "dry"
   });
+
+  // The GM's one-time welcome card (recommended modules).
+  game.settings.register("palladium-universal", "welcomeShown", {
+    scope: "world",
+    config: false,
+    type: Boolean,
+    default: false
+  });
 });
+
+// First run in a world: the active GM gets the recommended modules card, once.
+Hooks.once("ready", () => welcomeOnce());
 
 // Dice So Nice: the T.C.R.I. Dice (theme and animated dice system).
 Hooks.once("diceSoNiceReady", dice3d => registerTcriDice(dice3d));

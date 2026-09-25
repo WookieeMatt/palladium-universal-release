@@ -609,6 +609,16 @@
   padding: 0 10px;
 }
 .pu-card .pu-results li { padding: 2px 0; }
+
+/* Welcome card: recommended modules with their status. */
+.pu-card .pu-warning { color: #9a6a00; }
+.pu-card .pu-modules li { align-items: center; padding: 4px 0; }
+.pu-card .pu-modules li:last-child { font-weight: inherit; }
+.pu-card .pu-modules li > span { display: flex; flex-direction: column; min-width: 0; }
+.pu-card .pu-modules a { font-weight: 700; color: var(--pu-green); }
+.pu-card .pu-modules small { font-size: 0.75rem; line-height: 1.2; }
+.pu-card .pu-modules strong { flex: none; font-size: 0.8rem; white-space: nowrap; }
+.pu-card code { font-size: 0.75rem; word-break: break-all; }
 .pu-card .pu-details > summary + .pu-lines { border-top: 1px solid var(--pu-rule); }
 
 /* Item cards: the title opens a read-only view of the item. */

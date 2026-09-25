@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.17.0
+- **Welcome card for the GM**: the first time the system runs in a world, the GM gets a one-time chat card (whispered) recommending the modules the system works with: Dice So Nice, Automated Animations, Sequencer and JB2A. Each shows *Active*, *Installed, not enabled* or *Not installed*, with a link to its page and install steps. It never shows again; `game.palladium.showRecommendedModules()` brings it back.
+
 ## 1.16.0
 - **Skill cards show the whole calculation**: base, per level, I.Q. bonus, Education bonus (Professional only), Team Characters and misc, then the skill %, the 95% cap when it applies, and the d100 roll. The rules are unchanged: roll at or under the %, 95% maximum, 96–100 always fail.
 - **Team Levels on skills** (Team Characters, p.19): +1 skill level per additional team member, for skills every member took; adds *Per Level %* × levels. (Before, it had to go in Misc Bonus.)

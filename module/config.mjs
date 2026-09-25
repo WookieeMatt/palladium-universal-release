@@ -889,3 +889,14 @@ export function parseCost(text) {
 
 /** Format dollars ("$8,180,000"). */
 export const formatCost = n => `$${Math.round(n).toLocaleString("en-US")}`;
+
+/**
+ * Modules the system works with (same ids as system.json "recommends"), listed on the GM's one-time welcome card.
+ * The private TMNT content modules are not listed.
+ */
+export const RECOMMENDED_MODULES = [
+  { id: "dice-so-nice", label: "Dice So Nice", reason: "3D dice, including the system's T.C.R.I. Dice" },
+  { id: "autoanimations", label: "Automated Animations", reason: "Animations for attacks, maneuvers, spells, psionics, item rolls and devices" },
+  { id: "sequencer", label: "Sequencer", reason: "Required by Automated Animations" },
+  { id: "JB2A_DnD5e", label: "JB2A (free version)", reason: "The animation art Automated Animations plays" }
+];
