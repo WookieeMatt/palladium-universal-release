@@ -51,6 +51,7 @@ export function buildApi() {
     rollSave: dice.rollSave,
     showRecommendedModules: welcome.showRecommendedModules,
     showPlayerWelcome: welcome.showPlayerWelcome,
+    resetWelcome: welcome.resetWelcome,
     rollCreationTable: creationTables.rollCreationTable,
     activeParty: party.activeParty,
     addPartyMember: party.addMember,

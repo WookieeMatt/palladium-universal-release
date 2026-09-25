@@ -5,6 +5,8 @@
 
 **Configure Settings → System Settings → Default Portrait**: the portrait and token new characters and NPCs start with: **Mutant turtle (black and white)** (the default), **Mutant turtle (color)**, or **Foundry's mystery man**. Compendium NPCs that still have a default portrait follow the setting when imported. Your own art is never replaced.
 
+**Configure Settings → System Settings → Show the Welcome Cards Again**: tick it and save, and the GM's module card and every player's welcome card show again the next time each of you loads the world (the box unticks itself). Macro: `game.palladium.resetWelcome()`.
+
 **Configure Settings → System Settings → Optional Damage Side-Effects** (p.93): *Leave it to the GM* (default), *Ask the GM* (a whispered card with a Roll button when a character loses 75% of their S.D.C., 75% of their Hit Points, or goes into a coma) or *Roll and apply automatically*. Results are **Injury** items carrying the penalties (see **Rules Reference**).
 
 **Configure Settings → System Settings → Blood & Death Effects** (each player's own screen, on by default): a blood splash on the token when a character starts Bleeding Out, and a death marker when they die (a bigger splash, a "☠ Dead" float, the skull overlay, and the combatant marked defeated). Uses JB2A's splash through Sequencer when installed, otherwise a built-in one.

@@ -25,7 +25,7 @@ import { onRenderChatMessage } from "./combat.mjs";
 import { onDeleteCombat, onUpdateCombat } from "./actions.mjs";
 import { buildApi } from "./api.mjs";
 import { registerTcriDice, TCRI_FINISHES } from "./dice-so-nice.mjs";
-import { welcomeOnce } from "./welcome.mjs";
+import { resetWelcome, welcomeOnce } from "./welcome.mjs";
 import { initAudit, registerAuditSettings } from "./audit.mjs";
 
 Hooks.once("init", function () {
@@ -212,6 +212,15 @@ Hooks.once("setup", function () {
     config: false,
     type: Number,
     default: 0
+  });
+  game.settings.register("palladium-universal", "resetWelcome", {
+    name: "Show the Welcome Cards Again",
+    hint: "Tick and save: the GM's module card and every player's welcome card show again the next time each of you loads the world. The box unticks itself.",
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: false,
+    onChange: value => { if ( value ) resetWelcome(); }
   });
 });
 

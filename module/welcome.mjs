@@ -76,6 +76,20 @@ export async function welcomeOnce() {
   return showRecommendedModules();
 }
 
+/**
+ * Show the welcome cards again on the next load: the GM's modules card and every player's welcome.
+ * Run by the "Show the Welcome Cards Again" setting (which then unticks itself), or from a macro. GM only.
+ */
+export async function resetWelcome() {
+  if ( !game.user.isGM ) return;
+  await game.settings.set("palladium-universal", SETTING, false);
+  await game.settings.set("palladium-universal", VERSION_SETTING, 0);
+  await Promise.all(game.users.filter(u => !u.isGM && u.getFlag?.("palladium-universal", "welcomed"))
+    .map(u => u.unsetFlag("palladium-universal", "welcomed")));
+  if ( game.settings.get("palladium-universal", "resetWelcome") ) await game.settings.set("palladium-universal", "resetWelcome", false);
+  ui.notifications?.info("Welcome cards reset: everyone sees them again on their next load.");
+}
+
 /** A player's welcome, once per player (a flag on their User). */
 async function playerWelcomeOnce() {
   const user = game.user;
