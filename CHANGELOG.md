@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.28.1
+- **Rich-text boxes fixed**: an opened editor could not be typed in (the sheet's big green buttons made the editor toolbar cover the typing line). The toolbar is small again and the whole box is the typing area. An empty box now collapses to a readable line with the pen button inside it (it was squeezed to a sliver with a scrollbar).
+- **Item images on a dark tile** (item cards, the sheets' item lists, the animal picture) so Foundry's white icons show.
+
 ## 1.28.0
 - **Token Action HUD support**: the new public module *Token Action HUD Palladium Universal* (needs Token Action HUD Core 2.1) puts attacks, maneuvers, combat rolls, saves, attributes, skills, spells, psionics, gear, conditions, Move / Cover / End Turn and healing on a HUD next to the selected token.
 - New API functions for macros and modules: `rollCombat(actor, key)` (Initiative, Strike, Parry, Dodge, Roll with Impact, Pull Punch, Disarm, exactly like the sheet's buttons), `attackModes(actor, weapon)`, `COMBAT_ROLLS`, `rollMagicAbility`, `hasMoved`, `toggleMove`, `combatantActions`.

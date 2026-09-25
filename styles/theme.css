@@ -364,11 +364,12 @@
   color: var(--pu-green);
 }
 
+/* Item images sit on a dark tile (v1.28.1): Foundry's white SVG icons vanished on parchment. */
 .palladium-universal .item-icon,
 .palladium-universal .animal-img,
 .palladium-universal .item-img {
-  border: 1px solid var(--pu-rule);
-  background: #fffdf5;
+  border: 1px solid #16301d;
+  background: radial-gradient(circle at 50% 40%, #3b4a3f, #1f2a22);
 }
 
 .palladium-universal .drop-slot {
@@ -1368,17 +1369,24 @@
 .palladium-universal .item-grid.pu-weapon-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 .palladium-universal .pu-weapon-flags { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 4px 18px; }
 
-/* Rich text boxes (ProseMirror): an empty one collapses to one line that says how to open it. */
+/* Rich text boxes (ProseMirror): an empty one collapses to one line that says how to open it (v1.28.1: a real
+   line, not a sliver; the toggle pen inside it). */
 .palladium-universal prose-mirror:not(.active):has(.editor-content:empty),
 .palladium-universal prose-mirror:not(.active):has(.editor-content > p:only-child:empty) {
-  min-height: 0;
-  height: auto;
+  display: block;
+  position: relative;
+  min-height: 2.1rem !important;
+  height: auto !important;
+  overflow: visible;
+  padding: 0;
 }
 .palladium-universal prose-mirror:not(.active) .editor-content:empty,
 .palladium-universal prose-mirror:not(.active) .editor-content:has(> p:only-child:empty) {
   min-height: 0 !important;
-  height: auto;
-  padding: 3px 34px 3px 8px;
+  height: auto !important;
+  overflow: visible !important;
+  padding: 6px 40px 6px 10px;
+  line-height: 1.4;
 }
 .palladium-universal prose-mirror:not(.active) .editor-content:empty::before,
 .palladium-universal prose-mirror:not(.active) .editor-content:has(> p:only-child:empty)::before {
@@ -1389,6 +1397,19 @@
 }
 .palladium-universal prose-mirror:not(.active) .editor-content:has(> p:only-child:empty) > p { display: none; }
 .palladium-universal prose-mirror:not(.active) button.toggle {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 26px;
+  height: 26px;
+  min-height: 0;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  font-family: var(--fa-style-family, "Font Awesome 6 Pro"), "Font Awesome 6 Free";
+  font-weight: 900;
+  font-size: 0.8rem;
+  line-height: 1;
   color: #fff;
   background: var(--pu-green);
   border: 1px solid #16301d;
@@ -1396,6 +1417,70 @@
   opacity: 1;
   visibility: visible;
 }
+
+/* An open editor (v1.28.1): Foundry's own small toolbar (the sheet's big green buttons covered the line you type on),
+   and the whole box is the typing area. */
+.palladium-universal prose-mirror.active {
+  display: flex;
+  flex-direction: column;
+  min-height: 10rem;
+  height: auto;
+  padding: 0;
+  overflow: visible;
+}
+.palladium-universal prose-mirror.active .editor-menu {
+  flex: none;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px;
+  margin: 0;
+  padding: 3px 4px;
+  background: var(--pu-green-pale, #e4ecd9);
+  border-bottom: 1px solid var(--pu-rule);
+  border-radius: 6px 6px 0 0;
+}
+.palladium-universal prose-mirror.active .editor-menu button,
+.palladium-universal .window-content prose-mirror.active .editor-menu button {
+  height: 24px;
+  min-height: 0;
+  min-width: 24px;
+  width: auto;
+  padding: 0 5px;
+  margin: 0;
+  font-size: 0.75rem;
+  line-height: 22px;
+  color: var(--pu-ink);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  box-shadow: none;
+}
+.palladium-universal .window-content prose-mirror.active .editor-menu button:hover,
+.palladium-universal .window-content prose-mirror.active .editor-menu button.active {
+  color: #fff;
+  background: var(--pu-green);
+  border-color: #16301d;
+}
+.palladium-universal prose-mirror.active .editor-menu .pm-dropdown { height: 24px; font-size: 0.75rem; }
+.palladium-universal prose-mirror.active .editor-content {
+  flex: 1 1 auto;
+  min-height: 8rem !important;
+  height: auto;
+  overflow-y: auto;
+  padding: 6px 10px;
+  cursor: text;
+}
+.palladium-universal prose-mirror.active .editor-content .ProseMirror,
+.palladium-universal prose-mirror.active .ProseMirror[contenteditable] {
+  min-height: 7.5rem;
+  outline: none;
+  cursor: text;
+}
+.palladium-universal prose-mirror.active .editor-content > p { display: block; }
 .palladium-universal.sheet h1.charname input:not([type="checkbox"]):not([type="radio"]) { height: auto; min-height: 0; font-size: 1.7rem; padding: 0 4px 2px; border-radius: 0; }
 .palladium-universal.sheet .panel-header .pu-heal { margin-left: auto; }
 .palladium-universal.sheet .panel-header .pu-heal + .pu-roll-hp { margin-left: 6px; }
