@@ -62,6 +62,7 @@ Follow the shape of the existing entries: log `CONFIG.PALLADIUM.CONDITIONS` in t
 | Vehicles | `applyVehicleDamage(actor, amount, options)`, `rollControl(actor)`, `rollEvade(actor)`, `operateDevice(device)`, `operateTimeMachine(actor)` |
 | Building | `applyAnimal(actor, data)`, `removeAnimal(actor)`, `applyBackground(actor, data)`, `rollAttributes(actor)` (all eight, saved, once), `requestReroll(actor)`, `allowReroll({actorUuid})`, `printAttribute(actor, key)` (score to chat, no roll), `rollAttribute(actor, key)` (one attribute to chat, not saved) |
 | Damage & recovery | `bloodSplash(token, {scale})`, `deathMarker(token)` (this screen only), `stopBleeding(actor, by)`, `restAndHeal(actor, {treatment, days, hours})`, `healDialog(actor)`, `healedHP(treatment, days)`, `rollSideEffect(actor, "sdc"|"hp"|"nearDeath")`, `offerSideEffect(actor, table)`, `sideEffectTable(kind, before, after, max)`, `setCondition(actor, id, active)`; tables `CONFIG.PALLADIUM.HEALING`, `SIDE_EFFECTS`, `FIRST_AID_SKILLS` |
+| Initiative & sides | `initiativeDialog(combat)`, `startShowdown(combat, {first, mode})`, `rollShowdown(combat)`, `combatantSide(combatant)`, `setCombatantSide(combatant, "friendly"|"hostile")`, `toggleCombatantSide(combatant)`, `orderBySide(combat, side)` (alternate sides), `shiftInitiative(combatant, gain)` |
 | Cover & impact | `setCover(combatant, {label, sdc} | null)`, `coverDialog(combatant)`, `actorCover(actor)`, `throughCover(actor, amount, weaponType)`, `coverReduction(sdc)`; `canRollWithImpact(weaponSystem)`, `rolledWithImpact(actor, damageCardFlags)`, `isBluntWeapon(item)`, `markBluntWeapons()` (GM); table `CONFIG.PALLADIUM.COVER_SDC` |
 | Air & space | `airStats(actor)`, `rollTactic(actor, key)`, `rollVeer(actor, {game, penalty})`, `rollPullOut(actor)`, `rollEmergencyLanding(actor)`, `rollCrash(actor, {mph, payload})`, `rollDumbLuck(actor)`; tables `CONFIG.PALLADIUM.SPEED_CLASSES`, `DRIVE_TYPES`, `AIR_TACTICS`, `CHICKEN_GAMES`, `CRASH_DAMAGE`, helper `speedClassFor(mph)` |
 | Animations | `playAnimation(actor, item, {kind, hit})`, `animationNames(name, kind)`; the trigger set is `CONFIG.PALLADIUM.ANIMATION_TRIGGERS` (rules `{match: RegExp, names: [...]}`) and `ANIMATION_FALLBACKS` |
@@ -107,6 +108,7 @@ The system fires these hooks. A `pre…` hook can return `false` to cancel. Its 
 | `palladium.stopBleeding` | `actor, by` | First aid stopped Bleeding Out. |
 | `palladium.heal` | `actor, {treatment, days, hours, hp, sdc}` | After Rest & Heal. |
 | `palladium.sideEffect` | `actor, {table, total, name, penalties, lasts}, item` | After an optional side-effect roll (`item` is the Injury item, or null). |
+| `palladium.side` | `combatant, "friendly"\|"hostile"` | A combatant was put on a side (the tracker icon or `setCombatantSide`). |
 | `palladium.cover` | `combatant, cover` | Cover set (`{label, sdc, left}`) or cleared (`null`). |
 
 For example, a red flash when someone starts Bleeding Out (with the Sequencer module):

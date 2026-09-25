@@ -102,33 +102,39 @@ export async function startShowdown(combat = game.combat, { first = [], mode = "
 }
 
 /**
- * Ambush (several attackers) or Sudden Violence (one): the GM picks from the combatants on the tracker, then the
- * Showdown runs for everyone else.
+ * The tracker's Initiative button (GM, p.84): one window with a dropdown: Showdown (everyone rolls), Ambush or
+ * Sudden Violence (then Friendly or Hostile: that side has the Initiative, everyone else rolls).
  * @param {Combat} combat
- * @param {"ambush"|"violence"} mode
  */
-export async function pickFirst(combat, mode = "ambush") {
-  const list = [...combat.combatants].filter(c => !c.isDefeated);
-  if ( !list.length ) return null;
-  const multi = mode === "ambush";
-  const options = [`<option value="">— Choose —</option>`,
-    ...(multi ? [`<option value="side:friendly">Friendly side (all)</option>`, `<option value="side:hostile">Hostile side (all)</option>`] : []),
-    ...list.map(c => `<option value="${c.id}">${escape(c.name)}</option>`)].join("");
-  const id = await DialogV2.wait({
-    window: { title: multi ? "Ambush!" : "Sudden Violence!" }, classes: ["palladium-universal", "pu-skill-mods"],
-    content: `<div class="pu-sm"><p class="hint">${multi ? "Who sprang the ambush (Sneak Attack or Surprise Attack)? They always have the Initiative." : "Who started it? They have the Initiative."} Everyone else rolls.</p>
-      <select name="pick">${options}</select></div>`,
-    buttons: [{ action: "go", label: "Roll the rest", icon: "fa-solid fa-dice-d20", default: true,
-      callback: (event, button) => button.form.elements.pick.value },
+export async function initiativeDialog(combat = game.combat) {
+  if ( !game.user.isGM || !combat ) return null;
+  const choice = await DialogV2.wait({
+    window: { title: "Initiative" }, classes: ["palladium-universal", "pu-skill-mods"],
+    content: `<div class="pu-sm">
+      <select name="mode"><option value="showdown">Showdown</option><option value="ambush">Ambush</option><option value="violence">Sudden Violence</option></select>
+      <select name="side" hidden style="margin-top:4px"><option value="friendly">Friendly</option><option value="hostile">Hostile</option></select>
+      <p class="hint pu-init-hint">Everyone rolls d20 + Initiative bonus.</p></div>`,
+    render: (event, dialog) => {
+      const root = dialog?.element ?? event?.target?.element;
+      const mode = root?.querySelector?.("[name=mode]");
+      const side = root?.querySelector?.("[name=side]");
+      const hint = root?.querySelector?.(".pu-init-hint");
+      mode?.addEventListener("change", () => {
+        side.hidden = mode.value === "showdown";
+        hint.textContent = { showdown: "Everyone rolls d20 + Initiative bonus.", ambush: "Which side sprang the ambush? They have the Initiative; everyone else rolls.",
+          violence: "Which side started it? They have the Initiative; everyone else rolls." }[mode.value];
+      });
+    },
+    buttons: [{ action: "go", label: "Start", icon: "fa-solid fa-dice-d20", default: true,
+      callback: (event, button) => ({ mode: button.form.elements.mode.value, side: button.form.elements.side.value }) },
       { action: "cancel", label: "Cancel", icon: "fa-solid fa-xmark" }],
     rejectClose: false
   });
-  if ( (typeof id !== "string") || (id === "cancel") ) return null;
-  if ( !id ) return ui.notifications.warn(multi ? "Pick the attacker." : "Pick who started it."), null;
-  // A whole side ambushes: every combatant of that side.
-  const first = id.startsWith("side:") ? list.filter(c => combatantSide(c) === id.slice(5)).map(c => c.id) : [id];
-  if ( !first.length ) return ui.notifications.warn("Nobody on that side is in this fight."), null;
-  return startShowdown(combat, { first, mode });
+  if ( !choice?.mode ) return null;
+  if ( choice.mode === "showdown" ) return startShowdown(combat);
+  const first = [...combat.combatants].filter(c => !c.isDefeated && (combatantSide(c) === choice.side)).map(c => c.id);
+  if ( !first.length ) return ui.notifications.warn(`Nobody on the ${choice.side === "friendly" ? "Friendly" : "Hostile"} side is in this fight.`), null;
+  return startShowdown(combat, { first, mode: choice.mode });
 }
 
 /** Register the players' popup (in "init"). */

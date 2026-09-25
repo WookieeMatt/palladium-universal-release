@@ -20,6 +20,7 @@ import * as cover from "./cover.mjs";
 import * as recovery from "./recovery.mjs";
 import * as fx from "./fx.mjs";
 import * as showdown from "./showdown.mjs";
+import * as tracker from "./combat-tracker.mjs";
 import CharacterData from "./data/character.mjs";
 import NpcData from "./data/npc.mjs";
 import VehicleData from "./data/vehicle.mjs";
@@ -66,6 +67,12 @@ export function buildApi() {
     // palladium.condition(actor, id, active), palladium.hitPoints(actor, {before, after, max}),
     // palladium.stopBleeding(actor, by), palladium.heal(actor, result), palladium.sideEffect(actor, result, item), palladium.cover(combatant, cover)
     startShowdown: showdown.startShowdown,
+    initiativeDialog: showdown.initiativeDialog,
+    combatantSide: tracker.combatantSide,
+    setCombatantSide: tracker.setCombatantSide,
+    toggleCombatantSide: tracker.toggleCombatantSide,
+    orderBySide: tracker.orderBySide,
+    shiftInitiative: tracker.shiftInitiative,
     rollShowdown: showdown.rollShowdown,
     bloodSplash: fx.bloodSplash,
     deathMarker: fx.deathMarker,

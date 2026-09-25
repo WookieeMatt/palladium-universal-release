@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.26.0
+- **One Initiative button** at the top of the Combat Tracker (GM) instead of five: a dropdown with **Showdown** (everyone rolls), **Ambush** and **Sudden Violence** (then Friendly or Hostile: that side has the Initiative, everyone else rolls).
+- **Friendly / Hostile per combatant**: a green shield or red skull on each row; the GM clicks it to flip the side (the token's disposition changes too). Macros: `setCombatantSide`, `toggleCombatantSide`, `combatantSide`, hook `palladium.side`.
+
 ## 1.25.0
 - **Combat Tracker, tidied**: the GM's buttons at the top are five icons with tooltips: Friendly side, Hostile side, **Showdown**, **Ambush** (one dropdown: Friendly side, Hostile side, or one combatant: they have the Initiative, the rest roll) and **Sudden Violence** (pick who started it); the last one used stays lit. Each combatant row is laid out across the width: actions on the left as fists (bright = available, faded = used; click to spend one, or give one back), then Move and Cover, then the GM's ⇈ / ⇊ on the right.
 - **Showdown** (p.84): only the combatants on the tracker take part. It clears the order and posts a *Showdown! Roll Initiative* card; each player online gets a popup with **Roll Initiative** for their own combatants (or Later: the card's button does the same); the GM gets one **Roll NPCs** button for every NPC and anyone whose player is offline. The tracker sorts by the results; ties re-roll.

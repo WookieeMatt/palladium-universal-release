@@ -1188,7 +1188,7 @@
 .pu-tracker-actions .pu-cover.covered { opacity: 1; color: #d98b5f; }
 
 /* Tracker (v1.25.0): icon buttons at the top, roomy combatant rows */
-.pu-first-side { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 6px 8px; }
+.pu-first-side { display: flex; padding: 6px 8px; }
 .pu-first-side button.pu-side { flex: none; width: 100%; height: 30px; line-height: 28px; padding: 0; margin: 0; font-size: 0.95rem; border-radius: 6px; border: 1px solid #666; }
 .pu-first-side button.pu-side.friendly { border-color: #5fae6f; color: #7fc88f; }
 .pu-first-side button.pu-side.hostile { border-color: #c0392b; color: #e06a5c; }
@@ -1209,3 +1209,7 @@
 .pu-tracker-actions .pu-act { color: #6fcf7f; opacity: 1; }
 .pu-tracker-actions .pu-act.used { color: #888; opacity: 0.35; }
 .pu-tracker-actions a.pu-act:hover { filter: brightness(1.3); opacity: 1; }
+.pu-first-side button.pu-initiative { height: 32px; line-height: 30px; font-size: 0.95rem; border-color: #d9a441; color: #e8c06a; gap: 6px; }
+.pu-first-side button.pu-initiative i { margin-right: 6px; }
+.pu-tracker-actions .pu-sidetoggle.friendly { color: #7fc88f; }
+.pu-tracker-actions .pu-sidetoggle.hostile { color: #e06a5c; }

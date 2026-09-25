@@ -16,7 +16,7 @@
  */
 
 import { combatantCover, coverDialog, coverReduction } from "./cover.mjs";
-import { pickFirst, startShowdown } from "./showdown.mjs";
+import { initiativeDialog } from "./showdown.mjs";
 
 const SCOPE = "palladium-universal";
 
@@ -122,10 +122,33 @@ export async function shiftInitiative(combatant, gain) {
  * @param {Combatant} combatant
  */
 export function combatantSide(combatant) {
+  const set = combatant.getFlag?.(SCOPE, "side");
+  if ( (set === "friendly") || (set === "hostile") ) return set;
   const friendly = globalThis.CONST?.TOKEN_DISPOSITIONS?.FRIENDLY ?? 1;
   const disposition = combatant.token?.disposition ?? combatant.actor?.prototypeToken?.disposition;
   if ( Number.isFinite(disposition) ) return disposition === friendly ? "friendly" : "hostile";
   return combatant.actor?.hasPlayerOwner ? "friendly" : "hostile";
+}
+
+/**
+ * Put a combatant on a side (GM). With a token, its disposition changes too (Friendly or Hostile), so the side
+ * shows on the map and carries into the next fight; without one the combatant remembers it. Hook "palladium.side".
+ * @param {Combatant} combatant
+ * @param {"friendly"|"hostile"} side
+ */
+export async function setCombatantSide(combatant, side) {
+  if ( !["friendly", "hostile"].includes(side) ) return null;
+  const D = globalThis.CONST?.TOKEN_DISPOSITIONS ?? { FRIENDLY: 1, HOSTILE: -1 };
+  const token = combatant.token;
+  if ( token?.update && token.isOwner !== false ) await token.update({ disposition: side === "friendly" ? D.FRIENDLY : D.HOSTILE });
+  await combatant.setFlag(SCOPE, "side", side);
+  Hooks.callAll("palladium.side", combatant, side);
+  return side;
+}
+
+/** Flip a combatant between Friendly and Hostile (the tracker's side icon). */
+export function toggleCombatantSide(combatant) {
+  return setCombatantSide(combatant, combatantSide(combatant) === "friendly" ? "hostile" : "friendly");
 }
 
 /** Shuffle a copy of a list. */
@@ -213,6 +236,15 @@ export async function onCombatTurn(combat, changed, options) {
   await combat.setFlag(SCOPE, "turnStart", { id: now?.id ?? null, used: newRound ? 0 : combatantActions(now).used });
 }
 
+/** The side marker: green shield = Friendly, red skull = Hostile; the GM clicks to flip it. */
+function sideIcon(combatant) {
+  const side = combatantSide(combatant);
+  const gm = game.user.isGM;
+  const tag = gm ? "a" : "span";
+  const tip = `${side === "friendly" ? "Friendly" : "Hostile"} side${gm ? `. Click to make ${side === "friendly" ? "Hostile" : "Friendly"}.` : ""}`;
+  return `<${tag} aria-label="Side" class="pu-sidetoggle ${side}" data-tooltip="${tip}"><i class="fa-solid ${side === "friendly" ? "fa-user-shield" : "fa-skull"}"></i></${tag}>`;
+}
+
 /** The cover marker (p.90): lit when the combatant is behind cover this combat. */
 function coverIcon(combatant, canSet) {
   const cover = combatantCover(combatant);
@@ -239,15 +271,6 @@ export async function clickAction(combatant, spend) {
   return combatant.setFlag(SCOPE, "actionsUsed", a.used - 1);
 }
 
-/** The initiative buttons at the top of the tracker (GM): icon buttons with tooltips. */
-export const INITIATIVE_BUTTONS = {
-  friendly: { icon: "fa-user-shield", tooltip: "<strong>Friendly side first</strong><br>The heroes (Friendly tokens) have the Initiative; the sides alternate, random within each side." },
-  hostile: { icon: "fa-skull", tooltip: "<strong>Hostile side first</strong><br>The villains (Hostile and Neutral tokens) have the Initiative; the sides alternate, random within each side." },
-  showdown: { icon: "fa-dice-d20", tooltip: "<strong>Showdown</strong><br>Everyone rolls d20 + Initiative bonus; highest first, ties re-roll. Players get a Roll Initiative popup, you get one Roll NPCs button." },
-  ambush: { icon: "fa-user-secret", tooltip: "<strong>Ambush</strong><br>Pick the attackers (a Sneak Attack or Surprise Attack started it): they always have the Initiative. Everyone else rolls." },
-  violence: { icon: "fa-bolt", tooltip: "<strong>Sudden Violence</strong><br>Pick who started it: they have the Initiative. Everyone else rolls." }
-};
-
 /**
  * The tracker: on each combatant, action icons (click to spend / give back), the Move Action and cover, and the
  * GM's gain / lose the Initiative buttons; above the list, the GM's initiative buttons.
@@ -273,7 +296,7 @@ export function decorateTracker(app, html) {
     const moved = hasMoved(combatant);
     const moveTip = `Move Action: ${moved ? "taken this round (it cost an action)" : "not taken yet (once per round, costs an action)"}${can ? (moved ? ". Click to undo." : ". Click when moving.") : ""}`;
     box.innerHTML = `<span class="pu-ta-group pu-ta-actions">${actions}</span>`
-      + `<span class="pu-ta-group pu-ta-tools"><${tag} aria-label="Move Action" class="pu-move${moved ? " moved" : ""}" data-tooltip="${moveTip}"><i class="fa-solid fa-person-walking"></i></${tag}>${coverIcon(combatant, can)}</span>`
+      + `<span class="pu-ta-group pu-ta-tools">${sideIcon(combatant)}<${tag} aria-label="Move Action" class="pu-move${moved ? " moved" : ""}" data-tooltip="${moveTip}"><i class="fa-solid fa-person-walking"></i></${tag}>${coverIcon(combatant, can)}</span>`
       + (game.user.isGM ? `<span class="pu-ta-group pu-ta-gm"><a class="pu-init-up" data-tooltip="Gains the Initiative (top of the order)"><i class="fa-solid fa-angles-up"></i></a>`
         + `<a class="pu-init-down" data-tooltip="Loses the Initiative (bottom of the order: knocked down, Held, Thrown...)"><i class="fa-solid fa-angles-down"></i></a></span>` : "");
     const on = (sel, fn) => box.querySelectorAll(sel).forEach(el => el.addEventListener("click", event => { event.preventDefault(); event.stopPropagation(); fn(el); }));
@@ -282,26 +305,18 @@ export function decorateTracker(app, html) {
     on(".pu-init-down", () => shiftInitiative(combatant, false));
     on("a.pu-move", () => toggleMove(combatant));
     on("a.pu-cover", () => coverDialog(combatant));
+    on("a.pu-sidetoggle", () => toggleCombatantSide(combatant));
     const name = li.querySelector(".token-name, .name") ?? li;
     name.classList.add("pu-tracker-name");
     name.append(box);
   }
-  // The GM's initiative buttons above the list.
+  // The GM's Initiative button above the list.
   if ( game.user.isGM && root && !root.querySelector(".pu-first-side") ) {
-    const chosen = combat.getFlag?.(SCOPE, "initiativeMode") ?? combat.getFlag?.(SCOPE, "firstSide");
     const bar = document.createElement("div");
     bar.className = "pu-first-side";
-    bar.innerHTML = Object.entries(INITIATIVE_BUTTONS).map(([key, b]) => `<button type="button" class="pu-side ${key}${chosen === key ? " active" : ""}"
-      data-mode="${key}" aria-label="${key}" data-tooltip="${b.tooltip}"><i class="fa-solid ${b.icon}"></i></button>`).join("");
-    for ( const button of bar.querySelectorAll("button[data-mode]") ) {
-      button.addEventListener("click", event => {
-        event.preventDefault(); event.stopPropagation();
-        const mode = button.dataset.mode;
-        if ( (mode === "friendly") || (mode === "hostile") ) return orderBySide(combat, mode);
-        if ( mode === "showdown" ) return startShowdown(combat);
-        return pickFirst(combat, mode);
-      });
-    }
+    bar.innerHTML = `<button type="button" class="pu-side pu-initiative" aria-label="Initiative"
+      data-tooltip="<strong>Initiative</strong> (p.84)<br>Showdown: everyone rolls. Ambush or Sudden Violence: pick the side that has the Initiative; everyone else rolls."><i class="fa-solid fa-dice-d20"></i> Initiative</button>`;
+    bar.querySelector("button").addEventListener("click", event => { event.preventDefault(); event.stopPropagation(); initiativeDialog(combat); });
     const list = root.querySelector("ol.combat-tracker, .combat-tracker");
     const header = root.querySelector("header");
     if ( list ) list.before(bar);
