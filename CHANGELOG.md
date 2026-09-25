@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.30.0
+- **Turn Off Pause** (System Settings, GM): the world opens unpaused and can't be paused. Off by default.
+
 ## 1.29.2
 - **Show the Welcome Cards Again** (System Settings, GM): tick and save, and the GM's module card and every player's welcome show again on each person's next load; the box unticks itself. Macro: `game.palladium.resetWelcome()`.
 
