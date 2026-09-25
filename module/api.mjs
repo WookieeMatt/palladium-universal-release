@@ -50,6 +50,7 @@ export function buildApi() {
     rollSkill: dice.rollSkill,
     rollSave: dice.rollSave,
     showRecommendedModules: welcome.showRecommendedModules,
+    showPlayerWelcome: welcome.showPlayerWelcome,
     rollCreationTable: creationTables.rollCreationTable,
     activeParty: party.activeParty,
     addPartyMember: party.addMember,

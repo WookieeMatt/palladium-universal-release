@@ -200,16 +200,22 @@ Hooks.once("setup", function () {
     default: "dry"
   });
 
-  // The GM's one-time welcome card (recommended modules).
+  // The GM's welcome card (recommended modules): shown once, and again when the module list grows.
   game.settings.register("palladium-universal", "welcomeShown", {
     scope: "world",
     config: false,
     type: Boolean,
     default: false
   });
+  game.settings.register("palladium-universal", "welcomeVersion", {
+    scope: "world",
+    config: false,
+    type: Number,
+    default: 0
+  });
 });
 
-// First run in a world: the active GM gets the recommended modules card, once.
+// First run in a world: the active GM gets the recommended modules card; each player gets a short welcome, once.
 Hooks.once("ready", () => welcomeOnce());
 
 // Dice So Nice: the T.C.R.I. Dice (theme and animated dice system).

@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.29.0
+- **GM welcome card** lists **Token Action HUD Core** and **Token Action HUD Palladium Universal** (with its manifest URL to paste into *Install Module*). Worlds that already saw the card get the new list once.
+- **Player welcome**: each player gets a short card the first time they log in: where the guide is, that the Creation Checklist walks them through making a character, and how to roll in play. `game.palladium.showPlayerWelcome()` shows it again.
+
 ## 1.28.1
 - **Rich-text boxes fixed**: an opened editor could not be typed in (the sheet's big green buttons made the editor toolbar cover the typing line). The toolbar is small again and the whole box is the typing area. An empty box now collapses to a readable line with the pen button inside it (it was squeezed to a sliver with a scrollbar).
 - **Item images on a dark tile** (item cards, the sheets' item lists, the animal picture) so Foundry's white icons show.
