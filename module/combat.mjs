@@ -9,6 +9,7 @@ import { playAnimation } from "./animations.mjs";
 import { allowReroll } from "./creation.mjs";
 import { throughCover } from "./cover.mjs";
 import { rollSideEffect, stopBleeding } from "./recovery.mjs";
+import { rollShowdown } from "./showdown.mjs";
 
 const { DialogV2 } = foundry.applications.api;
 
@@ -883,6 +884,12 @@ async function onCardButton(event, message, data) {
     if ( action === "te-change" ) return applyTeChange(actor, Number(event.currentTarget.dataset.direction));
     if ( action === "change-save" ) return rollChangeSave(actor);
     return rollTemporalMishap(actor);
+  }
+
+  if ( action === "showdown-roll" ) {
+    const combat = game.combats?.get(data.combatId);
+    if ( !combat ) return ui.notifications.warn("That combat has ended.");
+    return rollShowdown(combat);
   }
 
   if ( action === "stop-bleeding" ) {

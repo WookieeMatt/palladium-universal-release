@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.25.0
+- **Combat Tracker, tidied**: the GM's buttons at the top are five icons with tooltips: Friendly side, Hostile side, **Showdown**, **Ambush** (one dropdown: Friendly side, Hostile side, or one combatant: they have the Initiative, the rest roll) and **Sudden Violence** (pick who started it); the last one used stays lit. Each combatant row is laid out across the width: actions on the left as fists (bright = available, faded = used; click to spend one, or give one back), then Move and Cover, then the GM's ⇈ / ⇊ on the right.
+- **Showdown** (p.84): only the combatants on the tracker take part. It clears the order and posts a *Showdown! Roll Initiative* card; each player online gets a popup with **Roll Initiative** for their own combatants (or Later: the card's button does the same); the GM gets one **Roll NPCs** button for every NPC and anyone whose player is offline. The tracker sorts by the results; ties re-roll.
+
 ## 1.24.0
 - **Rules Reference** page in the System Guide: experience levels and awards (p.75), the S.D.C. table and shooting through cover (p.90), damage effects and recovery (p.92), the optional side-effect tables (p.93).
 - **Roll with Impact** only against **blunt** attacks (p.84): weapons have a **Blunt** box (fists, kicks, staffs, clubs, chains; explosions and maneuvers always count; bullets, energy and blades never). After a successful Roll with Impact, **Apply** halves that attack's damage for that character by itself. GM macro **Mark Blunt Weapons** ticks Blunt on existing weapons (world, sheets, tokens, unlocked compendiums).

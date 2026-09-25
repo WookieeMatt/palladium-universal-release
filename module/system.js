@@ -18,6 +18,7 @@ import { initConditions } from "./conditions.mjs";
 import { initRecovery } from "./recovery.mjs";
 import { initBlunt } from "./blunt.mjs";
 import { initFx } from "./fx.mjs";
+import { initShowdown } from "./showdown.mjs";
 import { initMoney } from "./money.mjs";
 import { initSkillModifiers } from "./skill-modifiers.mjs";
 import { onRenderChatMessage } from "./combat.mjs";
@@ -141,6 +142,7 @@ Hooks.once("init", function () {
   initRecovery();
   initBlunt();
   initFx();
+  initShowdown();
 
   // Sheets
   foundry.documents.collections.Actors.registerSheet("palladium-universal", PalladiumCharacterSheet, {

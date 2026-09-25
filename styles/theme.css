@@ -1127,10 +1127,6 @@
 .pu-party-view .pu-party-view-body, .pu-session-tools .pu-session-body { flex: 1; overflow-y: auto; padding: 10px; }
 
 /* Combat Tracker (v1.19.0): actions left as pips; out of actions dims the combatant. */
-.pu-tracker-actions { display: flex; align-items: center; gap: 4px; font-size: 0.75rem; }
-.pu-tracker-actions .pu-pips { display: inline-flex; gap: 2px; }
-.pu-tracker-actions .pu-pip { display: inline-block; width: 8px; height: 8px; border-radius: 50%; border: 1px solid #7fb08a; background: transparent; }
-.pu-tracker-actions .pu-pip.left { background: #5fae6f; border-color: #5fae6f; }
 .pu-tracker-actions a { opacity: 0.6; cursor: pointer; }
 .pu-tracker-actions a:hover { opacity: 1; }
 .pu-out-of-actions { opacity: 0.55; }
@@ -1172,14 +1168,7 @@
 .pu-skill-mods .pu-sm-list { margin: 0; padding-left: 1.2em; }
 
 /* Tracker (v1.23.0): who goes first, Move Action marker */
-.pu-first-side { display: flex; align-items: center; gap: 4px; padding: 4px 6px; font-size: 0.8rem; }
-.pu-first-side .pu-first-label { flex: 0 0 auto; margin-right: 2px; opacity: 0.8; }
-.pu-first-side .pu-side { flex: 1 1 0; min-width: 0; height: 24px; line-height: 20px; padding: 0 6px; font-size: 0.78rem; white-space: nowrap; border-radius: 4px; }
-.pu-first-side .pu-side.friendly { border-color: #5fae6f; }
-.pu-first-side .pu-side.hostile { border-color: #c0392b; }
-.pu-first-side button.pu-side.friendly.active { background: #3f7f4d; border-color: #5fae6f; color: #fff; }
-.pu-first-side button.pu-side.hostile.active { background: #a03224; border-color: #c0392b; color: #fff; }
-.pu-tracker-actions .pu-move { opacity: 0.35; font-size: 0.8rem; }
+.pu-tracker-actions .pu-move { opacity: 0.35; }
 .pu-tracker-actions .pu-move.moved { opacity: 1; color: #e0a526; }
 
 /* Armor layers (v1.23.0): what a Strike does against you; the words are in the tooltip */
@@ -1195,5 +1184,28 @@
 .pu-card .pu-cr-summary td { padding: 3px 4px; vertical-align: top; border-bottom: 1px dotted var(--pu-rule); }
 .pu-card .pu-cr-summary td.pu-cr-d { text-align: center; font-weight: 700; white-space: nowrap; }
 .palladium-universal input.pu-level-auto { border-style: dashed; cursor: default; }
-.pu-tracker-actions .pu-cover { opacity: 0.35; font-size: 0.8rem; }
+.pu-tracker-actions .pu-cover { opacity: 0.35; }
 .pu-tracker-actions .pu-cover.covered { opacity: 1; color: #d98b5f; }
+
+/* Tracker (v1.25.0): icon buttons at the top, roomy combatant rows */
+.pu-first-side { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 6px 8px; }
+.pu-first-side button.pu-side { flex: none; width: 100%; height: 30px; line-height: 28px; padding: 0; margin: 0; font-size: 0.95rem; border-radius: 6px; border: 1px solid #666; }
+.pu-first-side button.pu-side.friendly { border-color: #5fae6f; color: #7fc88f; }
+.pu-first-side button.pu-side.hostile { border-color: #c0392b; color: #e06a5c; }
+.pu-first-side button.pu-side.showdown { border-color: #d9a441; color: #e8c06a; }
+.pu-first-side button.pu-side.ambush { border-color: #8e6cc0; color: #b59ae0; }
+.pu-first-side button.pu-side.violence { border-color: #e0a526; color: #f0c050; }
+.pu-first-side button.pu-side.active { color: #fff; }
+.pu-first-side button.pu-side.friendly.active { background: #3f7f4d; }
+.pu-first-side button.pu-side.hostile.active { background: #a03224; }
+.pu-first-side button.pu-side.showdown.active { background: #9a7424; }
+.pu-first-side button.pu-side.ambush.active { background: #5e4690; }
+.pu-first-side button.pu-side.violence.active { background: #a8741a; }
+.pu-tracker-name { flex: 1 1 auto; min-width: 0; }
+.pu-tracker-actions { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; margin-top: 3px; font-size: 0.85rem; }
+.pu-tracker-actions .pu-ta-group { display: inline-flex; align-items: center; gap: 5px; }
+.pu-tracker-actions .pu-ta-actions { flex: 1 1 auto; flex-wrap: wrap; gap: 3px; }
+.pu-tracker-actions .pu-ta-gm { margin-left: auto; }
+.pu-tracker-actions .pu-act { color: #6fcf7f; opacity: 1; }
+.pu-tracker-actions .pu-act.used { color: #888; opacity: 0.35; }
+.pu-tracker-actions a.pu-act:hover { filter: brightness(1.3); opacity: 1; }

@@ -16,6 +16,7 @@
  */
 
 import { combatantCover, coverDialog, coverReduction } from "./cover.mjs";
+import { pickFirst, startShowdown } from "./showdown.mjs";
 
 const SCOPE = "palladium-universal";
 
@@ -116,12 +117,6 @@ export async function shiftInitiative(combatant, gain) {
 /*  Who goes first (p.84: the GM decides)       */
 /* -------------------------------------------- */
 
-/** The GM's choices for who goes first. */
-export const SIDES = {
-  friendly: { label: "Friendly first", tooltip: "The GM gives the Friendly side (the heroes: Friendly tokens) the Initiative. Sides alternate from there, in random order within each side." },
-  hostile: { label: "Hostile first", tooltip: "The GM gives the Hostile side (the villains: Hostile and Neutral tokens) the Initiative. Sides alternate from there, in random order within each side." }
-};
-
 /**
  * A combatant's side: "friendly" (Friendly tokens, or player characters without a token) or "hostile".
  * @param {Combatant} combatant
@@ -163,6 +158,7 @@ export async function orderBySide(combat, first = "friendly", random = Math.rand
   if ( typeof combat.updateEmbeddedDocuments === "function" ) await combat.updateEmbeddedDocuments("Combatant", updates);
   else for ( const u of updates ) await combat.combatants.get(u._id).update({ initiative: u.initiative });
   await combat.setFlag?.(SCOPE, "firstSide", first);
+  await combat.setFlag?.(SCOPE, "initiativeMode", first);
   return order;
 }
 
@@ -226,7 +222,36 @@ function coverIcon(combatant, canSet) {
   return `<${tag} aria-label="Cover" class="pu-cover${cover ? " covered" : ""}" data-tooltip="${tip}${canSet ? " Click to set or change it (lasts this combat)." : ""}"><i class="fa-solid fa-trowel-bricks"></i></${tag}>`;
 }
 
-/** Action pips on each combatant in the tracker, and the GM's gain / lose the Initiative buttons. */
+/**
+ * Spend or give back one action by hand from the tracker (owner or GM): clicking an unused action icon spends one,
+ * clicking a used one gives one back.
+ * @param {Combatant} combatant
+ * @param {boolean} spend
+ */
+export async function clickAction(combatant, spend) {
+  const a = combatantActions(combatant);
+  if ( spend ) {
+    if ( a.left <= 0 ) return;
+    return spendOne(combatant);
+  }
+  if ( a.used <= 0 ) return;
+  if ( a.tracked ) return combatant.actor.update({ "system.combat.actionsUsed": a.used - 1 });
+  return combatant.setFlag(SCOPE, "actionsUsed", a.used - 1);
+}
+
+/** The initiative buttons at the top of the tracker (GM): icon buttons with tooltips. */
+export const INITIATIVE_BUTTONS = {
+  friendly: { icon: "fa-user-shield", tooltip: "<strong>Friendly side first</strong><br>The heroes (Friendly tokens) have the Initiative; the sides alternate, random within each side." },
+  hostile: { icon: "fa-skull", tooltip: "<strong>Hostile side first</strong><br>The villains (Hostile and Neutral tokens) have the Initiative; the sides alternate, random within each side." },
+  showdown: { icon: "fa-dice-d20", tooltip: "<strong>Showdown</strong><br>Everyone rolls d20 + Initiative bonus; highest first, ties re-roll. Players get a Roll Initiative popup, you get one Roll NPCs button." },
+  ambush: { icon: "fa-user-secret", tooltip: "<strong>Ambush</strong><br>Pick the attackers (a Sneak Attack or Surprise Attack started it): they always have the Initiative. Everyone else rolls." },
+  violence: { icon: "fa-bolt", tooltip: "<strong>Sudden Violence</strong><br>Pick who started it: they have the Initiative. Everyone else rolls." }
+};
+
+/**
+ * The tracker: on each combatant, action icons (click to spend / give back), the Move Action and cover, and the
+ * GM's gain / lose the Initiative buttons; above the list, the GM's initiative buttons.
+ */
 export function decorateTracker(app, html) {
   const combat = app.viewed ?? game.combat;
   if ( !combat || !palladiumTurns() ) return;
@@ -236,33 +261,46 @@ export function decorateTracker(app, html) {
     if ( !combatant || li.querySelector(".pu-tracker-actions") ) continue;
     const a = combatantActions(combatant);
     li.classList.toggle("pu-out-of-actions", a.left <= 0);
+    const can = game.user.isGM || combatant.isOwner;
+    const tag = can ? "a" : "span";
     const box = document.createElement("div");
     box.className = "pu-tracker-actions";
-    const pips = Array.from({ length: Math.min(a.total, 10) }, (_, i) => `<i class="pu-pip${i < a.left ? " left" : ""}" data-tooltip="${a.left} of ${a.total} action${a.total === 1 ? "" : "s"} left this round (filled = left, empty = spent)" aria-label="Action ${i + 1}: ${i < a.left ? "left" : "spent"}"></i>`).join("");
+    const actions = Array.from({ length: Math.min(a.total, 10) }, (_, i) => {
+      const left = i < a.left;
+      const tip = `Action ${i + 1} of ${a.total}: ${left ? "available" : "used"} (${a.left} left this round)${can ? (left ? ". Click to spend one." : ". Click to give one back.") : ""}`;
+      return `<${tag} class="pu-act${left ? "" : " used"}" data-spend="${left}" data-tooltip="${tip}" aria-label="${tip}"><i class="fa-solid fa-hand-fist"></i></${tag}>`;
+    }).join("");
     const moved = hasMoved(combatant);
-    const canMove = game.user.isGM || combatant.isOwner;
-    const moveTip = moved ? "Move Action: taken this round (it cost an action)" : "Move Action: not taken yet (once per round, costs an action)";
-    box.innerHTML = `<span class="pu-pips" data-tooltip="${a.left} of ${a.total} action${a.total === 1 ? "" : "s"} left this round (filled = left, empty = spent)">${pips}</span>`
-      + `<${canMove ? "a" : "span"} aria-label="Move Action" class="pu-move${moved ? " moved" : ""}" data-tooltip="${moveTip}${canMove ? (moved ? ". Click to undo." : ". Click when moving.") : ""}"><i class="fa-solid fa-person-walking"></i></${canMove ? "a" : "span"}>`
-      + coverIcon(combatant, canMove)
-      + (game.user.isGM ? `<a class="pu-init-up" data-tooltip="Gains the Initiative (top of the order)"><i class="fa-solid fa-angles-up"></i></a>`
-        + `<a class="pu-init-down" data-tooltip="Loses the Initiative (bottom of the order: knocked down, Held, Thrown...)"><i class="fa-solid fa-angles-down"></i></a>` : "");
-    box.querySelector(".pu-init-up")?.addEventListener("click", event => { event.stopPropagation(); shiftInitiative(combatant, true); });
-    box.querySelector(".pu-init-down")?.addEventListener("click", event => { event.stopPropagation(); shiftInitiative(combatant, false); });
-    box.querySelector("a.pu-move")?.addEventListener("click", event => { event.stopPropagation(); toggleMove(combatant); });
-    box.querySelector("a.pu-cover")?.addEventListener("click", event => { event.stopPropagation(); coverDialog(combatant); });
+    const moveTip = `Move Action: ${moved ? "taken this round (it cost an action)" : "not taken yet (once per round, costs an action)"}${can ? (moved ? ". Click to undo." : ". Click when moving.") : ""}`;
+    box.innerHTML = `<span class="pu-ta-group pu-ta-actions">${actions}</span>`
+      + `<span class="pu-ta-group pu-ta-tools"><${tag} aria-label="Move Action" class="pu-move${moved ? " moved" : ""}" data-tooltip="${moveTip}"><i class="fa-solid fa-person-walking"></i></${tag}>${coverIcon(combatant, can)}</span>`
+      + (game.user.isGM ? `<span class="pu-ta-group pu-ta-gm"><a class="pu-init-up" data-tooltip="Gains the Initiative (top of the order)"><i class="fa-solid fa-angles-up"></i></a>`
+        + `<a class="pu-init-down" data-tooltip="Loses the Initiative (bottom of the order: knocked down, Held, Thrown...)"><i class="fa-solid fa-angles-down"></i></a></span>` : "");
+    const on = (sel, fn) => box.querySelectorAll(sel).forEach(el => el.addEventListener("click", event => { event.preventDefault(); event.stopPropagation(); fn(el); }));
+    on("a.pu-act", el => clickAction(combatant, el.dataset.spend === "true"));
+    on(".pu-init-up", () => shiftInitiative(combatant, true));
+    on(".pu-init-down", () => shiftInitiative(combatant, false));
+    on("a.pu-move", () => toggleMove(combatant));
+    on("a.pu-cover", () => coverDialog(combatant));
     const name = li.querySelector(".token-name, .name") ?? li;
+    name.classList.add("pu-tracker-name");
     name.append(box);
   }
-  // The GM's "who goes first" bar above the list.
+  // The GM's initiative buttons above the list.
   if ( game.user.isGM && root && !root.querySelector(".pu-first-side") ) {
-    const chosen = combat.getFlag?.(SCOPE, "firstSide");
+    const chosen = combat.getFlag?.(SCOPE, "initiativeMode") ?? combat.getFlag?.(SCOPE, "firstSide");
     const bar = document.createElement("div");
     bar.className = "pu-first-side";
-    bar.innerHTML = `<span class="pu-first-label" data-tooltip="p.84: the GM decides who has the Initiative. Use ⇈ / ⇊ on a combatant to cut in line.">Who goes first?</span>`
-      + Object.entries(SIDES).map(([key, side]) => `<button type="button" class="pu-side ${key}${chosen === key ? " active" : ""}" data-side="${key}" data-tooltip="${side.tooltip}">${side.label}</button>`).join("");
-    for ( const button of bar.querySelectorAll("button") ) {
-      button.addEventListener("click", event => { event.preventDefault(); event.stopPropagation(); orderBySide(combat, button.dataset.side); });
+    bar.innerHTML = Object.entries(INITIATIVE_BUTTONS).map(([key, b]) => `<button type="button" class="pu-side ${key}${chosen === key ? " active" : ""}"
+      data-mode="${key}" aria-label="${key}" data-tooltip="${b.tooltip}"><i class="fa-solid ${b.icon}"></i></button>`).join("");
+    for ( const button of bar.querySelectorAll("button[data-mode]") ) {
+      button.addEventListener("click", event => {
+        event.preventDefault(); event.stopPropagation();
+        const mode = button.dataset.mode;
+        if ( (mode === "friendly") || (mode === "hostile") ) return orderBySide(combat, mode);
+        if ( mode === "showdown" ) return startShowdown(combat);
+        return pickFirst(combat, mode);
+      });
     }
     const list = root.querySelector("ol.combat-tracker, .combat-tracker");
     const header = root.querySelector("header");

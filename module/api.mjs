@@ -19,6 +19,7 @@ import * as blunt from "./blunt.mjs";
 import * as cover from "./cover.mjs";
 import * as recovery from "./recovery.mjs";
 import * as fx from "./fx.mjs";
+import * as showdown from "./showdown.mjs";
 import CharacterData from "./data/character.mjs";
 import NpcData from "./data/npc.mjs";
 import VehicleData from "./data/vehicle.mjs";
@@ -64,6 +65,8 @@ export function buildApi() {
     // Damage effects & recovery (p.92–93): for macros, e.g. visual effects on these hooks:
     // palladium.condition(actor, id, active), palladium.hitPoints(actor, {before, after, max}),
     // palladium.stopBleeding(actor, by), palladium.heal(actor, result), palladium.sideEffect(actor, result, item), palladium.cover(combatant, cover)
+    startShowdown: showdown.startShowdown,
+    rollShowdown: showdown.rollShowdown,
     bloodSplash: fx.bloodSplash,
     deathMarker: fx.deathMarker,
     stopBleeding: recovery.stopBleeding,
