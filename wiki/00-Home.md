@@ -18,6 +18,7 @@ This guide ships with the system: in Foundry, open the **Compendium Packs** side
 11. **GM Tools**: settings, conditions, round handling, the built-in tables, chat card buttons.
 12. **Troubleshooting & FAQ**.
 13. **For Module Authors**: building content modules, the rules tables, the `game.palladium` API and hooks.
+14. **Party & Session Tools**: the Party actor, the GM Party View, Add Party to Combat, Award XP and the session record.
 
 ## The ten-second tour
 - **Everything rolls from the sheet.** Click a d20 icon or a named button; results go to chat as **Roll = Result** (e.g. *Strike = 17*); click the result to see the dice and every bonus.

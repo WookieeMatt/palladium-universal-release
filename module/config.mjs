@@ -900,3 +900,22 @@ export const RECOMMENDED_MODULES = [
   { id: "sequencer", label: "Sequencer", reason: "Required by Automated Animations" },
   { id: "JB2A_DnD5e", label: "JB2A (free version)", reason: "The animation art Automated Animations plays" }
 ];
+
+/** Experience Points Award Table (p.75), for the Session Tools' Award XP. */
+export const XP_AWARDS = [
+  { group: "Restraint", label: "Avoided unnecessary violence (diplomacy, stealth, intimidation)", min: 50, max: 100 },
+  { group: "Combat", label: "Defeated a minor menace", min: 25, max: 50 },
+  { group: "Combat", label: "Defeated a major menace", min: 75, max: 100 },
+  { group: "Combat", label: "Defeated a great menace", min: 150, max: 400 },
+  { group: "Skills", label: "Performed a critical skill (successful or not)", min: 25, max: 25 },
+  { group: "Ideas", label: "Clever but failed or futile idea", min: 25, max: 25 },
+  { group: "Ideas", label: "Daring idea or action", min: 50, max: 100 },
+  { group: "Ideas", label: "Clever or quick thinking", min: 100, max: 200 },
+  { group: "Ideas", label: "Critical plan: saved their own life or a few comrades", min: 200, max: 500 },
+  { group: "Ideas", label: "Critical plan: saved the whole group or many people", min: 400, max: 1000 },
+  { group: "Role-Playing", label: "Good judgment or thoughtful action", min: 25, max: 50 },
+  { group: "Role-Playing", label: "Played their character / alignment when it cost them", min: 50, max: 150 },
+  { group: "Role-Playing", label: "Deductive reasoning or insight critical to a plan", min: 75, max: 200 },
+  { group: "Danger", label: "Risked their own life to help others", min: 100, max: 300 },
+  { group: "Danger", label: "Self-sacrifice in a life-and-death situation", min: 500, max: 700 }
+];

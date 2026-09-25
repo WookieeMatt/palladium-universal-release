@@ -11,6 +11,9 @@
 The **Palladium Universal Macros (GM)** compendium (hidden from players) holds ready-made macros; drag one to your hotbar:
 - **Scene Weather (black powder)**: sets this scene's black powder weather (dry, humid +5%, rain +15%, downpour or dunking +35%), the default in every character's weather prompt when they fire black powder here. Announced in chat; "Not set" clears it.
 
+## Party, Party View and Session Tools
+See **Party & Session Tools**: the Party actor, the live GM Party View (with Add Party to Combat) and the Session Tools (Award XP, the session record and Print to Journal).
+
 ## Audit: sheet changes
 The system keeps track of what happens to character and NPC sheets, so you don't have to watch every sheet:
 - **Items added or removed** (skills, W.P.s, weapons, armor, gear, the animal, backgrounds, abilities, psionics, spells, devices...; anything with an item sheet). Edits inside an item aren't tracked: keep an eye on those yourself.

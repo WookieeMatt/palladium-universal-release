@@ -1,0 +1,22 @@
+<section class="tab sheet-body {{tab.cssClass}}" data-group="primary" data-tab="members">
+  {{#each lists}}
+  <section class="panel pu-party-list">
+    <div class="panel-header"><h2><i class="fa-solid {{icon}}"></i> {{label}}</h2><span class="hint">{{members.length}}</span></div>
+    {{#if members.length}}
+    <ul class="pu-party-members">
+      {{#each members}}
+      <li data-uuid="{{uuid}}">
+        <img src="{{img}}" alt="" width="40" height="40">
+        <a class="pu-party-name" data-action="openMember" data-tooltip="Open the sheet">{{name}}</a>
+        <span class="hint">{{detail}}</span>
+        {{#if ../../isGM}}<button type="button" class="icon-button" data-action="removeMember" data-tooltip="Remove from the party"><i class="fa-solid fa-xmark"></i></button>{{/if}}
+      </li>
+      {{/each}}
+    </ul>
+    {{else}}
+    <p class="pu-party-drop hint">{{#if ../isGM}}{{hint}}{{else}}None yet{{/if}}</p>
+    {{/if}}
+  </section>
+  {{/each}}
+  {{#if isGM}}<p class="hint">Drag characters, NPCs, vehicles and time machines from the Actors sidebar onto this sheet: each goes in its own list. Members are linked, not copied, and don't need a token on the map.</p>{{/if}}
+</section>

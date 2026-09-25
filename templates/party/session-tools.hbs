@@ -1,0 +1,60 @@
+<div class="pu-session-body">
+  <header class="pu-session-header">
+    <div class="pu-session-id">
+      <label>Session <input type="number" name="number" value="{{s.number}}" min="1"></label>
+      <input type="text" name="title" value="{{s.title}}" placeholder="Title (e.g. The Mousers Return)">
+      <label>Played <input type="date" name="date" value="{{s.date}}"></label>
+    </div>
+    <div class="pu-session-buttons">
+      <button type="button" data-action="awardXP"><i class="fa-solid fa-star"></i> Award XP</button>
+      <button type="button" data-action="print" data-tooltip="Write this session to the GM-only Session Log journal"><i class="fa-solid fa-print"></i> Print to Journal</button>
+      <button type="button" data-action="openLog"><i class="fa-solid fa-book-bookmark"></i> Session Log</button>
+    </div>
+  </header>
+
+  <div class="pu-session-columns">
+    <div class="pu-session-col">
+      {{#each sections}}
+      <section class="panel pu-session-section{{#if (eq key "secrets")}} secret{{/if}}">
+        <div class="panel-header"><h2><i class="fa-solid {{icon}}"></i> {{label}}</h2></div>
+        <p class="hint">{{hint}}</p>
+        <prose-mirror name="{{key}}" value="{{value}}" toggled="true">{{{enriched}}}</prose-mirror>
+      </section>
+      {{/each}}
+    </div>
+
+    <div class="pu-session-col">
+      {{#each links}}
+      <section class="panel pu-session-links" data-drop="{{key}}">
+        <div class="panel-header"><h2><i class="fa-solid {{icon}}"></i> {{label}}</h2><span class="hint">{{items.length}}</span></div>
+        {{#if items.length}}
+        <ul class="pu-session-link-list">
+          {{#each items}}
+          <li data-uuid="{{uuid}}" data-key="{{../key}}">
+            <a data-action="openLink">{{name}}</a>
+            <button type="button" class="icon-button" data-action="removeLink" data-tooltip="Remove"><i class="fa-solid fa-xmark"></i></button>
+          </li>
+          {{/each}}
+        </ul>
+        {{/if}}
+        <p class="pu-party-drop hint">{{hint}}</p>
+      </section>
+      {{/each}}
+
+      <section class="panel pu-session-xp">
+        <div class="panel-header"><h2><i class="fa-solid fa-star"></i> Experience Awarded</h2></div>
+        {{#if awards.length}}
+        <ul class="pu-session-awards">
+          {{#each awards}}<li><strong>+{{amount}}</strong> {{#if reason}}{{reason}}{{else}}Experience{{/if}} <span class="hint">({{who}})</span></li>{{/each}}
+        </ul>
+        <table class="pu-session-totals">
+          <thead><tr><th>Character</th><th>This session</th></tr></thead>
+          <tbody>{{#each totals}}<tr><td>{{name}}{{#if levelUp}} <span class="pu-pv-badge levelup">Level up!</span>{{/if}}</td><td>{{xp}} XP</td></tr>{{/each}}</tbody>
+        </table>
+        {{else}}
+        <p class="hint">No experience awarded yet this session. <strong>Award XP</strong> uses the book's award table (p.75) and raises levels.</p>
+        {{/if}}
+      </section>
+    </div>
+  </div>
+</div>

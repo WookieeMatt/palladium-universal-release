@@ -1,0 +1,71 @@
+<section class="pu-party-view-body">
+  {{#if party}}
+  <div class="pu-party-view-toolbar">
+    <button type="button" data-action="openParty"><i class="fa-solid fa-users"></i> Party Sheet</button>
+    <button type="button" data-action="sessionTools"><i class="fa-solid fa-scroll"></i> Session Tools</button>
+    <button type="button" data-action="addToCombat" data-tooltip="Characters and NPCs (not vehicles) join the Combat Tracker"><i class="fa-solid fa-crosshairs"></i> Add Party to Combat</button>
+  </div>
+
+  {{#*inline "member"}}
+  <article class="pu-pv-card{{#if hp.down}} down{{/if}}" data-uuid="{{uuid}}">
+    <img class="pu-pv-portrait" src="{{img}}" alt="" width="56" height="56">
+    <div class="pu-pv-main">
+      <header>
+        <a class="pu-pv-name" data-action="openMember" data-tooltip="Open the sheet">{{name}}</a>
+        <span class="hint">Level {{level}}{{#if species}} · {{species}}{{/if}}{{#if nextXP}} · XP {{xp}} / {{nextXP}}{{/if}}</span>
+        {{#if levelUp}}<span class="pu-pv-badge levelup" data-tooltip="Their XP has reached the next level"><i class="fa-solid fa-arrow-up"></i> Level up!</span>{{/if}}
+        {{#if hp.down}}<span class="pu-pv-badge down"><i class="fa-solid fa-heart-crack"></i> Down</span>{{else if hp.low}}<span class="pu-pv-badge low">Bleeding out</span>{{/if}}
+      </header>
+      <div class="pu-pv-stats">
+        <div class="pu-pv-bar hp" data-tooltip="Hit Points"><span class="label">HP</span><span class="track"><span class="fill" style="width:{{hp.pct}}%"></span></span><span class="value">{{hp.value}} / {{hp.max}}</span></div>
+        <div class="pu-pv-bar sdc" data-tooltip="S.D.C."><span class="label">S.D.C.</span><span class="track"><span class="fill" style="width:{{sdc.pct}}%"></span></span><span class="value">{{sdc.value}} / {{sdc.max}}</span></div>
+        <div class="pu-pv-stat" data-tooltip="Actions left this round"><i class="fa-solid fa-bolt"></i> {{actions.left}} / {{actions.total}}</div>
+        <div class="pu-pv-stat" data-tooltip="Armor">
+          <i class="fa-solid fa-shield-halved"></i>
+          {{#if armor}}{{armor.name}} A.R. {{armor.ar}} ({{armor.sdc}}/{{armor.sdcMax}}){{#if naturalAR}} · Natural {{naturalAR}}{{/if}}
+          {{else if naturalAR}}Natural A.R. {{naturalAR}}{{else}}None{{/if}}
+        </div>
+      </div>
+      {{#if conditions.length}}
+      <div class="pu-pv-conditions">{{#each conditions}}<span class="pu-pv-cond" data-tooltip="{{text}}"><img src="{{img}}" alt="" width="16" height="16"> {{label}}</span>{{/each}}</div>
+      {{/if}}
+      {{#if skills.length}}
+      <p class="pu-pv-skills">{{#each skills}}<span>{{name}} <strong>{{pct}}%</strong></span>{{/each}}</p>
+      {{/if}}
+    </div>
+  </article>
+  {{/inline}}
+
+  <section class="panel">
+    <div class="panel-header"><h2><i class="fa-solid fa-user"></i> Player Characters</h2><span class="hint">{{pcs.length}}</span></div>
+    {{#each pcs}}{{> member}}{{else}}<p class="hint">No characters in {{../party.name}} yet: drop them on the Party sheet.</p>{{/each}}
+  </section>
+
+  {{#if npcs.length}}
+  <section class="panel">
+    <div class="panel-header"><h2><i class="fa-solid fa-user-ninja"></i> NPCs</h2><span class="hint">{{npcs.length}}</span></div>
+    {{#each npcs}}{{> member}}{{/each}}
+  </section>
+  {{/if}}
+
+  {{#if vehicles.length}}
+  <section class="panel">
+    <div class="panel-header"><h2><i class="fa-solid fa-van-shuttle"></i> Vehicles</h2><span class="hint">{{vehicles.length}}</span></div>
+    {{#each vehicles}}
+    <article class="pu-pv-card vehicle" data-uuid="{{uuid}}">
+      <img class="pu-pv-portrait" src="{{img}}" alt="" width="56" height="56">
+      <div class="pu-pv-main">
+        <header><a class="pu-pv-name" data-action="openMember">{{name}}</a><span class="hint">{{type}}{{#if speed}} · {{speed}}{{/if}}</span>
+          <span class="pu-pv-badge {{#if (eq status "Operational")}}ok{{else}}down{{/if}}">{{status}}</span></header>
+        <div class="pu-pv-stats">
+          <div class="pu-pv-bar sdc"><span class="label">S.D.C.</span><span class="track"><span class="fill" style="width:{{sdc.pct}}%"></span></span><span class="value">{{sdc.value}} / {{sdc.max}}</span></div>
+        </div>
+      </div>
+    </article>
+    {{/each}}
+  </section>
+  {{/if}}
+  {{else}}
+  <p class="hint">There's no Active Party. Create an Actor of type <strong>Party</strong>, drop your characters on it, and (with more than one party) pick it under Configure Settings → System Settings → Active Party.</p>
+  {{/if}}
+</section>

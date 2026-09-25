@@ -61,7 +61,17 @@ Damage cards have three buttons that act on your **targeted** tokens (or selecte
 A result card lists what absorbed the damage and warns of coma or death. You need ownership of the target (players usually ask the GM to apply damage to NPCs).
 
 ## Actions per Round
-Attacks, maneuvers, spells, psionics and Reactions that cost an action (Dodge, Roll with Impact, untrained Parry, reaction Entangle/Disarm/Throw) spend actions automatically; cards say how many are left. Leap Attacks and untrained black powder aimed shots cost two. Running out only **warns**: the roll still happens and the GM rules. When the **Combat Tracker** advances to a new round, everyone's actions reset and **Horrified** ends; ending the combat also clears them. The **↺** button resets by hand.
+Attacks, maneuvers, spells, psionics and Reactions that cost an action (Dodge, Roll with Impact, untrained Parry, reaction Entangle/Disarm/Throw) spend actions automatically; cards say how many are left. Leap Attacks and untrained black powder aimed shots cost two. Running out only **warns**: the roll still happens and the GM rules. When a new round starts (see *The Combat Tracker*), everyone's actions reset and **Horrified** ends; ending the combat also clears them. The **↺** button resets by hand.
+
+## The Combat Tracker (Palladium turn order)
+Combat runs the book's way (p.84):
+- **Initiative** is 1D20 + Initiative bonus, rolled **once** at the start of combat and kept between rounds. **Ties re-roll** automatically.
+- **One action at a time.** Each combatant takes one action on their turn (an attack, a move, a skill...), then play passes to the next in Initiative order. **Next Turn** goes around again and again while anyone still has actions, skipping those who are out (and the defeated). When nobody has actions left, a **new round** starts and everyone's actions reset.
+- Actions are spent by the rolls themselves (attacks, maneuvers, spells, psionics, Dodges and other Reactions made on someone else's turn). A turn that ends without spending one (a move, talking, a skill check) **costs one action** automatically, so the round always ends.
+- Each combatant shows its **actions left as dots**; a combatant who's out is dimmed. Vehicles get one action a round.
+- **Gains / Loses the Initiative** (GM): the ⇈ / ⇊ buttons next to a combatant move them to the top or the bottom of the order (knocked down, Held, Thrown, Horrified...).
+
+**Add Party to Combat** (Party sheet or GM Party View) puts a whole party in at once. Turn it all off with **Configure Settings → System Settings → Palladium Turn Order** to get Foundry's one-turn-each rounds.
 
 ## Saving throws
 At the bottom of the Combat tab: vs Psionics (15+, or 10+ with *Psychic* ticked), vs Strangeness (12+), vs Poison/Toxin (asks the threat: lethal poison 14+, harmful drugs 15+, non-lethal poison 16+), vs Magic (12+), vs Circles & Wards (12+), vs Coma, and **vs Horror Factor**.

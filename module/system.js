@@ -3,12 +3,17 @@ import CharacterData from "./data/character.mjs";
 import NpcData from "./data/npc.mjs";
 import VehicleData from "./data/vehicle.mjs";
 import TimeMachineData from "./data/time-machine.mjs";
+import PartyData from "./data/party.mjs";
 import { ITEM_MODELS } from "./data/items.mjs";
 import PalladiumCharacterSheet from "./sheets/character-sheet.mjs";
 import PalladiumItemSheet from "./sheets/item-sheet.mjs";
 import PalladiumNpcSheet from "./sheets/npc-sheet.mjs";
 import PalladiumVehicleSheet from "./sheets/vehicle-sheet.mjs";
 import PalladiumTimeMachineSheet from "./sheets/time-machine-sheet.mjs";
+import PalladiumPartySheet from "./sheets/party-sheet.mjs";
+import { registerPartySettings } from "./party.mjs";
+import { initPartyView } from "./party-view.mjs";
+import { initCombatTracker } from "./combat-tracker.mjs";
 import { onRenderChatMessage } from "./combat.mjs";
 import { onDeleteCombat, onUpdateCombat } from "./actions.mjs";
 import { buildApi } from "./api.mjs";
@@ -18,6 +23,8 @@ import { initAudit, registerAuditSettings } from "./audit.mjs";
 
 Hooks.once("init", function () {
   registerAuditSettings();
+  registerPartySettings();
+  initPartyView();
   initAudit();
   console.log("Palladium Universal | Initializing system");
 
@@ -30,6 +37,7 @@ Hooks.once("init", function () {
   CONFIG.Actor.dataModels.npc = NpcData;
   CONFIG.Actor.dataModels.vehicle = VehicleData;
   CONFIG.Actor.dataModels.timeMachine = TimeMachineData;
+  CONFIG.Actor.dataModels.party = PartyData;
   Object.assign(CONFIG.Item.dataModels, ITEM_MODELS);
   CONFIG.Actor.trackableAttributes = {
     character: {
@@ -47,7 +55,8 @@ Hooks.once("init", function () {
     timeMachine: {
       bar: ["health.sdc", "locations.hull.sdc", "locations.crew.sdc"],
       value: []
-    }
+    },
+    party: { bar: [], value: [] }
   };
 
   // Token status effects are this system's conditions (plus "dead" for defeated combatants).
@@ -119,6 +128,7 @@ Hooks.once("init", function () {
 
   // Initiative: d20 + Initiative bonus, highest first (p.84)
   CONFIG.Combat.initiative = { formula: "1d20 + @combat.totals.initiative", decimals: 0 };
+  initCombatTracker();
 
   // Sheets
   foundry.documents.collections.Actors.registerSheet("palladium-universal", PalladiumCharacterSheet, {
@@ -140,6 +150,11 @@ Hooks.once("init", function () {
     types: ["timeMachine"],
     makeDefault: true,
     label: "PALLADIUMUNIVERSAL.TimeMachineSheetName"
+  });
+  foundry.documents.collections.Actors.registerSheet("palladium-universal", PalladiumPartySheet, {
+    types: ["party"],
+    makeDefault: true,
+    label: "PALLADIUMUNIVERSAL.PartySheetName"
   });
   foundry.documents.collections.Items.registerSheet("palladium-universal", PalladiumItemSheet, {
     makeDefault: true,
@@ -206,6 +221,8 @@ Hooks.on("renderChatMessageHTML", onRenderChatMessage);
 // Characters and NPCs: the default portrait and token is the mutant turtle (world setting "defaultArt":
 // black and white, color, or Foundry's mystery man), and new ones get a round token with the green ring.
 const MYSTERY_MAN = "icons/svg/mystery-man.svg";
+/** A new Party actor's portrait and token (v1.19.0). */
+const PARTY_ART = "systems/palladium-universal/assets/tokens/mutant-turtle-color.svg";
 export const ACTOR_ART = {
   bw: "systems/palladium-universal/assets/tokens/mutant-turtle.svg",
   color: "systems/palladium-universal/assets/tokens/mutant-turtle-color.svg",
@@ -233,6 +250,16 @@ Hooks.once("init", () => {
 });
 
 Hooks.on("preCreateActor", (actor, data) => {
+  // A party: everyone can move its token and write in its notes (only the GM changes the members).
+  if ( actor.type === "party" ) {
+    const update = { "ownership.default": CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER, "prototypeToken.actorLink": true };
+    if ( isDefaultArt(actor.img) || (actor.img === MYSTERY_MAN) ) {
+      update.img = PARTY_ART;
+      update["prototypeToken.texture.src"] = PARTY_ART;
+    }
+    actor.updateSource(update);
+    return;
+  }
   if ( !["character", "npc"].includes(actor.type) ) return;
   const update = {};
   const art = defaultActorArt();

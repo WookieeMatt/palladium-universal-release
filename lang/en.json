@@ -4,7 +4,8 @@
       "character": "Character",
       "npc": "NPC",
       "vehicle": "Vehicle",
-      "timeMachine": "Time Machine"
+      "timeMachine": "Time Machine",
+      "party": "Party"
     },
     "Item": {
       "skill": "Skill",
@@ -38,6 +39,11 @@
     "ItemSheetName": "Palladium Universal Item Sheet",
     "NpcSheetName": "Palladium Universal NPC Sheet",
     "VehicleSheetName": "Palladium Universal Vehicle Sheet",
-    "TimeMachineSheetName": "Palladium Universal Time Machine Sheet"
+    "TimeMachineSheetName": "Palladium Universal Time Machine Sheet",
+    "PartyTabs": {
+      "members": "Members",
+      "notes": "Party Notes"
+    },
+    "PartySheetName": "Palladium Party Sheet"
   }
 }

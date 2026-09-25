@@ -5,6 +5,9 @@ import * as creation from "./creation.mjs";
 import * as dice from "./dice.mjs";
 import * as welcome from "./welcome.mjs";
 import * as audit from "./audit.mjs";
+import * as party from "./party.mjs";
+import * as partyView from "./party-view.mjs";
+import * as session from "./session.mjs";
 import * as itemRolls from "./item-rolls.mjs";
 import * as animations from "./animations.mjs";
 import * as air from "./air-combat.mjs";
@@ -40,6 +43,13 @@ export function buildApi() {
     rollSkill: dice.rollSkill,
     rollSave: dice.rollSave,
     showRecommendedModules: welcome.showRecommendedModules,
+    activeParty: party.activeParty,
+    addPartyMember: party.addMember,
+    addPartyToCombat: party.addPartyToCombat,
+    openPartyView: partyView.openPartyView,
+    openSessionTools: session.openSessionTools,
+    awardXP: session.awardXP,
+    printSession: session.printSession,
     auditJournal: audit.auditJournal,
     openAudit: audit.openAudit,
     recommendedModules: welcome.recommendedModules,

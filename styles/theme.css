@@ -1030,3 +1030,105 @@
 .pu-audit-entry p { margin: 0 0 2px; }
 .pu-audit-entry ul { margin: 0; padding-left: 1.2em; }
 .pu-card .pu-audit-lines li { padding: 1px 0; }
+
+/* -------------------------------------------- */
+/*  Party (v1.19.0): Party sheet, GM Party View, Session Tools */
+/* -------------------------------------------- */
+.palladium-universal .pu-party-buttons { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; align-items: center; }
+.palladium-universal .pu-party-buttons button {
+  flex: 0 0 auto; width: auto; font-family: var(--pu-heading); letter-spacing: 0.05em;
+  color: var(--pu-paper); background: var(--pu-green-light); border: 1px solid var(--pu-green); border-radius: 8px; padding: 2px 12px;
+}
+.palladium-universal .pu-party-buttons button:hover { background: var(--pu-green); }
+.palladium-universal .pu-party-active { font-family: var(--pu-heading); letter-spacing: 0.05em; color: #b8860b; }
+.palladium-universal .pu-party-members { list-style: none; margin: 0; padding: 0; }
+.palladium-universal .pu-party-members li {
+  display: grid; grid-template-columns: 40px auto 1fr auto; align-items: center; gap: 10px;
+  padding: 4px 0; border-bottom: 1px dotted var(--pu-rule);
+}
+.palladium-universal .pu-party-members img { border: 1px solid var(--pu-rule); border-radius: 50%; background: var(--pu-parchment); object-fit: cover; }
+.palladium-universal .pu-party-name { font-weight: 700; color: var(--pu-green); cursor: pointer; }
+.palladium-universal .pu-party-drop {
+  margin: 4px 0; padding: 14px; text-align: center; border: 2px dashed var(--pu-rule); border-radius: 8px;
+}
+.pu-party-view .window-content { background: var(--pu-parchment, #f4efe1); }
+.pu-party-view .pu-party-view-toolbar { display: flex; gap: 6px; margin-bottom: 8px; }
+.pu-party-view .pu-party-view-toolbar button {
+  flex: 0 0 auto; width: auto; font-family: var(--pu-heading); letter-spacing: 0.05em;
+  color: var(--pu-paper); background: var(--pu-green-light); border: 1px solid var(--pu-green); border-radius: 8px; padding: 2px 12px;
+}
+.pu-party-view .pu-party-view-toolbar button:hover { background: var(--pu-green); }
+.pu-party-view .pu-pv-card {
+  display: grid; grid-template-columns: 56px 1fr; gap: 10px; padding: 8px 0; border-bottom: 1px dotted var(--pu-rule);
+}
+.pu-party-view .pu-pv-card:last-child { border-bottom: none; }
+.pu-party-view .pu-pv-card.down .pu-pv-portrait { filter: grayscale(1); opacity: 0.7; }
+.pu-party-view .pu-pv-portrait { border: 2px solid var(--pu-green); border-radius: 50%; background: var(--pu-paper); object-fit: cover; }
+.pu-party-view .pu-pv-main header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px; }
+.pu-party-view .pu-pv-name { font-family: var(--pu-heading); font-size: 1.25rem; letter-spacing: 0.04em; color: var(--pu-green); cursor: pointer; }
+.pu-party-view .pu-pv-badge { font-size: 0.75rem; font-weight: 700; padding: 0 6px; border-radius: 8px; color: #fff; background: var(--pu-green-light); }
+.pu-party-view .pu-pv-badge.levelup { background: #b8860b; }
+.pu-party-view .pu-pv-badge.low { background: #b8860b; }
+.pu-party-view .pu-pv-badge.down { background: var(--pu-red); }
+.pu-party-view .pu-pv-stats { display: grid; grid-template-columns: 1.3fr 1.3fr auto 1.4fr; gap: 6px 12px; align-items: center; margin-top: 4px; }
+.pu-party-view .pu-pv-bar { display: grid; grid-template-columns: 3.2em 1fr auto; align-items: center; gap: 6px; font-size: 0.85rem; }
+.pu-party-view .pu-pv-bar .label { font-weight: 700; color: var(--pu-ink-soft); }
+.pu-party-view .pu-pv-bar .track { height: 9px; border-radius: 5px; background: #d9d2bd; overflow: hidden; }
+.pu-party-view .pu-pv-bar .fill { display: block; height: 100%; }
+.pu-party-view .pu-pv-bar.hp .fill { background: #b3322b; }
+.pu-party-view .pu-pv-bar.sdc .fill { background: var(--pu-green-light); }
+.pu-party-view .pu-pv-bar .value { font-weight: 700; white-space: nowrap; }
+.pu-party-view .pu-pv-stat { font-size: 0.85rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pu-party-view .pu-pv-stat i { color: var(--pu-green); }
+.pu-party-view .pu-pv-conditions { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+.pu-party-view .pu-pv-cond {
+  display: inline-flex; align-items: center; gap: 3px; font-size: 0.75rem; padding: 0 6px;
+  border-radius: 8px; background: #efe3c2; border: 1px solid var(--pu-rule);
+}
+.pu-party-view .pu-pv-cond img { border: none; filter: invert(0.2); }
+.pu-party-view .pu-pv-skills { margin: 4px 0 0; font-size: 0.8rem; color: var(--pu-ink-soft); line-height: 1.5; }
+.pu-party-view .pu-pv-skills span { white-space: nowrap; }
+.pu-party-view .pu-pv-skills span + span::before { content: " · "; }
+.pu-party-view .pu-pv-skills strong { color: var(--pu-ink); }
+#actors .pu-party-view-button { flex: 1 1 100%; }
+.pu-session-tools .window-content { background: var(--pu-parchment, #f4efe1); }
+.pu-session-tools .pu-session-header { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; align-items: center;
+  padding-bottom: 8px; margin-bottom: 8px; border-bottom: 2px solid var(--pu-green); }
+.pu-session-tools .pu-session-id { display: flex; gap: 8px; align-items: center; flex: 1 1 420px; }
+.pu-session-tools .pu-session-id label { display: flex; gap: 4px; align-items: center; font-family: var(--pu-heading); letter-spacing: 0.05em; color: var(--pu-green); white-space: nowrap; }
+.pu-session-tools .pu-session-id input[name="number"] { width: 4em; }
+.pu-session-tools .pu-session-id input[name="title"] { flex: 1; font-size: 1.1rem; }
+.pu-session-tools .pu-session-buttons { display: flex; gap: 6px; }
+.pu-session-tools .pu-session-buttons button {
+  flex: 0 0 auto; width: auto; font-family: var(--pu-heading); letter-spacing: 0.05em;
+  color: var(--pu-paper); background: var(--pu-green-light); border: 1px solid var(--pu-green); border-radius: 8px; padding: 2px 12px;
+}
+.pu-session-tools .pu-session-buttons button:hover { background: var(--pu-green); }
+.pu-session-tools .pu-session-columns { display: grid; grid-template-columns: 3fr 2fr; gap: 12px; }
+.pu-session-tools .pu-session-section .hint { margin: 0 0 4px; }
+.pu-session-tools .pu-session-section prose-mirror { min-height: 5em; display: block; }
+.pu-session-tools .pu-session-section.secret { border-color: var(--pu-red); }
+.pu-session-tools .pu-session-section.secret h2 { color: var(--pu-red); }
+.pu-session-tools .pu-session-link-list, .pu-session-tools .pu-session-awards { list-style: none; margin: 0; padding: 0; }
+.pu-session-tools .pu-session-link-list li { display: flex; justify-content: space-between; align-items: center; padding: 2px 0; border-bottom: 1px dotted var(--pu-rule); }
+.pu-session-tools .pu-session-link-list a { font-weight: 700; color: var(--pu-green); cursor: pointer; }
+.pu-session-tools .pu-session-links .pu-party-drop { padding: 6px; margin-top: 4px; }
+.pu-session-tools .pu-session-awards li { padding: 2px 0; border-bottom: 1px dotted var(--pu-rule); }
+.pu-session-tools .pu-session-totals { width: 100%; margin-top: 6px; border-collapse: collapse; }
+.pu-session-tools .pu-session-totals th { text-align: left; background: var(--pu-green); color: var(--pu-parchment); font-family: var(--pu-heading); font-weight: 400; letter-spacing: 0.05em; padding: 2px 6px; }
+.pu-session-tools .pu-session-totals td { padding: 2px 6px; border-bottom: 1px dotted var(--pu-rule); }
+.pu-session-tools .pu-pv-badge.levelup { font-size: 0.7rem; font-weight: 700; padding: 0 6px; border-radius: 8px; color: #fff; background: #b8860b; }
+.pu-award-xp fieldset { margin-top: 6px; border: 1px solid var(--pu-rule, #a39d80); border-radius: 6px; }
+.pu-award-xp label.checkbox { display: flex; gap: 6px; align-items: center; padding: 1px 0; }
+/* The Party View and Session Tools windows use the sheet frame; their body scrolls. */
+.pu-party-view .window-content, .pu-session-tools .window-content { background: var(--pu-parchment); color: var(--pu-ink); font-family: var(--pu-body); }
+.pu-party-view .pu-party-view-body, .pu-session-tools .pu-session-body { flex: 1; overflow-y: auto; padding: 10px; }
+
+/* Combat Tracker (v1.19.0): actions left as pips; out of actions dims the combatant. */
+.pu-tracker-actions { display: flex; align-items: center; gap: 4px; font-size: 0.75rem; }
+.pu-tracker-actions .pu-pips { display: inline-flex; gap: 2px; }
+.pu-tracker-actions .pu-pip { display: inline-block; width: 8px; height: 8px; border-radius: 50%; border: 1px solid #7fb08a; background: transparent; }
+.pu-tracker-actions .pu-pip.left { background: #5fae6f; border-color: #5fae6f; }
+.pu-tracker-actions a { opacity: 0.6; cursor: pointer; }
+.pu-tracker-actions a:hover { opacity: 1; }
+.pu-out-of-actions { opacity: 0.55; }

@@ -1,0 +1,23 @@
+<header class="sheet-header pu-party-header">
+  <div class="header-left">
+    <h1 class="charname">
+      <input name="name" type="text" value="{{actor.name}}" placeholder="Party Name" />
+    </h1>
+    <div class="pu-party-buttons">
+      {{#if isGM}}
+      <button type="button" data-action="partyView" data-tooltip="Everyone's HP, S.D.C., armor, actions, conditions and skills at a glance"><i class="fa-solid fa-users-viewfinder"></i> GM Party View</button>
+      <button type="button" data-action="sessionTools" data-tooltip="Award XP, plan and record the session"><i class="fa-solid fa-scroll"></i> Session Tools</button>
+      <button type="button" data-action="addToCombat" data-tooltip="Characters and NPCs (not vehicles) join the Combat Tracker"><i class="fa-solid fa-crosshairs"></i> Add Party to Combat</button>
+      {{#if isActive}}<span class="pu-party-active"><i class="fa-solid fa-star"></i> Active Party</span>
+      {{else}}<button type="button" data-action="setActive" data-tooltip="The GM Party View and Session Tools use the Active Party"><i class="fa-regular fa-star"></i> Make Active Party</button>{{/if}}
+      {{else}}
+      {{#if isActive}}<span class="pu-party-active"><i class="fa-solid fa-star"></i> Active Party</span>{{/if}}
+      {{/if}}
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="token-box">
+      <img class="profile-img" src="{{actor.img}}" alt="{{actor.name}}" data-action="editImage" data-edit="img" data-tooltip="Click to change the party's portrait (and token)" />
+    </div>
+  </div>
+</header>
