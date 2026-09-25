@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.18.0
+- **Audit of sheet changes** (GM): items added to or removed from characters and NPCs, Money / possessions changes, and actors created or deleted are whispered to the GM (one *Sheet Changes* card per burst, with an **Open Audit Journal** button) and/or written to the GM-only journals *Audit: Player Characters* and *Audit: NPCs* (one page per actor, newest first, who and when). Two settings, PCs and NPCs: Whisper + Audit journal (PC default), Whisper only, Audit journal only (NPC default), Off. Players' entries wait until a GM is logged in; the GM's own changes are journaled but not whispered.
+- **Roll Hit Points**: a button in Health & Damage rolls P.E. + 1D6 once (a chat card shows the math) and sets current HP. The dice are kept, so max HP follows P.E., plus a new **HP Bonus** box. Rolled once like attributes: a player asks the GM to re-roll (Allow Re-roll card), the GM can re-roll directly. On a level-up the button becomes **Roll HP for Level N** (amber): +1D6 per new level to max and current HP. NPCs and characters with a typed max keep it until they roll.
+- **Creation Checklist** on the character sheet's Core tab: Roll Attributes, Choose the animal, Spend Bio-E, Origin, Education, Skills, Alignment and Roll Hit Points, ticked off as they're done. Unfinished steps say what's missing and jump to the right tab. It disappears when everything is done; **Hide** puts it away early and a link at the bottom of the tab brings it back. Characters only.
+
 ## 1.17.1
 - Chat cards: a long roll name (e.g. *Save vs Circles & Wards*) wraps instead of breaking the result number onto two lines.
 - The attribute roll card is titled **Rolled Attributes**, and its column headings use the sheet's green header instead of a black box.

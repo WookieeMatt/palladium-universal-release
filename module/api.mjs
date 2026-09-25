@@ -4,6 +4,7 @@ import * as combat from "./combat.mjs";
 import * as creation from "./creation.mjs";
 import * as dice from "./dice.mjs";
 import * as welcome from "./welcome.mjs";
+import * as audit from "./audit.mjs";
 import * as itemRolls from "./item-rolls.mjs";
 import * as animations from "./animations.mjs";
 import * as air from "./air-combat.mjs";
@@ -39,6 +40,8 @@ export function buildApi() {
     rollSkill: dice.rollSkill,
     rollSave: dice.rollSave,
     showRecommendedModules: welcome.showRecommendedModules,
+    auditJournal: audit.auditJournal,
+    openAudit: audit.openAudit,
     recommendedModules: welcome.recommendedModules,
     rollSaveVsComa: dice.rollSaveVsComa,
     cardHeader: dice.cardHeader,
@@ -104,6 +107,8 @@ export function buildApi() {
 
     // Character building
     rollAttributes: creation.rollAttributes,
+    rollHitPoints: creation.rollHitPoints,
+    rollLevelHitPoints: creation.rollLevelHitPoints,
     printAttribute: creation.printAttribute,
     requestReroll: creation.requestReroll,
     allowReroll: creation.allowReroll,

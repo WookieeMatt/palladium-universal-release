@@ -5,6 +5,18 @@ Name, portrait (click to change), animal, alignment, **level**, **XP** (the shee
 
 New characters and NPCs get a round token with a green ring.
 
+## Creation checklist
+New characters get a **Creation Checklist** at the top of the Core tab: the steps in book order, each ticked off as it's done:
+1. **Roll Attributes**
+2. **Choose the animal** (drag an Animal onto the sheet, or type it in the header)
+3. **Spend Bio-E** (shows what's left, or how much is overspent)
+4. **Origin** and 5. **Education** (drop the backgrounds, or type them in the header)
+6. **Skills**
+7. **Alignment**
+8. **Roll Hit Points** (see below)
+
+Click an unfinished step to jump to its tab. When all eight are done the checklist disappears. **Hide** puts it away early (for example, to keep some Bio-E unspent); *Show the creation checklist* at the bottom of the Core tab brings it back. NPCs don't have one.
+
 ## Generating attributes
 Attributes are rolled **once, at character creation**, with the **Roll Attributes** button on the Core tab. It rolls every attribute at once and saves the results:
 
@@ -33,7 +45,7 @@ During play, click an attribute's abbreviation to **show it in chat**: its score
 | **Score** | The attribute as the sheet uses it for bonuses, skills, combat and saves. Not editable; hover for the breakdown and what it gives. |
 
 ### Health & Damage
-- **Hit Points** (value/max).
+- **Hit Points** (current / max). **Roll Hit Points** (in the panel header, after Roll Attributes) rolls P.E. + 1D6 once and posts a chat card; current HP starts at the max. The dice are kept, so **max HP follows P.E.** if it changes, plus an **HP Bonus** box for anything extra. Like attributes, it's rolled once: after that a player's button becomes *Ask GM to Re-roll HP* (the GM gets an **Allow Re-roll** card); the GM can re-roll directly. Characters from before 1.18 keep their typed max until they roll.
 - **S.D.C.** (the maximum is calculated: Size Level S.D.C., doubled by *Extraordinary P.E.*-type effects, + skills + the **S.D.C. Bonus** field).
 - **Natural Armor A.R.** (ability items with an A.R. override it if higher).
 - **Body Armor**: equip an Armor item (Combat tab), or type name/A.R./S.D.C. directly.
@@ -61,4 +73,4 @@ Features below Full can carry **effects** defined on the Animal item (e.g. Human
 Animal Abilities, Natural Weapons and Psionic Powers owned by the character, with their Bio-E cost. Use **+** to create one, or drag items in.
 
 ## Leveling up
-Raise **Level** in the header. Skills, W.P.s, Combat Training, magic progressions and anything "per level" update automatically. Roll new Hit Points yourself (+1D6 per level) and raise the max.
+Raise **Level** in the header. Skills, W.P.s, Combat Training, magic progressions and anything "per level" update automatically. For Hit Points, the button in Health & Damage turns amber: **Roll HP for Level N** rolls 1D6 for each new level and raises both max and current HP by the roll.

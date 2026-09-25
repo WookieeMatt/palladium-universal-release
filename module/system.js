@@ -14,8 +14,11 @@ import { onDeleteCombat, onUpdateCombat } from "./actions.mjs";
 import { buildApi } from "./api.mjs";
 import { registerTcriDice, TCRI_FINISHES } from "./dice-so-nice.mjs";
 import { welcomeOnce } from "./welcome.mjs";
+import { initAudit, registerAuditSettings } from "./audit.mjs";
 
 Hooks.once("init", function () {
+  registerAuditSettings();
+  initAudit();
   console.log("Palladium Universal | Initializing system");
 
   // An editable copy of the rules tables: modules change them in their own "init" hook.

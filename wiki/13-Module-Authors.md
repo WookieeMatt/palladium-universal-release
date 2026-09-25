@@ -53,7 +53,8 @@ Follow the shape of the existing entries: log `CONFIG.PALLADIUM.CONDITIONS` in t
 
 | Group | Functions |
 |---|---|
-| Rolls | `rollD20(actor, {label, bonus, target})`, `rollPercent(actor, {label, target})`, `rollSkill(actor, skillItem)`, `rollSave(actor, key, {threat})`, `rollSaveVsComa(actor)` |
+| Rolls | `rollD20(actor, {label, bonus, target})`, `rollPercent(actor, {label, target})`, `rollSkill(actor, skillItem)`, `rollSave(actor, key, {threat})`, `rollSaveVsComa(actor)`, `rollHitPoints(actor)`, `rollLevelHitPoints(actor)` (hook `palladium.rollHitPoints`) |
+| Audit | `auditJournal("pc"|"npc")`, `openAudit({actorUuid, actorType})`; hook `palladium.audit(entry, mode)` after each recorded entry |
 | Welcome | `showRecommendedModules()` (posts the GM's module card), `recommendedModules()` (each module's status); the list is `CONFIG.PALLADIUM.RECOMMENDED_MODULES` |
 | Combat | `strikeBonus(actor, weapon, mode)`, `rollAttack(actor, weapon, mode, {weather})` (black powder: `weather` skips the prompt), `askPowderWeather(weapon)`, `scenePowderWeather(scene)`, `setScenePowderWeather(key, scene)` (GM), `sceneWeatherDialog(scene)` (GM), `rollDamage(actor, weapon, options)`, `applyDamage(actor, amount, {strike, mode})`, `rollManeuver(actor, key)`, `rollDefense(defender, key, attack)`, `rollHorrorFactor(actor, hf)`, `spendActions(actor, count)` |
 | Magic | `castSpell(actor, spell)`, `newDay(actor)`, `rollChangeSave(actor)`, `usePsionic(actor, power)` |

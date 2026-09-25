@@ -11,6 +11,17 @@
 The **Palladium Universal Macros (GM)** compendium (hidden from players) holds ready-made macros; drag one to your hotbar:
 - **Scene Weather (black powder)**: sets this scene's black powder weather (dry, humid +5%, rain +15%, downpour or dunking +35%), the default in every character's weather prompt when they fire black powder here. Announced in chat; "Not set" clears it.
 
+## Audit: sheet changes
+The system keeps track of what happens to character and NPC sheets, so you don't have to watch every sheet:
+- **Items added or removed** (skills, W.P.s, weapons, armor, gear, the animal, backgrounds, abilities, psionics, spells, devices...; anything with an item sheet). Edits inside an item aren't tracked: keep an eye on those yourself.
+- **Money / other possessions** (Gear tab): what it said before and after.
+- **Characters and NPCs created or deleted.**
+
+**Configure Settings → System Settings** has one choice for **Player Characters** and one for **NPCs**: *Whisper + Audit journal*, *Whisper only*, *Audit journal only* or *Off*. Defaults: characters *Whisper + Audit journal*, NPCs *Audit journal only*.
+- **Whisper:** a *Sheet Changes* card to the GM, one per burst of changes, with an **Open Audit Journal** button. Your own changes as GM aren't whispered to you.
+- **Audit journals:** *Audit: Player Characters* and *Audit: NPCs*, created the first time they're needed and visible to the GM only. One page per character or NPC, newest entries first, each with the date, time and who made the change (the GM's changes too: the NPC journal is a record of how you built and changed each NPC). A deleted actor's page stays, marked *(deleted)*.
+- If a player changes their sheet while no GM is logged in, the entry waits and is written to the journal when a GM logs in.
+
 ## Animations (Automated Animations)
 Install and enable **Automated Animations**, **Sequencer** and **JB2A** (the free *JB2A_DnD5e* or the Patreon version). The system then plays an animation when something is used:
 

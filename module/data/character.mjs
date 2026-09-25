@@ -1,6 +1,6 @@
 
 const {
-  BooleanField, HTMLField, NumberField, SchemaField, StringField
+  ArrayField, BooleanField, HTMLField, NumberField, SchemaField, StringField
 } = foundry.data.fields;
 
 /** A rich-text (ProseMirror) notes field. */
@@ -121,7 +121,8 @@ export default class CharacterData extends foundry.abstract.TypeDataModel {
       // Attribute generation is rolled once; a re-roll needs the GM's permission.
       generation: new SchemaField({
         rolled: new BooleanField(),
-        rerollAllowed: new BooleanField()
+        rerollAllowed: new BooleanField(),
+        hpRerollAllowed: new BooleanField()
       }),
 
       mutation: new SchemaField({
@@ -145,7 +146,14 @@ export default class CharacterData extends foundry.abstract.TypeDataModel {
       }),
 
       health: new SchemaField({
-        hp: resourceField(),
+        // Hit Points: P.E. + 1D6 at level 1, +1D6 per level (p.92). Rolled once with the Core tab's button; the
+        // dice are kept (one per level) so max HP follows P.E. No dice = a manual max (NPCs, older characters).
+        hp: new SchemaField({
+          value: intField(),
+          max: intField(),
+          dice: new ArrayField(new NumberField({ required: true, integer: true, min: 1, max: 6 })),
+          bonus: intField()
+        }),
         sdc: new SchemaField({
           value: intField(),
           bonus: intField()   // SDC from physical skills, abilities, etc.
@@ -533,6 +541,16 @@ export default class CharacterData extends foundry.abstract.TypeDataModel {
 
     // Coma and death thresholds (p.92): coma at 0 HP, death below −PE.
     const pe = this.attributes.pe.total ?? 0;
+    // Rolled Hit Points: max = P.E. + the dice (one per level) + HP Bonus, so it follows P.E.
+    const hp = h.hp;
+    hp.dice ??= [];
+    hp.rolled = hp.dice.length > 0;
+    hp.pendingLevels = hp.rolled ? Math.max(0, this.identity.level - hp.dice.length) : 0;
+    if ( hp.rolled ) {
+      hp.pe = pe;
+      hp.diceTotal = hp.dice.reduce((a, b) => a + b, 0);
+      hp.max = pe + hp.diceTotal + (hp.bonus ?? 0);
+    }
     h.deathThreshold = -pe;
     h.comaHours = pe;
     h.inComa = h.hp.value <= 0 && h.hp.max > 0;

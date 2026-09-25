@@ -1,4 +1,23 @@
 <section class="tab sheet-body {{tab.cssClass}}" data-group="primary" data-tab="core">
+  {{#if checklist}}
+  <section class="panel pu-checklist">
+    <div class="panel-header">
+      <h2>Creation Checklist</h2>
+      <span class="hint">{{checklist.done}} of {{checklist.total}} done</span>
+      <button type="button" class="pu-checklist-hide" data-action="checklistToggle" data-tooltip="Hide the checklist (you can bring it back at the bottom of this tab)"><i class="fa-solid fa-eye-slash"></i> Hide</button>
+    </div>
+    <ol class="pu-checklist-steps">
+      {{#each checklist.steps}}
+      <li class="{{#if done}}done{{else}}todo{{/if}}">
+        <i class="fa-solid {{#if done}}fa-circle-check{{else}}fa-circle{{/if}}"></i>
+        {{#if done}}<span class="pu-step">{{label}}</span>
+        {{else}}<a class="pu-step" data-action="checklistGo" data-tab="{{tab}}" data-tooltip="Go to this step">{{label}}</a>{{/if}}
+        <span class="pu-step-detail">{{detail}}</span>
+      </li>
+      {{/each}}
+    </ol>
+  </section>
+  {{/if}}
   <section class="panel">
     <div class="panel-header">
       <h2>Attributes</h2>
@@ -32,6 +51,8 @@
   <section class="panel">
     <div class="panel-header">
       <h2>Health &amp; Damage</h2>
+      <button type="button" class="pu-roll-attributes pu-roll-hp{{#if hpRoll.locked}} locked{{/if}}{{#if hpRoll.levelUp}} level-up{{/if}}"
+        data-action="rollHitPoints" data-hp="{{hpRoll.action}}" data-tooltip="{{hpRoll.hint}}"><i class="fa-solid {{hpRoll.icon}}"></i> {{hpRoll.label}}</button>
     </div>
     <div class="health-grid">
       <div class="field">
@@ -39,9 +60,19 @@
         <div class="pair">
           <input type="number" name="system.health.hp.value" value="{{system.health.hp.value}}" />
           <span class="sep">/</span>
-          <input type="number" name="system.health.hp.max" value="{{system.health.hp.max}}" data-tooltip="PE + 1D6, +1D6 per level" />
+          {{#if system.health.hp.rolled}}
+          <span class="pu-box score" data-tooltip="P.E. {{system.health.hp.pe}} + dice {{system.health.hp.diceTotal}} ({{#each system.health.hp.dice}}{{#if @index}}, {{/if}}{{this}}{{/each}}){{#if system.health.hp.bonus}} + HP Bonus {{system.health.hp.bonus}}{{/if}}">{{system.health.hp.max}}</span>
+          {{else}}
+          <input type="number" name="system.health.hp.max" value="{{system.health.hp.max}}" data-tooltip="P.E. + 1D6, +1D6 per level. Use Roll Hit Points, or type a max here." />
+          {{/if}}
         </div>
       </div>
+      {{#if system.health.hp.rolled}}
+      <div class="field">
+        <label>HP Bonus</label>
+        <input type="number" name="system.health.hp.bonus" value="{{system.health.hp.bonus}}" data-tooltip="Added to max Hit Points (abilities, GM awards)" />
+      </div>
+      {{/if}}
       <div class="field">
         <label>S.D.C.</label>
         <div class="pair">
@@ -87,4 +118,7 @@
       {{#if system.health.inComa}}<strong class="warning">In a coma!</strong>{{else if system.health.bleedingOut}}<strong class="warning">Bleeding out: 1 HP per minute until first aid.</strong>{{/if}}
     </p>
   </section>
+  {{#if checklistRestore}}
+  <p class="hint pu-checklist-restore"><a data-action="checklistToggle"><i class="fa-solid fa-list-check"></i> Show the creation checklist</a></p>
+  {{/if}}
 </section>

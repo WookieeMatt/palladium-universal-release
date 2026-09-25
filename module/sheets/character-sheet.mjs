@@ -2,12 +2,13 @@ import { castSpell, newDay, rollChangeSave, rollMagicAbility, rollSpellDamage, u
 import { operateDevice } from "../vehicle.mjs";
 import { practiceSpell, rollTemporalMishap } from "../timetravel.mjs";
 import { rollD20, rollPercent, rollSave, rollSaveVsComa, rollSkill, signed } from "../dice.mjs";
-import { attributeBonusText, printAttribute, rollAttributes } from "../creation.mjs";
+import { attributeBonusText, printAttribute, rollAttributes, rollHitPoints, rollLevelHitPoints } from "../creation.mjs";
 import { rollDumbLuck, rollPullOut, rollTactic, rollVeer } from "../air-combat.mjs";
 import { rollItem } from "../item-rolls.mjs";
 import {
   FIRE_MODES, MELEE_MODES, POWDER_MODES, misfireChance, rollAttack, rollDamage, rollHorrorFactor, rollManeuver, strikeBonus
 } from "../combat.mjs";
+import { creationChecklist } from "../checklist.mjs";
 import { BACKGROUND_KINDS, SKILL_CATEGORIES, WEAPON_TYPES, WP_KINDS, inlineDice } from "../data/items.mjs";
 import { NOTES_FIELDS } from "../data/character.mjs";
 import { applyAnimal, applyBackground, purchasedItems, removeAnimal, setOptionPurchased } from "../animal.mjs";
@@ -56,6 +57,9 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
       rollPullOut: PalladiumCharacterSheet.#onRollPullOut,
       rollDumbLuck: PalladiumCharacterSheet.#onRollDumbLuck,
       rollAttributes: PalladiumCharacterSheet.#onRollAttributes,
+      rollHitPoints: PalladiumCharacterSheet.#onRollHitPoints,
+      checklistGo: PalladiumCharacterSheet.#onChecklistGo,
+      checklistToggle: PalladiumCharacterSheet.#onChecklistToggle,
       rollItem: PalladiumCharacterSheet.#onRollItem,
       rollSpellDamage: PalladiumCharacterSheet.#onRollSpellDamage,
       changeSize: PalladiumCharacterSheet.#onChangeSize,
@@ -129,13 +133,19 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
       enriched[path.replaceAll(".", "_")] = await TextEditor.enrichHTML(inlineDice(foundry.utils.getProperty(system, path) ?? ""),
         { relativeTo: actor, secrets: actor.isOwner });
     }
+    // Creation checklist (characters only): hidden once complete, or when the player hides it.
+    const checklist = actor.type === "character" ? creationChecklist(actor) : null;
+    const checklistHidden = !!actor.getFlag?.("palladium-universal", "checklistHidden");
     return Object.assign(context, {
       actor,
       system,
       enriched,
+      checklist: checklist && !checklist.complete && !checklistHidden ? checklist : null,
+      checklistRestore: !!checklist && !checklist.complete && checklistHidden,
       systemFields: system.schema.fields,
       attributes: this.#prepareAttributes(),
       generation: this.#generationState(),
+      hpRoll: this.#hpState(),
       airTactics: Object.entries(CONFIG.PALLADIUM.AIR_TACTICS).map(([key, t]) => ({ key, ...t,
         total: signed((t.sc ? system.flight.effectiveSpeedClass : 0) + (t.tmf ? system.flight.tmf : 0)) })),
       alignments: CONFIG.PALLADIUM.ALIGNMENTS,
@@ -349,6 +359,21 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
     return { label: "Ask GM to Re-roll", icon: "fa-lock", locked: true, hint: "Attributes are rolled once. Ask the GM for permission to roll again." };
   }
 
+  /** The Roll Hit Points button: first roll, a level-up roll, or a re-roll (GM permission). */
+  #hpState() {
+    const sys = this.actor.system;
+    const hp = sys.health.hp;
+    const g = sys.generation ?? {};
+    if ( !hp.rolled ) return { action: "roll", label: "Roll Hit Points", icon: "fa-heart-pulse", locked: !g.rolled,
+      hint: g.rolled ? "P.E. + 1D6 (one 1D6 per level), rolled once. Max HP then follows P.E."
+        : "Roll Attributes first: Hit Points are P.E. + 1D6." };
+    if ( hp.pendingLevels ) return { action: "level", label: `Roll HP for Level ${sys.identity.level}`, icon: "fa-heart-circle-plus",
+      levelUp: true, hint: `+1D6 per level: ${hp.pendingLevels} level${hp.pendingLevels > 1 ? "s" : ""} to roll. Max and current HP go up by the roll.` };
+    if ( g.hpRerollAllowed ) return { action: "roll", label: "Re-roll Hit Points", icon: "fa-heart-pulse", hint: "The GM has allowed one re-roll." };
+    if ( game.user.isGM ) return { action: "roll", label: "Re-roll HP", icon: "fa-lock", locked: true, hint: "Already rolled. As GM you can roll them again." };
+    return { action: "roll", label: "Ask GM to Re-roll HP", icon: "fa-lock", locked: true, hint: "Hit Points are rolled once. Ask the GM for permission to roll again." };
+  }
+
   /** Display text for an attribute's generation modifiers ("N/A" where a step doesn't apply). */
   static #generationText(gen) {
     const withDice = (value, dice) => {
@@ -553,6 +578,23 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
   /** @this {PalladiumCharacterSheet} */
   static #onRollAttributes() {
     return rollAttributes(this.actor);
+  }
+
+  /** Roll Hit Points (creation, or re-roll) or the level-up dice. @this {PalladiumCharacterSheet} */
+  static #onRollHitPoints(event, target) {
+    return target.dataset.hp === "level" ? rollLevelHitPoints(this.actor) : rollHitPoints(this.actor);
+  }
+
+  /** Creation checklist: open the tab for a step. @this {PalladiumCharacterSheet} */
+  static #onChecklistGo(event, target) {
+    this.changeTab(target.dataset.tab, "primary");
+  }
+
+  /** Creation checklist: hide it, or show it again. @this {PalladiumCharacterSheet} */
+  static #onChecklistToggle() {
+    const hidden = !!this.actor.getFlag("palladium-universal", "checklistHidden");
+    return hidden ? this.actor.unsetFlag("palladium-universal", "checklistHidden")
+      : this.actor.setFlag("palladium-universal", "checklistHidden", true);
   }
 
   /** @this {PalladiumCharacterSheet} */

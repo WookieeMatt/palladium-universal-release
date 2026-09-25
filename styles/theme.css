@@ -662,6 +662,45 @@
 }
 .palladium-universal .large-entry-box prose-mirror .editor-content { min-height: 5rem; }
 
+/* Creation checklist (v1.18.0): Core tab, characters only, until every step is done */
+.palladium-universal .panel-header:has(.pu-checklist-hide) { display: flex; align-items: center; gap: 10px; }
+.palladium-universal .panel-header .pu-checklist-hide {
+  margin-left: auto;
+  flex: 0 0 auto;
+  width: auto;
+  font-family: var(--pu-heading);
+  letter-spacing: 0.05em;
+  color: var(--pu-ink-soft);
+  background: var(--pu-parchment);
+  border: 1px solid var(--pu-rule);
+  border-radius: 8px;
+  padding: 2px 12px;
+}
+.palladium-universal .pu-checklist-steps {
+  list-style: none;
+  margin: 4px 0 0;
+  padding: 0;
+  columns: 2 280px;   /* top to bottom, in book order */
+  column-gap: 24px;
+}
+.palladium-universal .pu-checklist-steps li {
+  display: grid;
+  grid-template-columns: 1.2em auto 1fr;
+  align-items: baseline;
+  gap: 6px;
+  padding: 3px 0;
+  border-bottom: 1px dotted var(--pu-rule);
+  break-inside: avoid;
+}
+.palladium-universal .pu-checklist-steps .pu-step { font-weight: 700; white-space: nowrap; }
+.palladium-universal .pu-checklist-steps a.pu-step { color: var(--pu-green); text-decoration: underline dotted; cursor: pointer; }
+.palladium-universal .pu-checklist-steps .pu-step-detail { color: var(--pu-ink-soft); font-size: 0.9em; }
+.palladium-universal .pu-checklist-steps li.done i { color: var(--pu-green-light); }
+.palladium-universal .pu-checklist-steps li.done .pu-step { color: var(--pu-ink-soft); font-weight: 400; }
+.palladium-universal .pu-checklist-steps li.todo i { color: var(--pu-red); }
+.palladium-universal .pu-checklist-restore { text-align: right; margin: 4px 8px; }
+.palladium-universal .pu-checklist-restore a { cursor: pointer; }
+
 /* Attribute generation (v1.9.0): Roll Attributes button, read-only boxes, chat table */
 .palladium-universal .panel-header:has(.pu-roll-attributes) {
   display: flex;
@@ -686,6 +725,10 @@
   background: var(--pu-parchment);
   border-color: var(--pu-rule);
 }
+/* Roll Hit Points (v1.18.0): same button as Roll Attributes; a level-up roll stands out. */
+.palladium-universal .panel-header .pu-roll-hp.level-up { background: #b8860b; border-color: #8a6508; }
+.palladium-universal .panel-header .pu-roll-hp.level-up:hover { background: #9a7009; }
+.palladium-universal .health-grid .pair .pu-box { min-width: 3.2em; text-align: center; }
 .palladium-universal .pu-box {
   display: inline-block;
   min-width: 2.6em;
@@ -981,3 +1024,9 @@
 }
 .pu-card .pu-defend-grid button:hover { background: var(--pu-green-light); box-shadow: none; }
 .pu-card .pu-defend-grid button i { font-size: 1rem; margin: 0; }
+
+/* Audit journals (v1.18.0): one entry per burst of changes, newest first. */
+.pu-audit-entry { padding: 4px 0 6px; border-bottom: 1px dotted var(--pu-rule, #a39d80); }
+.pu-audit-entry p { margin: 0 0 2px; }
+.pu-audit-entry ul { margin: 0; padding-left: 1.2em; }
+.pu-card .pu-audit-lines li { padding: 1px 0; }

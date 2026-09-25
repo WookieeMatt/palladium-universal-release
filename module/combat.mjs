@@ -1,3 +1,4 @@
+import { openAudit } from "./audit.mjs";
 import { bonusLines, cardHeader, decodeItem, postCard, signed } from "./dice.mjs";
 import { onMagicCardButton, rollChangeSave } from "./magic.mjs";
 import { applyTeChange, rollTemporalMishap } from "./timetravel.mjs";
@@ -757,6 +758,7 @@ async function onCardButton(event, message, data) {
   event.preventDefault();
   const action = event.currentTarget.dataset.puAction;
   if ( action === "allow-reroll" ) return allowReroll(data);
+  if ( action === "open-audit" ) return openAudit(data);
   if ( ["spell-save", "spell-damage", "psionic-save"].includes(action) ) return onMagicCardButton(action, data);
 
   if ( action === "defend" ) {

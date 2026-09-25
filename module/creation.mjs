@@ -202,38 +202,121 @@ function generationTable(results) {
     <tbody>${rows}</tbody></table><div class="pu-gen-notes">${notes}</div>`;
 }
 
+/** What can be re-rolled with the GM's permission: attributes or Hit Points. */
+const REROLLS = {
+  attributes: { label: "Attributes", text: "attributes", flag: "system.generation.rerollAllowed" },
+  hp: { label: "Hit Points", text: "Hit Points", flag: "system.generation.hpRerollAllowed" }
+};
+
 /**
  * A player asks the GM to allow a re-roll: a whispered card with an "Allow Re-roll" button.
  * @param {Actor} actor
+ * @param {"attributes"|"hp"} [what="attributes"]
  */
-export async function requestReroll(actor) {
+export async function requestReroll(actor, what = "attributes") {
+  const r = REROLLS[what] ?? REROLLS.attributes;
   const ok = await DialogV2.confirm({
-    window: { title: "Re-roll Attributes" },
-    content: "<p>Attributes are rolled once. Ask the GM for permission to roll them again?</p>"
+    window: { title: `Re-roll ${r.label}` },
+    content: `<p>${r.label} are rolled once. Ask the GM for permission to roll them again?</p>`
   });
   if ( !ok ) return null;
   const gms = game.users.filter(u => u.isGM).map(u => u.id);
   await ChatMessage.create({
     speaker: ChatMessage.getSpeaker({ actor }), whisper: [...new Set([...gms, game.user.id])],
-    content: `<div class="pu-card">${cardHeader(actor, "Re-roll Attributes?")}
-      <p class="pu-notes">${foundry.utils.escapeHTML(game.user.name)} asks to roll ${foundry.utils.escapeHTML(actor.name)}'s attributes again.</p>
+    content: `<div class="pu-card">${cardHeader(actor, `Re-roll ${r.label}?`)}
+      <p class="pu-notes">${foundry.utils.escapeHTML(game.user.name)} asks to roll ${foundry.utils.escapeHTML(actor.name)}'s ${r.text} again.</p>
       <div class="pu-buttons"><button type="button" data-pu-action="allow-reroll">Allow Re-roll</button></div></div>`,
-    flags: { "palladium-universal": { card: "rerollRequest", actorUuid: actor.uuid } }
+    flags: { "palladium-universal": { card: "rerollRequest", actorUuid: actor.uuid, what } }
   });
   ui.notifications.info("Your request has been sent to the GM.");
   return null;
 }
 
 /**
- * The GM allows one re-roll of an actor's attributes (the chat card's button).
+ * The GM allows one re-roll of an actor's attributes or Hit Points (the chat card's button).
  * @param {object} data   The card's flags
  */
 export async function allowReroll(data) {
   if ( !game.user.isGM ) return ui.notifications.warn("Only the GM can allow a re-roll.");
   const actor = await fromUuid(data.actorUuid);
   if ( !actor ) return ui.notifications.warn("That character no longer exists.");
-  await actor.update({ "system.generation.rerollAllowed": true });
-  ui.notifications.info(`${actor.name} may roll attributes once more.`);
+  const r = REROLLS[data.what] ?? REROLLS.attributes;
+  await actor.update({ [r.flag]: true });
+  ui.notifications.info(`${actor.name} may roll ${r.text} once more.`);
+}
+
+/* -------------------------------------------- */
+/*  Hit Points (p.92): P.E. + 1D6, +1D6 a level */
+/* -------------------------------------------- */
+
+/**
+ * Roll Hit Points at character creation: one 1D6 per level (a new character: one), saved on the sheet so
+ * max HP = P.E. + the dice + HP Bonus. Rolled once; a re-roll needs the GM's permission (a GM confirms).
+ * Current HP is set to the new max.
+ * @param {Actor} actor
+ */
+export async function rollHitPoints(actor) {
+  const sys = actor.system;
+  if ( !sys.generation?.rolled ) return ui.notifications.warn("Roll Attributes first: Hit Points are P.E. + 1D6.");
+  const hp = sys.health.hp;
+  const reroll = hp.dice.length > 0;
+  if ( reroll && !sys.generation.hpRerollAllowed ) {
+    if ( !game.user.isGM ) return requestReroll(actor, "hp");
+    const ok = await DialogV2.confirm({
+      window: { title: "Re-roll Hit Points" },
+      content: `<p>${foundry.utils.escapeHTML(actor.name)}'s Hit Points have already been rolled. Roll them again and replace them?</p>`
+    });
+    if ( !ok ) return null;
+  }
+  const levels = Math.max(1, sys.identity.level);
+  const roll = await new Roll(`${levels}d6`).evaluate();
+  const dice = hpDice(roll, levels);
+  await actor.update({ "system.health.hp.dice": dice, "system.generation.hpRerollAllowed": false });
+  const max = actor.system.health.hp.max;
+  await actor.update({ "system.health.hp.value": max });
+  await hpCard(actor, roll, dice, { title: reroll ? "Hit Points (re-rolled)" : "Hit Points",
+    note: `Current Hit Points set to ${max}.` });
+  Hooks.callAll("palladium.rollHitPoints", actor, { dice, max, levelUp: false });
+  return dice;
+}
+
+/**
+ * Level up: roll 1D6 for each level the character has gained since its last Hit Points roll, raise max
+ * HP and current HP by the same amount.
+ * @param {Actor} actor
+ */
+export async function rollLevelHitPoints(actor) {
+  const hp = actor.system.health.hp;
+  if ( !hp.dice.length ) return rollHitPoints(actor);
+  const missing = hp.pendingLevels;
+  if ( !missing ) return ui.notifications.info(`${actor.name}'s Hit Points are up to date for level ${actor.system.identity.level}.`);
+  const roll = await new Roll(`${missing}d6`).evaluate();
+  const added = hpDice(roll, missing);
+  const gain = added.reduce((a, b) => a + b, 0);
+  const from = hp.dice.length;
+  await actor.update({ "system.health.hp.dice": [...hp.dice, ...added],
+    "system.health.hp.value": hp.value + gain });
+  await hpCard(actor, roll, [...hp.dice, ...added], { title: `Hit Points: Level ${actor.system.identity.level}`, from,
+    note: `+${gain} Hit Points: current ${hp.value} → ${hp.value + gain}.` });
+  Hooks.callAll("palladium.rollHitPoints", actor, { dice: added, max: actor.system.health.hp.max, levelUp: true });
+  return added;
+}
+
+/** The individual d6 results of an "Nd6" roll. */
+function hpDice(roll, n) {
+  return roll.dice[0]?.results?.map(r => r.result).slice(0, n) ?? [roll.total];
+}
+
+/** The Hit Points chat card: P.E., each level's die (new ones marked), HP Bonus, max. */
+function hpCard(actor, roll, dice, { title, note, from = dice.length }) {
+  const hp = actor.system.health.hp;
+  const lines = [["P.E.", hp.pe],
+    ...dice.map((d, i) => [`Level ${i + 1} (1D6)${i >= from ? ", new" : ""}`, `+${d}`])];
+  if ( hp.bonus ) lines.push(["HP Bonus", signed(hp.bonus)]);
+  lines.push(["Max Hit Points", hp.max]);
+  return postCard(actor, { title, label: "Max HP", result: hp.max, lines, rolls: [roll],
+    caption: "P.E. + 1D6 per level", notes: [`<span class="pu-success">${note}</span>`],
+    flags: { "palladium-universal": { card: "hitPoints", actorUuid: actor.uuid, dice } } });
 }
 
 /* -------------------------------------------- */
