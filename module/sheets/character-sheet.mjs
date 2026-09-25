@@ -6,7 +6,7 @@ import { attributeBonusText, printAttribute, rollAttributes, rollHitPoints, roll
 import { rollDumbLuck, rollPullOut, rollTactic, rollVeer } from "../air-combat.mjs";
 import { rollItem } from "../item-rolls.mjs";
 import {
-  FIRE_MODES, MELEE_MODES, POWDER_MODES, misfireChance, rollAttack, rollDamage, rollHorrorFactor, rollManeuver, strikeBonus
+  FIRE_MODES, MELEE_MODES, POWDER_MODES, askHandheldParry, misfireChance, rollAttack, rollDamage, rollHorrorFactor, rollManeuver, strikeBonus
 } from "../combat.mjs";
 import { creationChecklist } from "../checklist.mjs";
 import { moneySources } from "../money.mjs";
@@ -468,10 +468,19 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
   /* -------------------------------------------- */
 
   /** @this {PalladiumCharacterSheet} */
-  static #onRollCombat(event, target) {
+  static async #onRollCombat(event, target) {
     const key = target.dataset.roll;
     const c = this.actor.system.combat;
     const options = { label: COMBAT_ROLLS[key], bonus: c.totals[key], breakdown: c.rollBreakdown[key] };
+    if ( key === "parry" ) {
+      const handheld = await askHandheldParry(this.actor);
+      if ( handheld === null ) return null;
+      if ( handheld ) {
+        options.bonus += handheld;
+        options.breakdown = { ...(options.breakdown ?? {}), "Hand-held weapon": handheld };
+        options.label = "Parry (hand-held weapon)";
+      }
+    }
     if ( ["strike", "disarm"].includes(key) ) options.critRange = c.critRange;
     if ( key === "pullPunch" ) options.target = CONFIG.PALLADIUM.PULL_PUNCH_TARGET;   // 10+ (Errata 2026)
     return rollD20(this.actor, options);

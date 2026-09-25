@@ -1,5 +1,5 @@
 import { WEAPON_TYPES } from "../data/items.mjs";
-import { operateDevice, rollControl, rollEvade, rollVehicleAttack, rollVehicleDamage } from "../vehicle.mjs";
+import { operateDevice, rollControl, rollEvade, rollVehicleAttack, rollVehicleDamage, rollVehicleManeuver } from "../vehicle.mjs";
 import { signed } from "../dice.mjs";
 import { rollCrash, rollDumbLuck, rollEmergencyLanding, rollPullOut, rollTactic, rollVeer, spaceRange } from "../air-combat.mjs";
 
@@ -25,6 +25,7 @@ export default class PalladiumVehicleSheet extends HandlebarsApplicationMixin(Ac
       itemEdit: PalladiumVehicleSheet.#onItemEdit,
       itemDelete: PalladiumVehicleSheet.#onItemDelete,
       rollControl: PalladiumVehicleSheet.#onRollControl,
+      rollManeuver: PalladiumVehicleSheet.#onRollManeuver,
       rollEvade: PalladiumVehicleSheet.#onRollEvade,
       rollAttack: PalladiumVehicleSheet.#onRollAttack,
       rollDamage: PalladiumVehicleSheet.#onRollDamage,
@@ -122,6 +123,11 @@ export default class PalladiumVehicleSheet extends HandlebarsApplicationMixin(Ac
   /** @this {PalladiumVehicleSheet} */
   static #onRollControl() {
     return rollControl(this.actor);
+  }
+
+  /** @this {PalladiumVehicleSheet} */
+  static #onRollManeuver() {
+    return rollVehicleManeuver(this.actor);
   }
 
   /** @this {PalladiumVehicleSheet} */

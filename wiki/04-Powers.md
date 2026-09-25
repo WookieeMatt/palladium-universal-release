@@ -33,6 +33,19 @@ Add Spell items (or drag them in). Each row shows the list, range, duration, sav
 ### Magic saves
 vs Magic, vs Circles & Wards, and **vs T.E. Change** (percentile + P.E. % + Time Lord bonus; **50+** resists). A failed Change save offers **Devolve −5 Bio-E** (travelled to the past) and **Evolve +5 Bio-E** (travelled to the future); the total appears as *T.E. Change* on the Bio-E tab. **Temporal Mishap** rolls the mishap table (see GM Tools).
 
+### Running T.E. Change in a session (GM)
+The system rolls the save and counts the Bio-E; **which attributes change is the GM's call**, following the book (Transdimensional p.33). A way to run it:
+1. **When to roll.** A character carried a million years or more from their own era resists for **3D6 days**, then saves **every day** (*Save vs T.E. Change* on the Powers tab: 50% + P.E. bonus). Trips of 500 million years or more start within hours and roll far more often (hourly, every half hour, every fifteen minutes the further they go). Keep a day count in the Party Notes or the Session Tools.
+2. **Each failed save** is 5 Bio-E worth of change: press **Evolve +5** (travelled to the future) or **Devolve −5** (to the past) on the card. The running total shows as *T.E. Change* on the Bio-E tab.
+3. **Decide the change** in the book's order:
+   - **Into the future (Evolve):** random growth: raise the Size Level (the − / + buttons on the Bio-E tab) or I.Q., M.E., P.S.
+   - **Into the past (Devolve):** I.Q., M.E. and M.A. drop first, then psionic powers fade, then the Size Level and physical attributes.
+   - A rough guide: each 5 Bio-E of change is about one Size Level step, or 1–2 points of one attribute.
+4. **Record it** as an Ability item named *T.E. Change* with attribute effects (e.g. I.Q. −2, M.E. −1): the sheet applies it and it's easy to see and remove. Remove a lost psionic power from the Powers tab (keep a note of it).
+5. **Stabilizing:** the changes stop after about a week per 20 million years travelled.
+6. **Going home** reverses everything over **2D6 days**: then delete the *T.E. Change* item, restore the Size Level and psionics, and reset the T.E. Change total on the Bio-E tab. (Immature beings, eggs and young, adapt permanently instead.)
+
+
 ## Psionics
 Psionic powers are bought with Bio-E (no I.S.P.); they're listed on the Bio-E tab and here. **Use** posts the power's range, duration and save, spends an action, and if the power allows a save adds **Save vs Psionics** for targets (15+, 10+ for psychics, + M.E. bonus).
 

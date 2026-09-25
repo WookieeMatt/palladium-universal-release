@@ -19,7 +19,20 @@ When damage is applied to a vehicle token, a prompt asks for the **location hit*
 Pilot name, **Pilot Skill %**, **Control Bonus %** (modifications add theirs), **Evade Bonus**, **Gunner Strike Bonus**, **Initiative**.
 - **Control Roll**: percentile under skill + bonuses. Control Rolls don't cost an action.
 - **Evade**: d20 + Evade Bonus; until the vehicle's next maneuver, Strikes must meet or beat the roll.
+- **Maneuver**: describe what the pilot tries (a sharp turn, a ram, a jump...); the GM picks the difficulty (task difficulty, p.54: +20% very easy to −20% very hard, plus any other modifier) and a Control Roll decides it. The card says whether it works; **the GM rules what that means**. In combat it spends the vehicle's action.
 - Each vehicle makes **one maneuver per round**.
+
+### Playing vehicle combat for now
+The system has the **Control Roll**, the **Maneuver** roll, the **Evade**, mounted weapons, damage by location and (for aircraft) the full air-combat panel. The book's list of ground-vehicle maneuvers (ramming damage, stunts) isn't built in yet, so the GM decides those. A way to run a chase or a fight:
+1. **Initiative:** put the vehicles in the Combat Tracker with their drivers (each vehicle's **Initiative** field). A vehicle gets **one action (its maneuver) a round**; its driver and gunners use their own actions.
+2. **Each round, each driver declares a maneuver** and presses **Maneuver**. The GM sets the difficulty from the situation (speed, terrain, weather, damage). Control Rolls that come with a maneuver are free.
+3. **Success:** the maneuver happens (the vehicle gets where it wanted, shakes a pursuer, lines up a shot). **Failure:** the GM decides: lost ground, a skid, a spin-out; a bad failure at speed can be a crash.
+4. **Evade:** a driver who Evades makes every Strike against the vehicle need to meet or beat the Evade roll until its next maneuver.
+5. **Shooting:** gunners fire the mounted weapons (Strike + Gunner bonus). Hits strike the **hull** unless the attacker named an exposed location (crew compartment, turret, tire); roll damage and use **Apply** with the vehicle's token selected: it goes to that location's armor.
+6. **Rams and crashes:** make the ram a Maneuver; on a success the GM rolls damage for both vehicles (bigger and faster hits harder) and applies it to the hull. Aircraft have their own Crash and Emergency Landing buttons.
+7. **Out of control:** a vehicle at 0 S.D.C. is incapacitated; at −(its S.D.C.) it's totaled.
+
+
 
 ## Mounted weapons
 Weapon items on the vehicle fire with d20 + gunner bonus + the weapon's own bonus; damage has no strength or training bonus. Attack cards have Defend buttons as usual.

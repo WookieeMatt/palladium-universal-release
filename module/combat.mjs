@@ -366,6 +366,30 @@ export async function postAttackCard(actor, roll, { title, parts, special, extra
   });
 }
 
+/**
+ * Parrying with a hand-held weapon when the character has a penalty for it (e.g. Partial Hands: −3 Parry with
+ * hand-held weapons). Asks which kind of Parry it is, only when there is such a penalty.
+ * @param {Actor} actor
+ * @returns {Promise<number|null>}  The penalty to add (0 without a weapon), or null if cancelled
+ */
+export async function askHandheldParry(actor) {
+  const penalty = actor.system.itemEffects?.totals?.["handheld.parry"] ?? 0;
+  if ( !penalty ) return 0;
+  const sources = (actor.system.itemEffects.sources?.["handheld.parry"] ?? []).map(s => s.source).filter(s => s).join(", ");
+  const choice = await DialogV2.wait({
+    window: { title: `${actor.name}: Parry` },
+    content: `<p><strong>Is ${foundry.utils.escapeHTML(actor.name)} parrying with a hand-held weapon (sword, staff, nunchaku...)?</strong></p>
+      <p class="hint">${foundry.utils.escapeHTML(sources || "Human Features")}: ${signed(penalty)} to Parry with hand-held weapons.</p>`,
+    buttons: [
+      { action: "weapon", label: `Yes: with a hand-held weapon (${signed(penalty)} Parry)`, icon: "fa-solid fa-shield-halved", callback: () => "weapon" },
+      { action: "bare", label: "No: bare hands or natural weapons (no penalty)", icon: "fa-solid fa-hand", default: true, callback: () => "bare" }
+    ],
+    rejectClose: false
+  });
+  if ( !choice ) return null;
+  return choice === "weapon" ? penalty : 0;
+}
+
 /** Reaction buttons for an attack card. Ranged attacks can't be entangled, disarmed or thrown. */
 function defendButtons(data) {
   const buttons = Object.entries(CONFIG.PALLADIUM.REACTIONS).filter(([key, r]) => {
@@ -460,7 +484,13 @@ export async function rollDefense(defender, key, attack, attackerName = "the att
 
   const hookOptions = { attack, attackerName };
   if ( Hooks.call("palladium.preRollDefense", defender, key, hookOptions) === false ) return null;
-  const bonus = c.totals[r.total];
+  let bonus = c.totals[r.total];
+  const breakdown = { ...(c.rollBreakdown[r.total] ?? { Bonus: bonus }) };
+  if ( key === "parry" ) {
+    const handheld = await askHandheldParry(defender);
+    if ( handheld === null ) return null;
+    if ( handheld ) { bonus += handheld; breakdown["Hand-held weapon"] = handheld; }
+  }
   const roll = await new Roll(`1d20 + ${bonus}`).evaluate();
   const natural = roll.dice[0].total;
   let success;
@@ -495,7 +525,7 @@ export async function rollDefense(defender, key, attack, attackerName = "the att
 
   const message = await postCard(defender, {
     title: `${r.label} vs ${attackerName}`, label: r.label, result: roll.total, rolls: [roll], notes,
-    lines: [["d20", natural], ...bonusLines(c.rollBreakdown[r.total] ?? { Bonus: bonus }), ["Total", roll.total]]
+    lines: [["d20", natural], ...bonusLines(breakdown), ["Total", roll.total]]
   });
   Hooks.callAll("palladium.rollDefense", defender, key, roll, { attack, success, natural, message });
   return success;

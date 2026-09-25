@@ -99,6 +99,52 @@ export async function rollControl(actor) {
       `<span class="hint">One maneuver per round (an action); Control Rolls are free.</span>`] });
 }
 
+/** Task difficulty (p.54): the GM gives +5% to +20% for easy tasks, −5% to −20% for hard ones. */
+export const MANEUVER_DIFFICULTY = { "20": "Very easy (+20%)", "10": "Easy (+10%)", "0": "Normal (+0%)", "-10": "Hard (−10%)", "-20": "Very hard (−20%)" };
+
+/**
+ * A vehicle maneuver (TODO: the book's list of vehicle maneuvers is not in the system yet). The pilot describes
+ * it, the GM sets the difficulty (task difficulty, p.54), and a Control Roll decides it; the GM rules what
+ * success or failure means. Each vehicle makes one maneuver per round: in combat it spends the vehicle's action.
+ * @param {Actor} actor
+ * @param {object} [options]
+ * @param {string} [options.name]      What the pilot tries (asked when missing)
+ * @param {number} [options.modifier]  Difficulty modifier %
+ */
+export async function rollVehicleManeuver(actor, { name, modifier } = {}) {
+  if ( name === undefined ) {
+    const options = Object.entries(MANEUVER_DIFFICULTY).map(([v, l]) => `<option value="${v}"${v === "0" ? " selected" : ""}>${l}</option>`).join("");
+    const data = await DialogV2.prompt({
+      window: { title: `${actor.name}: Maneuver` },
+      content: `<div class="form-group"><label>Maneuver</label><div class="form-fields">
+          <input type="text" name="name" list="pu-maneuvers" placeholder="What the pilot tries" autofocus>
+          <datalist id="pu-maneuvers"><option value="Sharp turn"><option value="Chase / pursuit"><option value="Ram"><option value="Sideswipe"><option value="Jump"><option value="Bootlegger turn"><option value="Squeeze through a gap"></datalist></div></div>
+        <div class="form-group"><label>Difficulty (GM)</label><div class="form-fields"><select name="difficulty">${options}</select></div></div>
+        <div class="form-group"><label>Other modifier %</label><div class="form-fields"><input type="number" name="extra" value="0" step="5"></div></div>
+        <p class="hint">The GM sets the difficulty (task difficulty, p.54) and decides what success or failure means.</p>`,
+      ok: { label: "Roll", icon: "fa-solid fa-car-side", callback: (event, button) => {
+        const f = button.form.elements;
+        return { name: f.name.value.trim() || "Maneuver", modifier: Number(f.difficulty.value) + (Number(f.extra.value) || 0) };
+      } },
+      rejectClose: false
+    });
+    if ( !data ) return null;
+    ({ name, modifier } = data);
+  }
+  modifier = Number(modifier) || 0;
+  const sys = actor.system;
+  const target = Math.max(0, sys.controlTarget + modifier);
+  const roll = await new Roll("1d100").evaluate();
+  const success = roll.total <= target;
+  // The vehicle's one maneuver this round (its action in the Combat Tracker).
+  const combatant = game.combat?.combatants?.find(c => c.actorId === actor.id);
+  if ( combatant?.isOwner ) await combatant.setFlag("palladium-universal", "actionsUsed", (combatant.getFlag("palladium-universal", "actionsUsed") ?? 0) + 1);
+  return postCard(actor, { title: `Maneuver: ${name}`, label: "Control", result: roll.total, rolls: [roll],
+    lines: [["Pilot", sys.pilot || "—"], ["Control", `${sys.controlTarget}%`], ["Difficulty", `${signed(modifier)}%`], ["Chance", `${target}%`], ["d100", roll.total]],
+    notes: [`<span class="${success ? "pu-success" : "pu-failure"}">${success ? "The maneuver works" : "The maneuver fails"}</span>`,
+      `<span class="hint">${success ? "The GM rules the details (position gained, damage from a ram...)." : "The GM decides what happens: lost ground, a skid, a spin-out, a crash."} One maneuver per round; the Control Roll itself is free.</span>`] });
+}
+
 /**
  * The Evade: until its next maneuver, any Strike that doesn't meet or beat this roll misses (Errata, TMNT-TA p.136).
  * @param {Actor} actor

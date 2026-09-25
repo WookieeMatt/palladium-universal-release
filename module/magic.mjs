@@ -126,7 +126,8 @@ export async function rollChangeSave(actor) {
   const flags = { "palladium-universal": { card: "change", actorUuid: actor.uuid } };
   return postCard(actor, { title: "Save vs T.E. Change", label: "Save", result: roll.total, rolls: [roll], buttons, flags,
     lines: [["d100", roll.dice[0].total], ["P.E. and training", `${signed(save.bonus)}%`], ["Total", roll.total], ["Needs", `${save.target}+`]],
-    notes: [`<span class="${success ? "pu-success" : "pu-failure"}">${success ? "Resists the Change" : "Fails: 5 Bio-E points of T.E. change"}</span>`] });
+    notes: [`<span class="${success ? "pu-success" : "pu-failure"}">${success ? "Resists the Change" : "Fails: 5 Bio-E points of T.E. change"}</span>`,
+      ...(success ? [] : [`<span class="hint">GM, what changes (p.33): <strong>into the future</strong> the character grows (Size Level, I.Q., M.E., P.S.); <strong>into the past</strong> it devolves (I.Q., M.E., M.A. first, then psionics, then Size Level and physical attributes). Record it as a "T.E. Change" ability with attribute effects; going home reverses it over 2D6 days. See the System Guide: Powers → Running T.E. Change.</span>`])] });
 }
 
 /* -------------------------------------------- */

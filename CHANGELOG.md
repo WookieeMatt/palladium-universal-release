@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.21.0
+- **Parry with a hand-held weapon**: a character with a hand-held Parry penalty (e.g. Partial Hands, −3) is asked when they Parry, from the sheet or an attack card's Defend button: *Yes: with a hand-held weapon (−3 Parry)* or *No: bare hands or natural weapons (no penalty)*. Closing the question cancels the Parry.
+- **Vehicle Maneuver** button: the pilot describes the maneuver, the GM sets the difficulty (task difficulty, p.54), and a Control Roll decides it; the card leaves the outcome to the GM. It spends the vehicle's action in combat. The System Guide's Vehicles page explains how to run vehicle combat until the book's maneuver list is built in.
+- **T.E. Change**: a failed save's card tells the GM what changes in the book's order (future: growth; past: mental attributes, then psionics, then size and physical), and the Powers page has a step-by-step way to run it in a session. Still the GM's call.
+
 ## 1.20.0
 - **Money** (Gear tab, characters): **Starting Money** per character, from the rules: the Origin / Education money is shown with its dice clickable to roll (p.64). **Spent on Items** adds up the listed cost × quantity of every weapon, armor, gear and device on the sheet (removing an item refunds it), plus **Other Expenses**; **Left** shows what remains. Starting Money is a soft cap: going over warns the player and whispers the GM, and nothing is blocked. The creation checklist gains a Starting Money step.
 - **Combat Training items**: a skill can be a Combat Training (new *Combat Training* field on the skill sheet). Owning one sets the character's training; dropping another replaces it (one at a time). The Combat tab's Training dropdown is locked while an item sets it and stays as the fallback (NPCs use it). The TMNT compendium (0.5.0) has Basic, Expert, Martial Arts, Assassin, Ninjutsu and Feral.

@@ -100,6 +100,7 @@ export function buildApi() {
     // Vehicles and devices
     applyVehicleDamage: vehicle.applyVehicleDamage,
     rollControl: vehicle.rollControl,
+    rollVehicleManeuver: vehicle.rollVehicleManeuver,
     rollEvade: vehicle.rollEvade,
     rollVehicleAttack: vehicle.rollVehicleAttack,
     rollVehicleDamage: vehicle.rollVehicleDamage,
