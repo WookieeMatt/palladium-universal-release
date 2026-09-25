@@ -16,6 +16,12 @@ Kinds: **Ancient** (melee: +1 Strike and Parry at levels 1, 4, 7, 10, 13), **Tar
 Body armor has an A.R. and S.D.C.; **equip** it (only one body armor and one shield at a time) and it is used when damage is applied. Shields add their Parry bonus and let you parry ranged attacks.
 
 ## Gear tab
+### Money
+Each character's **Starting Money** comes from the rules: the money their **Origin** and **Education** give (p.64). The panel shows each background's money with its dice clickable (e.g. *Raised by a Ninja: 2D6×$1,000*): roll them and enter the total as Starting Money.
+- **Spent on Items** adds up the listed **cost × quantity** of every weapon, armor, gear and device on the sheet (hover for the list). Removing an item gives its money back. The animal, abilities, backgrounds and natural weapons are free.
+- **Other Expenses** is for spending that isn't an item (ammo, repairs, bribes, rent).
+- **Left** is what remains. Starting Money is a **soft cap**: going over is allowed, but the player gets a warning and the GM a whispered *Over Starting Money* card; the panel shows how far over.
+
 - **Equipment**: Gear items with quantity.
 - **Devices**: time machines, cross-dimensional devices and readouts carried by the character. **Operate** rolls under the operator's skill (the skill named on the device, or a % you type), + the best readout device's bonus; a failure is a malfunction and rolls the device's malfunction table. The device then shows **Recharge**. (For devices built into vehicles, use a **Time Machine** actor instead.)
 - **Notes**: money and other possessions.

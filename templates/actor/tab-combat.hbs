@@ -7,9 +7,13 @@
     <div class="training-grid">
       <div class="field">
         <label>Training</label>
-        <select name="system.combat.training">
+        {{#if system.combat.trainingItem}}
+        <span class="pu-box pu-training-item" data-tooltip="Set by the {{system.combat.trainingItem.name}} skill (Skills tab). Drop another Combat Training item to change it.">{{lookup trainingChoices system.combat.training}} <i class="fa-solid fa-lock"></i></span>
+        {{else}}
+        <select name="system.combat.training" data-tooltip="Or drop a Combat Training item from the compendium">
           {{selectOptions trainingChoices selected=system.combat.training}}
         </select>
+        {{/if}}
       </div>
       <div class="field">
         <label data-tooltip="Team Characters: +1 level per additional team member (p.19)">Team Bonus Levels</label>

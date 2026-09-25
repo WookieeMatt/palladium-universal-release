@@ -1132,3 +1132,13 @@
 .pu-tracker-actions a { opacity: 0.6; cursor: pointer; }
 .pu-tracker-actions a:hover { opacity: 1; }
 .pu-out-of-actions { opacity: 0.55; }
+
+/* Money (v1.20.0): Gear tab */
+.palladium-universal .pu-money-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; align-items: end; }
+.palladium-universal .pu-money .pu-box { display: block; text-align: center; }
+.palladium-universal .pu-money .pu-box.score.over { background: var(--pu-red); border-color: var(--pu-red); }
+.palladium-universal .pu-money-over { margin-left: auto; font-weight: 700; color: var(--pu-red); }
+.palladium-universal .pu-money-sources { list-style: none; margin: 8px 0 2px; padding: 0; }
+.palladium-universal .pu-money-sources li { padding: 2px 0; }
+.palladium-universal .pu-training-item { display: block; text-align: left; padding: 4px 8px; }
+.palladium-universal .pu-training-item i { float: right; opacity: 0.6; margin-top: 3px; }

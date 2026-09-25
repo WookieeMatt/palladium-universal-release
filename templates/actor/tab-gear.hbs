@@ -1,4 +1,36 @@
 <section class="tab sheet-body {{tab.cssClass}}" data-group="primary" data-tab="gear">
+  {{#if money}}
+  <section class="panel pu-money">
+    <div class="panel-header"><h2>Money</h2>{{#if money.over}}<span class="pu-money-over"><i class="fa-solid fa-triangle-exclamation"></i> Over starting money by {{money.left}}</span>{{/if}}</div>
+    <div class="pu-money-grid">
+      <div class="field">
+        <label>Starting Money ($)</label>
+        <input type="number" name="system.money.starting" value="{{money.starting}}" min="0" step="1"
+          data-tooltip="What the Origin and Education give (p.64): roll their money below and enter the total." />
+      </div>
+      <div class="field">
+        <label>Spent on Items</label>
+        <span class="pu-box" data-tooltip="{{money.itemsTooltip}}">{{money.items}}</span>
+      </div>
+      <div class="field">
+        <label>Other Expenses ($)</label>
+        <input type="number" name="system.money.other" value="{{money.other}}" min="0" step="1" data-tooltip="Spending that isn't an item: ammo, repairs, bribes, rent..." />
+      </div>
+      <div class="field">
+        <label>{{#if money.over}}Over By{{else}}Left{{/if}}</label>
+        <span class="pu-box score{{#if money.over}} over{{/if}}" data-tooltip="Total spent: {{money.spent}}">{{money.left}}</span>
+      </div>
+    </div>
+    {{#if money.sources.length}}
+    <ul class="pu-money-sources">
+      {{#each money.sources}}<li><strong>{{name}}:</strong> {{{html}}}</li>{{/each}}
+    </ul>
+    {{else if money.unset}}
+    <p class="hint">Starting money comes from the Origin and Education (drop them on the Bio-E / Mutation tab to see their dice here).</p>
+    {{/if}}
+    <p class="hint">Items count at their listed cost × quantity; removing one gives the money back. Going over is allowed: you and the GM get a warning.</p>
+  </section>
+  {{/if}}
   <section class="panel">
     <div class="panel-header">
       <h2>Equipment</h2>

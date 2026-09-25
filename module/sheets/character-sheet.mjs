@@ -9,6 +9,7 @@ import {
   FIRE_MODES, MELEE_MODES, POWDER_MODES, misfireChance, rollAttack, rollDamage, rollHorrorFactor, rollManeuver, strikeBonus
 } from "../combat.mjs";
 import { creationChecklist } from "../checklist.mjs";
+import { moneySources } from "../money.mjs";
 import { BACKGROUND_KINDS, SKILL_CATEGORIES, WEAPON_TYPES, WP_KINDS, inlineDice } from "../data/items.mjs";
 import { NOTES_FIELDS } from "../data/character.mjs";
 import { applyAnimal, applyBackground, purchasedItems, removeAnimal, setOptionPurchased } from "../animal.mjs";
@@ -135,11 +136,22 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
     }
     // Creation checklist (characters only): hidden once complete, or when the player hides it.
     const checklist = actor.type === "character" ? creationChecklist(actor) : null;
+    // Money (characters): starting money from the backgrounds' dice, spending from priced items.
+    const m = system.money ?? {};
+    const fmt = n => CONFIG.PALLADIUM.formatCost(n ?? 0);
+    const money = actor.type !== "character" ? null : {
+      starting: m.starting, other: m.other, spent: fmt(m.spent), items: fmt(m.itemsTotal), left: fmt(Math.abs(m.left)),
+      over: m.over, unset: !m.starting,
+      itemsTooltip: (m.items ?? []).map(i => `${i.name}: ${fmt(i.cost)}`).join("<br>") || "No priced items yet",
+      sources: await Promise.all(moneySources(actor).map(async s => ({ ...s,
+        html: await TextEditor.enrichHTML(s.html, { relativeTo: actor }) })))
+    };
     const checklistHidden = !!actor.getFlag?.("palladium-universal", "checklistHidden");
     return Object.assign(context, {
       actor,
       system,
       enriched,
+      money,
       checklist: checklist && !checklist.complete && !checklistHidden ? checklist : null,
       checklistRestore: !!checklist && !checklist.complete && checklistHidden,
       systemFields: system.schema.fields,
@@ -704,6 +716,11 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
     if ( item.parent === this.actor ) return super._onDropItem(event, item);
     if ( item.type === "animal" ) return applyAnimal(this.actor, item.toObject());
     if ( item.type === "background" ) return applyBackground(this.actor, item.toObject());
+    // Combat Training (p.62): one at a time; a new one (e.g. Expert over Basic) replaces the old.
+    if ( (item.type === "skill") && item.system.combatTraining ) {
+      const old = this.actor.items.filter(i => (i.type === "skill") && i.system.combatTraining).map(i => i.id);
+      if ( old.length ) await this.actor.deleteEmbeddedDocuments("Item", old);
+    }
     return super._onDropItem(event, item);
   }
 

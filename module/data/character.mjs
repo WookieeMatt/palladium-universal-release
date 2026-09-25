@@ -44,6 +44,21 @@ const optionalInt = () => new NumberField({ required: true, nullable: true, inte
 /** A plain text field. */
 const textField = () => new StringField({ required: true, blank: true, initial: "" });
 
+/** Item types bought with money (their listed cost counts as spending). */
+export const PRICED_TYPES = ["weapon", "armor", "gear", "device"];
+
+/**
+ * What an owned item cost: its listed cost × quantity (natural weapons and unpriced items: 0).
+ * @param {Item} item
+ */
+export function itemCost(item) {
+  if ( !PRICED_TYPES.includes(item?.type) ) return 0;
+  const s = item.system ?? {};
+  if ( (item.type === "weapon") && (s.weaponType === "natural") ) return 0;
+  const each = CONFIG.PALLADIUM.parseCost?.(s.cost) ?? 0;
+  return Math.round(each * Math.max(0, s.quantity ?? 1));
+}
+
 /** A current/max resource pool, usable as a token bar. */
 const resourceField = () => new SchemaField({
   value: intField(),
@@ -117,6 +132,12 @@ export default class CharacterData extends foundry.abstract.TypeDataModel {
         enabled: new BooleanField(),                   // show the Air Combat panel without a flight ability
         speedClass: intField(0, { min: 0, max: 50 }),  // 0 = from the flight ability's speed (Flight 160 mph = 10)
         veerSkill: intField(0, { min: 0 })             // % for veering off in chicken games (+ Air-to-Air Combat)
+      }),
+      // Money (v1.20.0): starting money from the Origin / Education (rolled by the player, p.64) and other
+      // spending; the cost of priced items on the sheet is added up in derived data.
+      money: new SchemaField({
+        starting: intField(0, { min: 0 }),
+        other: intField(0, { min: 0 })
       }),
       // Attribute generation is rolled once; a re-roll needs the GM's permission.
       generation: new SchemaField({
@@ -344,6 +365,21 @@ export default class CharacterData extends foundry.abstract.TypeDataModel {
     this.#prepareMagic();
     this.#prepareSaves();
     this.#prepareProgress();
+    this.#prepareMoney();
+  }
+
+  /**
+   * Money: what the priced items on the sheet cost (× quantity) plus other spending, against the starting
+   * money. Over it is allowed (a soft cap); the sheet and a warning say so.
+   */
+  #prepareMoney() {
+    const m = this.money ??= { starting: 0, other: 0 };
+    const items = [...(this.parent?.items ?? [])].map(i => ({ name: i.name, type: i.type, cost: itemCost(i) })).filter(i => i.cost > 0);
+    m.items = items;
+    m.itemsTotal = items.reduce((n, i) => n + i.cost, 0);
+    m.spent = m.itemsTotal + (m.other ?? 0);
+    m.left = (m.starting ?? 0) - m.spent;
+    m.over = (m.starting > 0) && (m.spent > m.starting);
   }
 
   /* -------------------------------------------- */
@@ -561,6 +597,10 @@ export default class CharacterData extends foundry.abstract.TypeDataModel {
 
   #prepareCombat() {
     const c = this.combat;
+    // A Combat Training item (v1.20.0) sets the training; the Combat tab's dropdown is the fallback.
+    const trainingItem = [...(this.parent?.items ?? [])].find(i => (i.type === "skill") && (i.system.combatTraining in CONFIG.PALLADIUM.COMBAT_TRAINING));
+    c.trainingItem = trainingItem ? { id: trainingItem.id, name: trainingItem.name } : null;
+    if ( trainingItem ) c.training = trainingItem.system.combatTraining;
     const effectiveLevel = Math.min(15, this.identity.level + c.bonusLevels);
     const training = CONFIG.PALLADIUM.combatTrainingAt(c.training, effectiveLevel);
     const pp = this.bonuses.pp.ppCombat;

@@ -1,7 +1,7 @@
 # Combat
 
 ## Combat Training panel
-- **Training**: None, Basic, Expert, Martial Arts, Assassin, Ninjutsu, Feral. The sheet applies each level's gains automatically.
+- **Training**: drop a **Combat Training** item from the compendium's Skills pack (*Combat Training: Basic, Expert, Martial Arts, Assassin, Ninjutsu, Feral*) on the character: it sets the training and shows in the Skills list. Only one at a time: dropping another (say, Expert over Basic) replaces it. While an item sets it, the field is locked; without one, pick it from the dropdown (NPCs use the dropdown). The sheet applies each level's gains automatically.
 - **Team Bonus Levels**: the Team Characters option; adds to the effective training level.
 - **Actions Left / per Round**: how many actions remain this round, with a **↺** reset button (see *Actions per Round*).
 - **Misc Actions**: extra actions from skills or powers not tracked by items.

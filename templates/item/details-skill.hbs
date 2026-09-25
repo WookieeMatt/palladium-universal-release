@@ -37,6 +37,12 @@
         <input type="number" name="system.bonus" value="{{system.bonus}}" data-tooltip="Origin bonus, task difficulty, etc." />
       </div>
       <div class="field">
+        <label>Combat Training</label>
+        <select name="system.combatTraining" data-tooltip="Makes this skill a Combat Training (Hand to Hand): owning it sets the character's training.">
+          {{selectOptions combatTrainingChoices selected=system.combatTraining blank="— Not a Combat Training —"}}
+        </select>
+      </div>
+      <div class="field">
         <label>Team Levels</label>
         <input type="number" name="system.teamLevels" value="{{system.teamLevels}}" min="0"
           data-tooltip="Team Characters (p.19): +1 skill level per additional team member, for skills every member took. Adds Per Level % × this." />

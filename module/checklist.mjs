@@ -39,6 +39,8 @@ export function creationChecklist(actor) {
       detail: skills ? `${skills} skill${skills === 1 ? "" : "s"}` : "Add the skills from the Origin and Education" },
     { key: "alignment", label: "Alignment", tab: "core", done: !!id.alignment,
       detail: id.alignment ? (CONFIG.PALLADIUM.ALIGNMENTS[id.alignment] ?? id.alignment) : "Pick one in the header" },
+    { key: "money", label: "Starting Money", tab: "gear", done: (sys.money?.starting ?? 0) > 0,
+      detail: sys.money?.starting > 0 ? CONFIG.PALLADIUM.formatCost(sys.money.starting) : "Roll the Origin / Education money, enter it on the Gear tab" },
     { key: "hp", label: "Roll Hit Points", tab: "core", done: !!hp.rolled || (hp.max > 0),
       detail: (hp.rolled || (hp.max > 0)) ? `${hp.max} max` : "P.E. + 1D6: Roll Hit Points under Health & Damage" }
   ];

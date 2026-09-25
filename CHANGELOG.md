@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.20.0
+- **Money** (Gear tab, characters): **Starting Money** per character, from the rules: the Origin / Education money is shown with its dice clickable to roll (p.64). **Spent on Items** adds up the listed cost × quantity of every weapon, armor, gear and device on the sheet (removing an item refunds it), plus **Other Expenses**; **Left** shows what remains. Starting Money is a soft cap: going over warns the player and whispers the GM, and nothing is blocked. The creation checklist gains a Starting Money step.
+- **Combat Training items**: a skill can be a Combat Training (new *Combat Training* field on the skill sheet). Owning one sets the character's training; dropping another replaces it (one at a time). The Combat tab's Training dropdown is locked while an item sets it and stays as the fallback (NPCs use it). The TMNT compendium (0.5.0) has Basic, Expert, Martial Arts, Assassin, Ninjutsu and Feral.
+
 ## 1.19.0
 - **Party actor**: a new Actor type. Drop characters, NPCs and vehicles on it (three lists, linked not copied, no token needed); a shared **Party Notes** tab everyone can write in; its own portrait and token that players can move on the map. **Active Party** world setting (automatic with one party), or **Make Active Party** on the sheet.
 - **GM Party View** (Actors sidebar button, or the Party sheet): every character and NPC live, with HP and S.D.C. bars, actions left, armor, conditions, level / XP with a Level up! badge, and a compact skill list; vehicles with S.D.C. and status. **Add Party to Combat** puts the characters and NPCs (not vehicles) in the Combat Tracker, with or without tokens.

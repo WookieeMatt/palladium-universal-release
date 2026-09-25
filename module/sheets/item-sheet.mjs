@@ -100,6 +100,7 @@ export default class PalladiumItemSheet extends HandlebarsApplicationMixin(ItemS
       enrichedMalfunction: item.type === "device" ? await foundry.applications.ux.TextEditor.implementation.enrichHTML(
         inlineDice(item.system.malfunction), { relativeTo: item }) : "",
       skillCategories: SKILL_CATEGORIES,
+      combatTrainingChoices: Object.fromEntries(Object.entries(CONFIG.PALLADIUM.COMBAT_TRAINING).filter(([k]) => k !== "none").map(([k, v]) => [k, v.label])),
       trainingChoices: { professional: "Professional", amateur: "Amateur" },
       wpKinds: WP_KINDS,
       weaponTypes: WEAPON_TYPES,

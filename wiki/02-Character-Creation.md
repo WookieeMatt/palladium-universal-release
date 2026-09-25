@@ -13,9 +13,10 @@ New characters get a **Creation Checklist** at the top of the Core tab: the step
 4. **Origin** and 5. **Education** (drop the backgrounds, or type them in the header)
 6. **Skills**
 7. **Alignment**
-8. **Roll Hit Points** (see below)
+8. **Starting Money** (the Origin / Education money, entered on the Gear tab)
+9. **Roll Hit Points** (see below)
 
-Click an unfinished step to jump to its tab. When all eight are done the checklist disappears. **Hide** puts it away early (for example, to keep some Bio-E unspent); *Show the creation checklist* at the bottom of the Core tab brings it back. NPCs don't have one.
+Click an unfinished step to jump to its tab. When all nine are done the checklist disappears. **Hide** puts it away early (for example, to keep some Bio-E unspent); *Show the creation checklist* at the bottom of the Core tab brings it back. NPCs don't have one.
 
 ## Generating attributes
 Attributes are rolled **once, at character creation**, with the **Roll Attributes** button on the Core tab. It rolls every attribute at once and saves the results:

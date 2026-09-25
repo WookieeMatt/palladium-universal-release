@@ -147,6 +147,7 @@ export class SkillData extends ItemDataBase {
       levelAcquired: intField(1, { min: 1, max: 15 }),
       bonus: intField(),                // misc %, e.g. origin "+20%"
       teamLevels: intField(0, { min: 0 }), // Team Characters (p.19): +1 skill level per other member
+      combatTraining: textField(),      // a Combat Training "skill" (p.62): its COMBAT_TRAINING key sets the owner's training
       passive: new BooleanField(),      // physical skills with no percentile roll
       requires: textField(),
       effects: effectsField()

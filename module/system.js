@@ -14,6 +14,7 @@ import PalladiumPartySheet from "./sheets/party-sheet.mjs";
 import { registerPartySettings } from "./party.mjs";
 import { initPartyView } from "./party-view.mjs";
 import { initCombatTracker } from "./combat-tracker.mjs";
+import { initMoney } from "./money.mjs";
 import { onRenderChatMessage } from "./combat.mjs";
 import { onDeleteCombat, onUpdateCombat } from "./actions.mjs";
 import { buildApi } from "./api.mjs";
@@ -25,6 +26,7 @@ Hooks.once("init", function () {
   registerAuditSettings();
   registerPartySettings();
   initPartyView();
+  initMoney();
   initAudit();
   console.log("Palladium Universal | Initializing system");
 
