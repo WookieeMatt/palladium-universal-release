@@ -23,8 +23,9 @@ const STATUS = {
 /** Each recommended module with its status in this world. */
 export function recommendedModules() {
   return CONFIG.PALLADIUM.RECOMMENDED_MODULES.map(m => {
-    const mod = game.modules.get(m.id);
-    const status = !mod ? "missing" : mod.active ? "active" : "inactive";
+    // Any of the ids counts (JB2A: the free module or the Patreon one); the active one wins.
+    const found = [m.id, ...(m.alternatives ?? [])].map(id => game.modules.get(id)).filter(Boolean);
+    const status = !found.length ? "missing" : found.some(mod => mod.active) ? "active" : "inactive";
     return { ...m, status, url: m.url ?? `https://foundryvtt.com/packages/${m.id}` };
   });
 }

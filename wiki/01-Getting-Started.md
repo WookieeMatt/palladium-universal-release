@@ -8,7 +8,7 @@
 
 Updates arrive through Foundry's normal **Update** button on the Game Systems tab.
 
-**Welcome cards:** the first time the system runs in a world, the GM gets a chat card (whispered, players don't see it) listing the modules the system works with, **Dice So Nice**, **Automated Animations**, **Sequencer**, **JB2A**, **Token Action HUD Core** and **Token Action HUD Palladium Universal**, each marked *Active*, *Installed, not enabled* or *Not installed*, with a link to its page (and the manifest URL for the HUD, which you paste into *Install Module*). The card comes back once when this list changes. Show it again any time with the macro `game.palladium.showRecommendedModules()`.
+**Welcome cards:** the first time the system runs in a world, the GM gets a chat card (whispered, players don't see it) listing the modules the system works with, **Dice So Nice**, **Automated Animations**, **Sequencer**, **JB2A** (free or Patreon version), **Token Action HUD Core** and **Token Action HUD Palladium Universal**, each marked *Active*, *Installed, not enabled* or *Not installed*, with a link to its page (and the manifest URL for the HUD, which you paste into *Install Module*). The card comes back once when this list changes. Show it again any time with the macro `game.palladium.showRecommendedModules()`.
 
 Each **player** gets a short welcome of their own the first time they log in: where the guide is (Getting Started, Character Creation, Combat), that the Creation Checklist on the Core tab walks them through making a character, and how to roll in play. Show it again with `game.palladium.showPlayerWelcome()`.
 

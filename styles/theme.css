@@ -1328,6 +1328,8 @@
 .palladium-universal.sheet .charname { margin: 0 0 6px; }
 .palladium-universal.sheet .charname input { min-height: 0; height: auto; font-size: 1.6rem; padding: 0 4px 2px; }
 .palladium-universal.sheet .identity-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px 8px; }
+.palladium-universal.sheet .sheet-header.npc-header { grid-template-columns: 96px minmax(0, 1fr); } /* NPCs and vehicles: portrait on the left (v1.29.1) */
+.palladium-universal.sheet .npc-header .identity-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 .palladium-universal.sheet .sheet-body,
 .palladium-universal.sheet section.tab { padding: 6px 8px; }
 .palladium-universal.sheet .panel,

@@ -967,7 +967,7 @@ export const RECOMMENDED_MODULES = [
   { id: "dice-so-nice", label: "Dice So Nice", reason: "3D dice, including the system's T.C.R.I. Dice" },
   { id: "autoanimations", label: "Automated Animations", reason: "Animations for attacks, maneuvers, spells, psionics, item rolls and devices" },
   { id: "sequencer", label: "Sequencer", reason: "Required by Automated Animations" },
-  { id: "JB2A_DnD5e", label: "JB2A (free version)", reason: "The animation art Automated Animations plays" },
+  { id: "JB2A_DnD5e", alternatives: ["jb2a_patreon"], label: "JB2A (free or Patreon version)", reason: "The animation art Automated Animations plays" },
   { id: "token-action-hud-core", label: "Token Action HUD Core", reason: "Needed by the Palladium Universal HUD" },
   { id: "token-action-hud-palladium-universal", label: "Token Action HUD Palladium Universal",
     reason: "Attacks, combat rolls, saves, skills, powers and conditions on a HUD next to the selected token",

@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.29.1
+- **NPC and vehicle sheets**: the header is back to portrait on the left and the fields in one row (the 1.27 compact header had squeezed the fields into a narrow column).
+- GM welcome card: **JB2A** shows *Active* with either the free module or the **Patreon** one (it only looked for the free one).
+
 ## 1.29.0
 - **GM welcome card** lists **Token Action HUD Core** and **Token Action HUD Palladium Universal** (with its manifest URL to paste into *Install Module*). Worlds that already saw the card get the new list once.
 - **Player welcome**: each player gets a short card the first time they log in: where the guide is, that the Creation Checklist walks them through making a character, and how to roll in play. `game.palladium.showPlayerWelcome()` shows it again.
