@@ -104,6 +104,10 @@ export default class PalladiumItemSheet extends HandlebarsApplicationMixin(ItemS
       trainingChoices: { professional: "Professional", amateur: "Amateur" },
       wpKinds: WP_KINDS,
       weaponTypes: WEAPON_TYPES,
+      // Weapon card: only the fields that apply to this kind of weapon.
+      weaponRanged: (item.type === "weapon") && !["melee", "natural"].includes(item.system.weaponType),
+      weaponAuto: (item.type === "weapon") && (["firearm", "energy"].includes(item.system.weaponType) || !!item.system.burstDamage),
+      weaponNatural: (item.type === "weapon") && ((item.system.weaponType === "natural") || (item.system.bioe > 0)),
       armorTypes: { body: "Body Armor", shield: "Shield" },
       effectTargets: effectTargets(),
       hasEffects: "effects" in item.system,

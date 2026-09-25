@@ -145,6 +145,7 @@ export async function rollAttributes(actor) {
   if ( state?.rolled && !state.rerollAllowed ) {
     if ( !game.user.isGM ) return requestReroll(actor);
     const ok = await DialogV2.confirm({
+      classes: ["palladium-universal", "pu-skill-mods"],
       window: { title: "Re-roll Attributes" },
       content: `<p>${foundry.utils.escapeHTML(actor.name)}'s attributes have already been rolled. Roll them again and replace the scores?</p>`
     });
@@ -216,6 +217,7 @@ const REROLLS = {
 export async function requestReroll(actor, what = "attributes") {
   const r = REROLLS[what] ?? REROLLS.attributes;
   const ok = await DialogV2.confirm({
+    classes: ["palladium-universal", "pu-skill-mods"],
     window: { title: `Re-roll ${r.label}` },
     content: `<p>${r.label} are rolled once. Ask the GM for permission to roll them again?</p>`
   });
@@ -263,6 +265,7 @@ export async function rollHitPoints(actor) {
   if ( reroll && !sys.generation.hpRerollAllowed ) {
     if ( !game.user.isGM ) return requestReroll(actor, "hp");
     const ok = await DialogV2.confirm({
+      classes: ["palladium-universal", "pu-skill-mods"],
       window: { title: "Re-roll Hit Points" },
       content: `<p>${foundry.utils.escapeHTML(actor.name)}'s Hit Points have already been rolled. Roll them again and replace them?</p>`
     });

@@ -89,6 +89,7 @@ export async function sceneWeatherDialog(scene = globalThis.canvas?.scene) {
     ...Object.entries(CONFIG.PALLADIUM.POWDER_WEATHER).map(([key, w]) =>
       `<option value="${key}"${key === current ? " selected" : ""}>${w.label}${w.misfire ? ` (+${w.misfire}% misfire)` : ""}</option>`)].join("");
   const key = await DialogV2.prompt({
+    classes: ["palladium-universal", "pu-skill-mods"],
     window: { title: `Scene Weather: ${scene.name}` },
     content: `<div class="form-group"><label>Weather</label><div class="form-fields"><select name="weather" autofocus>${options}</select></div></div>
       <p class="hint">Sets the default in every character's black powder weather prompt in this scene.</p>`,
@@ -120,6 +121,7 @@ export async function askPowderWeather(weapon) {
   const options = Object.entries(CONFIG.PALLADIUM.POWDER_WEATHER).map(([key, w]) =>
     `<option value="${key}"${key === last ? " selected" : ""}>${w.label}${w.misfire ? ` (+${w.misfire}%)` : ""} — misfire ${misfireChance(weapon, key)}%</option>`).join("");
   const weather = await DialogV2.prompt({
+    classes: ["palladium-universal", "pu-skill-mods"],
     window: { title: `${weapon.name}: Weather` },
     content: `<div class="form-group"><label>Weather</label><div class="form-fields"><select name="weather" autofocus>${options}</select></div></div>
       <p class="hint">${sceneKey ? `The GM set this scene's weather: <strong>${powderWeather(sceneKey).label}</strong>. ` : ""}Damp powder misfires more often: humid +5%, rain +15%, downpour or dunking +35%.</p>`,
@@ -388,6 +390,7 @@ export async function askHandheldParry(actor) {
   if ( !penalty ) return 0;
   const sources = (actor.system.itemEffects.sources?.["handheld.parry"] ?? []).map(s => s.source).filter(s => s).join(", ");
   const choice = await DialogV2.wait({
+    classes: ["palladium-universal", "pu-skill-mods"],
     window: { title: `${actor.name}: Parry` },
     content: `<p><strong>Is ${foundry.utils.escapeHTML(actor.name)} parrying with a hand-held weapon (sword, staff, nunchaku...)?</strong></p>
       <p class="hint">${foundry.utils.escapeHTML(sources || "Human Features")}: ${signed(penalty)} to Parry with hand-held weapons.</p>`,
@@ -626,6 +629,7 @@ export async function rollDefense(defender, key, attack, attackerName = "the att
 export async function rollHorrorFactor(actor, hf = null, source = "") {
   if ( !Number.isFinite(hf) ) {
     hf = await DialogV2.prompt({
+      classes: ["palladium-universal", "pu-skill-mods"],
       window: { title: `${actor.name}: Horror Factor` },
       content: `<div class="form-group"><label>Horror Factor</label>
         <div class="form-fields"><input type="number" name="hf" value="12" min="1" max="30" autofocus></div></div>`,

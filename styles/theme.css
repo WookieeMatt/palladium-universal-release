@@ -1213,3 +1213,223 @@
 .pu-first-side button.pu-initiative i { margin-right: 6px; }
 .pu-tracker-actions .pu-sidetoggle.friendly { color: #7fc88f; }
 .pu-tracker-actions .pu-sidetoggle.hostile { color: #e06a5c; }
+
+/* -------------------------------------------- */
+/*  v1.27.0: readable buttons, readable popups, compact layout */
+/* -------------------------------------------- */
+
+/* Buttons: the comic heading font at small sizes on mid green was hard to read. One button look everywhere:
+   the body font, bold, white on the dark green. Secondary (locked) buttons: dark ink on parchment. */
+.palladium-universal .panel-header .pu-roll-attributes,
+.palladium-universal .pu-party-buttons button,
+.pu-party-view .pu-party-view-toolbar button,
+.palladium-universal .pu-checklist-hide,
+.palladium-universal .panel-header button {
+  font-family: var(--pu-body);
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.01em;
+  text-transform: none;
+  line-height: 1.5;
+  color: #fff;
+  background: var(--pu-green);
+  border: 1px solid #16301d;
+  border-radius: 6px;
+  padding: 2px 10px;
+  text-shadow: none;
+}
+.palladium-universal .panel-header .pu-roll-attributes:hover,
+.palladium-universal .pu-party-buttons button:hover,
+.pu-party-view .pu-party-view-toolbar button:hover,
+.palladium-universal .pu-checklist-hide:hover,
+.palladium-universal .panel-header button:hover { background: var(--pu-green-light); color: #fff; }
+.palladium-universal .panel-header .pu-roll-attributes.locked,
+.palladium-universal .pu-checklist-hide {
+  color: var(--pu-ink);
+  background: var(--pu-paper);
+  border-color: var(--pu-rule);
+}
+.palladium-universal .panel-header .pu-roll-attributes.locked:hover,
+.palladium-universal .pu-checklist-hide:hover { background: var(--pu-green-pale); color: var(--pu-ink); }
+.palladium-universal .panel-header .pu-roll-hp.level-up { color: #fff; background: #9a6b00; border-color: #7a5500; }
+
+/* Popup windows (creation rolls, skill modifiers, cover, healing, initiative, Parry...): parchment and ink, like the
+   sheets, whatever Foundry theme is in use. */
+.application.pu-skill-mods,
+.application.pu-creation-roll {
+  color: var(--pu-ink);
+  background: var(--pu-parchment);
+  --color-text-primary: var(--pu-ink);
+  --color-text-secondary: var(--pu-ink-soft);
+}
+.application.pu-skill-mods .window-header,
+.application.pu-creation-roll .window-header {
+  background: var(--pu-green);
+  color: #fff;
+  border-bottom: 2px solid #16301d;
+}
+.application.pu-skill-mods .window-title,
+.application.pu-creation-roll .window-title {
+  font-family: var(--pu-heading);
+  font-size: 1.15rem;
+  letter-spacing: 0.05em;
+  color: #fff;
+}
+.application.pu-skill-mods .window-header button,
+.application.pu-creation-roll .window-header button { color: #fff; }
+.application.pu-skill-mods .window-content,
+.application.pu-creation-roll .window-content {
+  background: var(--pu-parchment);
+  color: var(--pu-ink);
+  font-family: var(--pu-body);
+  font-size: 0.95rem;
+}
+.application.pu-skill-mods .hint,
+.application.pu-creation-roll .hint { color: var(--pu-ink-soft); }
+.application.pu-skill-mods p,
+.application.pu-creation-roll p { color: var(--pu-ink); }
+.application.pu-skill-mods select,
+.application.pu-skill-mods input:not([type="checkbox"]):not([type="radio"]),
+.application.pu-creation-roll select {
+  color: var(--pu-ink);
+  background: #fffdf5;
+  border: 1px solid var(--pu-rule);
+  border-radius: 6px;
+}
+.application.pu-skill-mods .form-footer button,
+.application.pu-creation-roll .form-footer button {
+  font-family: var(--pu-body);
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--pu-ink);
+  background: var(--pu-paper);
+  border: 1px solid var(--pu-rule);
+  border-radius: 6px;
+}
+.application.pu-skill-mods .form-footer button:hover,
+.application.pu-creation-roll .form-footer button:hover { background: var(--pu-green-pale); }
+.application.pu-skill-mods .form-footer button[data-action]:first-child,
+.application.pu-creation-roll .form-footer button[data-action]:first-child,
+.application.pu-skill-mods .form-footer button.default,
+.application.pu-creation-roll .form-footer button.default {
+  color: #fff;
+  background: var(--pu-green);
+  border-color: #16301d;
+}
+.application.pu-skill-mods .form-footer button[data-action]:first-child:hover,
+.application.pu-creation-roll .form-footer button[data-action]:first-child:hover { background: var(--pu-green-light); }
+.application.pu-creation-roll .pu-cr-roll { color: var(--pu-ink-soft); }
+.application.pu-creation-roll .pu-cr-roll strong { color: var(--pu-ink); }
+
+/* Compact layout: less padding and smaller boxes on the sheets and item cards. */
+.palladium-universal.sheet .sheet-header { gap: 12px; padding: 8px 10px 6px; grid-template-columns: minmax(0, 1fr) 118px; }
+.palladium-universal.sheet .token-box { width: 112px; height: 112px; border-radius: 50%; }
+.palladium-universal.sheet .charname { margin: 0 0 6px; }
+.palladium-universal.sheet .charname input { min-height: 0; height: auto; font-size: 1.6rem; padding: 0 4px 2px; }
+.palladium-universal.sheet .identity-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px 8px; }
+.palladium-universal.sheet .sheet-body,
+.palladium-universal.sheet section.tab { padding: 6px 8px; }
+.palladium-universal.sheet .panel,
+.palladium-universal.sheet .card { padding: 6px 10px 8px; margin-bottom: 6px; border-radius: 10px; }
+.palladium-universal.sheet .panel-header { margin-bottom: 4px; padding-bottom: 2px; min-height: 0; }
+.palladium-universal.sheet .panel-header h2 { font-size: 1.25rem; margin: 0; }
+.palladium-universal.sheet .field,
+.palladium-universal.sheet .readonly-field { gap: 1px; }
+.palladium-universal.sheet label,
+.palladium-universal.sheet .field label { font-size: 0.7rem; }
+.palladium-universal.sheet label.checkbox { font-size: 0.85rem; }
+.palladium-universal.sheet input:not([type="checkbox"]):not([type="radio"]),
+.palladium-universal.sheet select {
+  height: 26px;
+  min-height: 26px;
+  padding: 1px 6px;
+  font-size: 0.9rem;
+  border-radius: 6px;
+}
+.palladium-universal.sheet .item-grid,
+.palladium-universal.sheet .health-grid,
+.palladium-universal.sheet .combat-grid,
+.palladium-universal.sheet .resource-grid,
+.palladium-universal.sheet .attribute-grid { gap: 4px 8px; }
+.palladium-universal.sheet table td,
+.palladium-universal.sheet table th { padding-top: 2px; padding-bottom: 2px; }
+.palladium-universal.sheet .sheet-tabs { padding: 4px 8px; gap: 4px; }
+.palladium-universal.sheet .sheet-tabs > a { padding: 2px 10px; font-size: 0.95rem; }
+.palladium-universal.sheet .hint { font-size: 0.8rem; }
+
+/* Size table: compact rows; only the sizes near the current one unless "All sizes" is ticked. */
+.palladium-universal .size-table { font-size: 0.8rem; }
+.palladium-universal .size-table td, .palladium-universal .size-table th { padding: 1px 6px; }
+.palladium-universal .pu-size-all { margin: 2px 0; font-size: 0.8rem; color: var(--pu-green); cursor: pointer; }
+.palladium-universal .pu-size-all summary { cursor: pointer; }
+.palladium-universal .pu-size-all:not([open]) + .size-table tr.far { display: none; }
+
+/* Weapon card: the checkboxes on one line. */
+.palladium-universal .item-grid.pu-weapon-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.palladium-universal .pu-weapon-flags { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 4px 18px; }
+
+/* Rich text boxes (ProseMirror): an empty one collapses to one line that says how to open it. */
+.palladium-universal prose-mirror:not(.active):has(.editor-content:empty),
+.palladium-universal prose-mirror:not(.active):has(.editor-content > p:only-child:empty) {
+  min-height: 0;
+  height: auto;
+}
+.palladium-universal prose-mirror:not(.active) .editor-content:empty,
+.palladium-universal prose-mirror:not(.active) .editor-content:has(> p:only-child:empty) {
+  min-height: 0 !important;
+  height: auto;
+  padding: 3px 34px 3px 8px;
+}
+.palladium-universal prose-mirror:not(.active) .editor-content:empty::before,
+.palladium-universal prose-mirror:not(.active) .editor-content:has(> p:only-child:empty)::before {
+  content: "Empty. Click the pen to write.";
+  color: var(--pu-ink-soft);
+  font-style: italic;
+  font-size: 0.85rem;
+}
+.palladium-universal prose-mirror:not(.active) .editor-content:has(> p:only-child:empty) > p { display: none; }
+.palladium-universal prose-mirror:not(.active) button.toggle {
+  color: #fff;
+  background: var(--pu-green);
+  border: 1px solid #16301d;
+  border-radius: 6px;
+  opacity: 1;
+  visibility: visible;
+}
+.palladium-universal.sheet h1.charname input:not([type="checkbox"]):not([type="radio"]) { height: auto; min-height: 0; font-size: 1.7rem; padding: 0 4px 2px; border-radius: 0; }
+.palladium-universal.sheet .panel-header .pu-heal { margin-left: auto; }
+.palladium-universal.sheet .panel-header .pu-heal + .pu-roll-hp { margin-left: 6px; }
+.palladium-universal.sheet .drop-slot { min-height: 0; padding: 6px 10px; }
+.palladium-universal.sheet .drop-slot.big { min-height: 0; padding: 10px; }
+.palladium-universal.sheet .training-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px 10px; align-items: end; }
+.palladium-universal.sheet .circ-row { gap: 4px 10px; margin: 4px 0; }
+.palladium-universal.sheet .derived.big { font-size: 1.4rem; line-height: 1.1; }
+.palladium-universal.sheet .ability-lists { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 4px 18px; }
+.palladium-universal.sheet .ability-lists ul { margin: 2px 0; padding-left: 1.1em; }
+.palladium-universal.sheet .ability-lists h3 { font-size: 1.05rem; margin: 2px 0; }
+
+/* GM Party View (v1.27.0): compact rows, skills wrap instead of scrolling sideways. */
+.pu-party-view .window-content { padding: 6px 8px; }
+.pu-party-view .panel { padding: 4px 10px 6px; margin-bottom: 6px; }
+.pu-party-view .panel-header h2 { font-size: 1.15rem; }
+.pu-party-view .pu-party-view-toolbar { margin-bottom: 6px; }
+.pu-party-view .pu-pv-card { grid-template-columns: 38px minmax(0, 1fr); gap: 8px; padding: 4px 0; align-items: start; }
+.pu-party-view .pu-pv-portrait { width: 38px; height: 38px; }
+.pu-party-view .pu-pv-main { min-width: 0; }
+.pu-party-view .pu-pv-main header { gap: 6px; line-height: 1.2; }
+.pu-party-view .pu-pv-name { font-size: 1.05rem; }
+.pu-party-view .pu-pv-main header .hint { font-size: 0.78rem; }
+.pu-party-view .pu-pv-stats { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto minmax(0, 1.2fr); gap: 2px 10px; margin-top: 2px; }
+.pu-party-view .pu-pv-bar { grid-template-columns: 2.6em minmax(0, 1fr) auto; gap: 4px; font-size: 0.78rem; }
+.pu-party-view .pu-pv-bar .track { height: 7px; }
+.pu-party-view .pu-pv-stat { font-size: 0.78rem; }
+.pu-party-view .pu-pv-conditions { margin-top: 2px; }
+.pu-party-view .pu-pv-skills { margin: 2px 0 0; font-size: 0.74rem; line-height: 1.35; overflow-wrap: anywhere; }
+.application.pu-skill-mods .window-header button, .application.pu-creation-roll .window-header button { background: transparent; border: none; box-shadow: none; }
+.palladium-universal.sheet .animal-summary { gap: 10px; margin-bottom: 4px; }
+.palladium-universal.sheet .animal-summary .animal-img { width: 64px; height: 64px; }
+.palladium-universal.sheet .animal-summary p { margin: 0; line-height: 1.3; }
+.palladium-universal.sheet .option-columns { gap: 4px 18px; }
+.palladium-universal.sheet .option-columns h3 { font-size: 1.05rem; margin: 2px 0; }
+.palladium-universal.sheet .option-list li { padding: 2px 0; }
+.palladium-universal.sheet .option-list .hint { display: block; margin: 0 0 0 1.7em; line-height: 1.25; }

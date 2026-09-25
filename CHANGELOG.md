@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.27.0
+- **Readable buttons**: the small green buttons in the comic font (Roll Attributes, Heal, Roll Hit Points, Hide, the Party sheet and GM Party View buttons) now use the plain bold font, white on dark green; locked or secondary ones are dark on parchment.
+- **Readable popups**: every system popup (creation rolls, skill modifiers, Initiative, cover, healing, Parry, weather, Horror Factor...) has the parchment look with dark text and a green title bar, whatever Foundry theme you use.
+- **More compact sheets**: the header fits in two rows with a smaller portrait; panels, fields and tables are tighter; the Magic panel and the animal's abilities take half the height; the size table shows the sizes around the current one (*All sizes* opens the rest).
+- **Weapon cards** only show the fields that apply (range, ammo and reload for ranged weapons, burst damage for automatic ones, Bio-E for natural weapons), with Equipped / Two-handed / Blunt on one line.
+- **Empty rich-text boxes** (descriptions, notes) collapse to one line with the green pen to open them.
+- **GM Party View**: compact rows and smaller portraits; skill lists wrap instead of scrolling sideways; smaller window.
+- The TMNT compendium (0.8.0, private) gives the 214 items that had no description a short one.
+
 ## 1.26.0
 - **One Initiative button** at the top of the Combat Tracker (GM) instead of five: a dropdown with **Showdown** (everyone rolls), **Ambush** and **Sudden Violence** (then Friendly or Hostile: that side has the Initiative, everyone else rolls).
 - **Friendly / Hostile per combatant**: a green shield or red skull on each row; the GM clicks it to flip the side (the token's disposition changes too). Macros: `setCombatantSide`, `toggleCombatantSide`, `combatantSide`, hook `palladium.side`.

@@ -15,6 +15,14 @@
         </select>
       </div>
       <div class="field">
+        <label>Origin</label>
+        <input type="text" name="system.identity.origin" value="{{system.identity.origin}}" />
+      </div>
+      <div class="field">
+        <label>Education</label>
+        <input type="text" name="system.identity.education" value="{{system.identity.education}}" />
+      </div>
+      <div class="field">
         <label>Level</label>
         <input type="number" value="{{system.identity.level}}" disabled class="pu-level-auto"
           data-tooltip="Follows the Experience total (p.75).{{#if system.identity.nextXP}} Next level at {{system.identity.nextXP}} XP.{{/if}}" />
@@ -22,14 +30,6 @@
       <div class="field">
         <label>XP</label>
         <input type="number" name="system.identity.xp" value="{{system.identity.xp}}" min="0" data-tooltip="Experience total: the Level follows it" />
-      </div>
-      <div class="field">
-        <label>Origin</label>
-        <input type="text" name="system.identity.origin" value="{{system.identity.origin}}" />
-      </div>
-      <div class="field">
-        <label>Education</label>
-        <input type="text" name="system.identity.education" value="{{system.identity.education}}" />
       </div>
       <div class="field">
         <label>Education Bonus %</label>

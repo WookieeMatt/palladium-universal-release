@@ -1,32 +1,30 @@
 <section class="item-body">
   <section class="panel">
-    <div class="item-grid">
+    <div class="item-grid pu-weapon-grid">
       <div class="field">
         <label>Type</label>
         <select name="system.weaponType">{{selectOptions weaponTypes selected=system.weaponType}}</select>
       </div>
       <div class="field">
-        <label>Proficiency (WP group)</label>
+        <label>W.P. group</label>
         <input type="text" name="system.proficiency" value="{{system.proficiency}}" placeholder="Sword" />
       </div>
       <div class="field">
         <label>Damage</label>
         <input type="text" name="system.damage" value="{{system.damage}}" />
       </div>
+      {{#if weaponAuto}}
       <div class="field">
         <label>Burst Damage</label>
         <input type="text" name="system.burstDamage" value="{{system.burstDamage}}" placeholder="Automatic weapons" />
       </div>
+      {{/if}}
+      {{#if weaponRanged}}
       <div class="field">
         <label>Range</label>
         <input type="text" name="system.range" value="{{system.range}}" />
       </div>
-      <label class="checkbox">
-        <input type="checkbox" name="system.twoHanded" {{checked system.twoHanded}} /> Two-handed
-      </label>
-      <label class="checkbox" data-tooltip="Blunt (fists, kicks, staffs, clubs, chains...): the defender can Roll with Impact for half damage. Explosions always can; bullets, energy and blades can't (p.84).">
-        <input type="checkbox" name="system.blunt" {{checked system.blunt}} /> Blunt
-      </label>
+      {{/if}}
       <div class="field">
         <label>Strike Bonus</label>
         <input type="number" name="system.strikeBonus" value="{{system.strikeBonus}}" />
@@ -39,6 +37,7 @@
         <label>Damage Bonus</label>
         <input type="number" name="system.damageBonus" value="{{system.damageBonus}}" />
       </div>
+      {{#if weaponRanged}}
       <div class="field">
         <label>Ammo</label>
         <div class="pair">
@@ -51,13 +50,13 @@
         <label>Reload</label>
         <input type="text" name="system.reload" value="{{system.reload}}" placeholder="1 melee round" />
       </div>
+      {{/if}}
+      {{#if weaponNatural}}
       <div class="field">
-        <label>Bio-E (natural weapons)</label>
+        <label>Bio-E cost</label>
         <input type="number" name="system.bioe" value="{{system.bioe}}" min="0" />
       </div>
-      <label class="checkbox">
-        <input type="checkbox" name="system.equipped" {{checked system.equipped}} /> Equipped
-      </label>
+      {{/if}}
       <div class="field">
         <label>Quantity</label>
         <input type="number" name="system.quantity" value="{{system.quantity}}" min="0" />
@@ -69,6 +68,12 @@
       <div class="field">
         <label>Cost</label>
         <input type="text" name="system.cost" value="{{system.cost}}" />
+      </div>
+      <div class="pu-weapon-flags">
+        <label class="checkbox"><input type="checkbox" name="system.equipped" {{checked system.equipped}} /> Equipped</label>
+        <label class="checkbox"><input type="checkbox" name="system.twoHanded" {{checked system.twoHanded}} /> Two-handed</label>
+        <label class="checkbox" data-tooltip="Blunt (fists, kicks, staffs, clubs, chains...): the defender can Roll with Impact for half damage. Explosions always can; bullets, energy and blades can't (p.84).">
+          <input type="checkbox" name="system.blunt" {{checked system.blunt}} /> Blunt</label>
       </div>
     </div>
   </section>

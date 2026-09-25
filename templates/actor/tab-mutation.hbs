@@ -134,11 +134,12 @@
         Apply size modifiers to attributes
       </label>
     </div>
+    <details class="pu-size-all" data-tooltip="The table shows the sizes around the current one"><summary>All sizes</summary></details>
     <table class="size-table">
       <thead><tr><th>SL</th><th>Weight</th><th>IQ</th><th>PS</th><th>PE</th><th>Spd</th><th>SDC</th></tr></thead>
       <tbody>
         {{#each sizeTable}}
-        <tr class="{{#if current}}current{{/if}}">
+        <tr class="{{#if current}}current{{/if}}{{#if far}} far{{/if}}">
           <td>{{level}}</td><td>{{weight}}</td><td>{{iq}}</td><td>{{ps}}</td><td>{{pe}}</td><td>{{spd}}</td><td>{{sdc}}</td>
         </tr>
         {{/each}}

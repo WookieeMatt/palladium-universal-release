@@ -60,6 +60,7 @@ export async function rollVeer(actor, { game, penalty } = {}) {
   if ( (game === undefined) || (penalty === undefined) ) {
     const games = Object.entries(CONFIG.PALLADIUM.CHICKEN_GAMES).map(([k, g]) => `<option value="${k}">${g.label}</option>`).join("");
     const result = await DialogV2.prompt({
+      classes: ["palladium-universal", "pu-skill-mods"],
       window: { title: `${actor.name}: Veer Off` },
       content: `<div class="form-group"><label>Chicken game</label><div class="form-fields"><select name="game">${games}</select></div></div>
         <div class="form-group"><label>Current penalty %</label><div class="form-fields"><input type="number" name="penalty" value="0" min="0" step="10"></div></div>
@@ -109,6 +110,7 @@ export async function rollEmergencyLanding(actor) {
   const a = airStats(actor);
   const drive = CONFIG.PALLADIUM.DRIVE_TYPES[a.drive] ?? CONFIG.PALLADIUM.DRIVE_TYPES.other;
   const opts = await DialogV2.prompt({
+    classes: ["palladium-universal", "pu-skill-mods"],
     window: { title: `${actor.name}: Emergency Landing` },
     content: `<div class="form-group"><label>Hovering</label><div class="form-fields"><input type="checkbox" name="hover"></div></div>
       <div class="form-group"><label>Traveling over 720 mph</label><div class="form-fields"><input type="checkbox" name="fast"></div></div>
@@ -142,6 +144,7 @@ export async function rollCrash(actor, { mph, payload } = {}) {
   const a = airStats(actor);
   if ( (mph === undefined) || (payload === undefined) ) {
     const opts = await DialogV2.prompt({
+      classes: ["palladium-universal", "pu-skill-mods"],
       window: { title: `${actor.name}: Crash Damage` },
       content: `<div class="form-group"><label>Speed of impact (mph)</label><div class="form-fields"><input type="number" name="mph" value="${a.speed?.mph ?? 0}" min="0"></div></div>
         <div class="form-group"><label>Heaviest payload rating (lb)</label><div class="form-fields"><input type="number" name="payload" value="${a.payload}" min="0"></div></div>

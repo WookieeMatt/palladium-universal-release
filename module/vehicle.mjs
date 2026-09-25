@@ -30,6 +30,7 @@ export async function applyVehicleDamage(actor, amount, { strike = null, mode = 
   if ( !location && (mode !== "hp") ) {
     const options = Object.entries(CONFIG.PALLADIUM.VEHICLE_LOCATIONS).map(([k, l]) => `<option value="${k}">${l.label}</option>`).join("");
     location = await DialogV2.prompt({
+      classes: ["palladium-universal", "pu-skill-mods"],
       window: { title: `${actor.name}: Location Hit` },
       content: `<div class="form-group"><label>Location</label><div class="form-fields"><select name="location">${options}</select></div></div>
         <p class="hint">Strikes hit the hull unless the attacker declared another exposed location.</p>`,
@@ -115,6 +116,7 @@ export async function rollVehicleManeuver(actor, { name, modifier } = {}) {
   if ( name === undefined ) {
     const options = Object.entries(MANEUVER_DIFFICULTY).map(([v, l]) => `<option value="${v}"${v === "0" ? " selected" : ""}>${l}</option>`).join("");
     const data = await DialogV2.prompt({
+      classes: ["palladium-universal", "pu-skill-mods"],
       window: { title: `${actor.name}: Maneuver` },
       content: `<div class="form-group"><label>Maneuver</label><div class="form-fields">
           <input type="text" name="name" list="pu-maneuvers" placeholder="What the pilot tries" autofocus>
@@ -231,6 +233,7 @@ async function operate({ name, data, owner, readouts = [], extra = "", item }) {
   if ( skillItem ) skill = operator.system.skillPercentages(skillItem).primary;
   else {
     skill = await DialogV2.prompt({
+      classes: ["palladium-universal", "pu-skill-mods"],
       window: { title: `Operate ${name}` },
       content: `<div class="form-group"><label>${skillLabel} %</label><div class="form-fields">
         <input type="number" name="skill" value="40" min="0" max="100" autofocus></div></div>`,

@@ -19,7 +19,7 @@ export class PartyView extends HandlebarsApplicationMixin(ApplicationV2) {
     id: "palladium-party-view",
     classes: ["palladium-universal", "sheet", "pu-party-view"],
     window: { title: "GM Party View", icon: "fa-solid fa-users-viewfinder", resizable: true },
-    position: { width: 900, height: 720 },
+    position: { width: 780, height: 560 },
     actions: {
       openMember: PartyView.#onOpenMember,
       openParty: PartyView.#onOpenParty,

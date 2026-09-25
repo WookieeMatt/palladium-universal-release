@@ -126,6 +126,7 @@ export async function awardXPDialog(party = activeParty()) {
       `<label class="checkbox"><input type="checkbox" name="who" value="${a.uuid}"${checked ? " checked" : ""}> ${escape(a.name)} <span class="hint">(${a.system.identity?.xp ?? 0} XP, level ${a.system.identity?.level ?? 1})</span></label>`).join("")}</fieldset>
   </div>`;
   const data = await DialogV2.prompt({
+    classes: ["palladium-universal", "pu-skill-mods"],
     window: { title: "Award Experience", icon: "fa-solid fa-star" },
     content,
     render: (event, dialog) => {
@@ -314,6 +315,7 @@ export class SessionTools extends HandlebarsApplicationMixin(ApplicationV2) {
   static async #onPrint() {
     await this.submit?.();
     const startNext = await DialogV2.confirm({
+      classes: ["palladium-universal", "pu-skill-mods"],
       window: { title: "Print to Journal" },
       content: `<p>Print this session to the <strong>${LOG_NAME}</strong> journal (GM only). Printing again later updates the same page.</p>
         <p>Start the next session afterwards? (<strong>Yes</strong>: a blank session, numbered one higher. <strong>No</strong>: keep working on this one.)</p>`,

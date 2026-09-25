@@ -17,6 +17,7 @@ export async function rollItem(actor, item) {
   if ( rolls.length > 1 ) {
     const options = rolls.map((r, i) => `<option value="${i}">${r.label}: ${foundry.utils.escapeHTML(r.text)}</option>`).join("");
     const index = await DialogV2.prompt({
+      classes: ["palladium-universal", "pu-skill-mods"],
       window: { title: `Roll ${item.name}` },
       content: `<div class="form-group"><label>Roll</label><div class="form-fields"><select name="roll">${options}</select></div></div>`,
       ok: { label: "Roll", callback: (event, button) => Number(button.form.elements.roll.value) },

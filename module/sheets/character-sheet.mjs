@@ -174,7 +174,8 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
         return { key, label, ...f, levels };
       }),
       sizeTable: Object.entries(CONFIG.PALLADIUM.SIZE_LEVELS).map(([level, row]) => ({
-        level: Number(level), ...row, current: Number(level) === system.mutation.sizeLevel
+        level: Number(level), ...row, current: Number(level) === system.mutation.sizeLevel,
+        far: Math.abs(Number(level) - system.mutation.sizeLevel) > 2
       })),
       combatRolls: this.#prepareCombatRolls(),
       combatInfo: this.#prepareCombatInfo(),
@@ -720,6 +721,7 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
   /** @this {PalladiumCharacterSheet} */
   static async #onRemoveAnimal() {
     const ok = await foundry.applications.api.DialogV2.confirm({
+      classes: ["palladium-universal", "pu-skill-mods"],
       window: { title: "Remove Animal" },
       content: "<p>Remove this animal and every ability or natural weapon bought from it?</p>"
     });

@@ -182,6 +182,7 @@ export async function rollSave(actor, key, { threat } = {}) {
     if ( !(threat in threats) ) {
       const options = Object.entries(threats).map(([k, t]) => `<option value="${k}">${t.label} (${t.target}+)</option>`).join("");
       threat = await DialogV2.prompt({
+        classes: ["palladium-universal", "pu-skill-mods"],
         window: { title: `${actor.name}: Save vs Poison / Toxin` },
         content: `<div class="form-group"><label>Threat</label><div class="form-fields"><select name="threat" autofocus>${options}</select></div></div>
           <p class="hint">Drug saves can vary with potency: the GM can adjust the target with a circumstance.</p>`,
@@ -276,6 +277,7 @@ export async function rollSaveVsComa(actor) {
   const options = Object.entries(CONFIG.PALLADIUM.COMA_TREATMENT)
     .map(([value, label]) => `<option value="${value}">${label}</option>`).join("");
   const treatment = await DialogV2.prompt({
+    classes: ["palladium-universal", "pu-skill-mods"],
     window: { title: `${actor.name}: Save vs Coma` },
     content: `<div class="form-group"><label>Treatment</label>
       <div class="form-fields"><select name="treatment">${options}</select></div></div>`,
