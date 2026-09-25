@@ -27,11 +27,11 @@ export function creationChecklist(actor) {
   const steps = [
     { key: "attributes", label: "Roll Attributes", tab: "core", done: !!sys.generation?.rolled,
       detail: sys.generation?.rolled ? "Rolled" : "Roll Attributes button above" },
-    { key: "animal", label: "Choose the animal", tab: "mutation", done: !!(animal || id.species),
+    { key: "animal", label: "Choose the animal", tab: "mutation", roll: "animalCategory", done: !!(animal || id.species),
       detail: animal?.name || id.species || "Drag an Animal onto the sheet" },
     { key: "bioe", label: "Spend Bio-E", tab: "mutation", done: !!(animal || id.species) && (bioe.remaining === 0),
       detail: bioeDetail },
-    { key: "origin", label: "Origin", tab: "mutation", done: !!origin,
+    { key: "origin", label: "Origin", tab: "mutation", roll: "origin", done: !!origin,
       detail: origin || "Drop an Origin background, or type it in the header" },
     { key: "education", label: "Education", tab: "mutation", done: !!education,
       detail: education || "Drop an Education background, or type it in the header" },

@@ -1,7 +1,7 @@
 # Character Creation
 
 ## Header
-Name, portrait (click to change), animal, alignment, **level**, **XP** (the sheet tells you when the XP earns a new level), origin, education, **Education Bonus %** (added to Professional skills), age, sex, height and weight.
+Name, portrait (click to change), animal, alignment, **level** (follows the XP total, p.75: not typed), **XP** (the Experience total), origin, education, **Education Bonus %** (added to Professional skills), age, sex, height and weight.
 
 New characters and NPCs get a round token with a green ring.
 
@@ -16,7 +16,13 @@ New characters get a **Creation Checklist** at the top of the Core tab: the step
 8. **Starting Money** (the Origin / Education money, entered on the Gear tab)
 9. **Roll Hit Points** (see below)
 
-Click an unfinished step to jump to its tab. When all nine are done the checklist disappears. **Hide** puts it away early (for example, to keep some Bio-E unspent); *Show the creation checklist* at the bottom of the Core tab brings it back. NPCs don't have one.
+Click an unfinished step to jump to its tab.
+
+**Rolling the Animal and the Origin (optional).** The *Choose the animal* and *Origin* steps have a 🎲 button that rolls on the book's tables (p.13–15), one step at a time; the tables are also in the **Palladium Universal Tables** compendium. Each roll shows its result in a small window; when you're done (or stop, or cancel) **one chat card** lists every roll, its result and what you did with it:
+- **Animal:** first the category (Urban, Rural, Wild, Wild Birds, Zoo, Lab), then **Roll the … animal** for the animal itself.
+- **Origin:** the origin, then the book's next table: Random Mutation and Accidental Encounter → *Wild Animal Education*; Deliberate Experimentation → *Creator Organization* → the experiment result (and for *Pet Gone Awry* or *Caged*, *Wild Animal Education*). Each next table has a **Roll** button; **Stop here** ends it.
+- For each result: **Use …** applies a matching compendium entry, as if dropped (only shown when one exists; several matches, e.g. *Pet Rodent*, are all offered); **Fill it in myself** writes the name in the header (Animal, Origin, or Education; the Creator Organization is added to the Origin in brackets); **Cancel** changes nothing.
+- Click the 🎲 again to re-roll. When all nine are done the checklist disappears. **Hide** puts it away early (for example, to keep some Bio-E unspent); *Show the creation checklist* at the bottom of the Core tab brings it back. NPCs don't have one.
 
 ## Generating attributes
 Attributes are rolled **once, at character creation**, with the **Roll Attributes** button on the Core tab. It rolls every attribute at once and saves the results:
@@ -74,4 +80,4 @@ Features below Full can carry **effects** defined on the Animal item (e.g. Human
 Animal Abilities, Natural Weapons and Psionic Powers owned by the character, with their Bio-E cost. Use **+** to create one, or drag items in.
 
 ## Leveling up
-Raise **Level** in the header. Skills, W.P.s, Combat Training, magic progressions and anything "per level" update automatically. For Hit Points, the button in Health & Damage turns amber: **Roll HP for Level N** rolls 1D6 for each new level and raises both max and current HP by the roll.
+Add the experience to **XP** in the header (or the GM's **Award XP**): the **Level** follows it (p.75: level 2 at 2,001, 3 at 4,001 ... 15 at 335,001; hover the Level for the next one). Lowering the XP lowers the Level. NPCs keep a typed Level. Skills, W.P.s, Combat Training, magic progressions and anything "per level" update automatically. For Hit Points, the button in Health & Damage turns amber: **Roll HP for Level N** rolls 1D6 for each new level and raises both max and current HP by the roll.

@@ -16,12 +16,12 @@
       </div>
       <div class="field">
         <label>Level</label>
-        <input type="number" name="system.identity.level" value="{{system.identity.level}}" min="1" max="15" />
+        <input type="number" value="{{system.identity.level}}" disabled class="pu-level-auto"
+          data-tooltip="Follows the Experience total (p.75).{{#if system.identity.nextXP}} Next level at {{system.identity.nextXP}} XP.{{/if}}" />
       </div>
       <div class="field">
         <label>XP</label>
-        <input type="number" name="system.identity.xp" value="{{system.identity.xp}}" min="0" />
-        {{#if (gt system.identity.xpLevel system.identity.level)}}<span class="hint level-up">Level {{system.identity.xpLevel}} earned!</span>{{/if}}
+        <input type="number" name="system.identity.xp" value="{{system.identity.xp}}" min="0" data-tooltip="Experience total: the Level follows it" />
       </div>
       <div class="field">
         <label>Origin</label>

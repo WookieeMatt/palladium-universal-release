@@ -28,7 +28,9 @@
 
 .palladium-universal.sheet,
 .pu-card,
-.pu-journal {
+.pu-journal,
+.pu-skill-mods,
+.pu-creation-roll {
   --pu-green: #234d2f;
   --pu-green-light: #3d7a4d;
   --pu-green-pale: #dfe8d6;
@@ -1142,3 +1144,56 @@
 .palladium-universal .pu-money-sources li { padding: 2px 0; }
 .palladium-universal .pu-training-item { display: block; text-align: left; padding: 4px 8px; }
 .palladium-universal .pu-training-item i { float: right; opacity: 0.6; margin-top: 3px; }
+
+/* Creation roll tables (v1.22.0): the step windows and the checklist's dice */
+.palladium-universal .pu-checklist-steps li { grid-template-columns: 1.2em auto 1fr auto; }
+.palladium-universal .pu-step-roll { color: var(--pu-green); cursor: pointer; padding: 0 2px; }
+.palladium-universal .pu-step-roll:hover { color: var(--pu-green-light); }
+.pu-creation-roll .pu-cr { margin: 0 0 4px; }
+.pu-creation-roll .pu-cr p { margin: 0 0 4px; }
+.pu-creation-roll .pu-cr-roll { display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--pu-ink-soft, #5d5a4b); }
+.pu-creation-roll .pu-cr-result { font-family: var(--pu-heading, "Bangers", Impact, sans-serif); font-size: 1.6rem; letter-spacing: 0.04em; color: var(--pu-green, #234d2f); line-height: 1.1; }
+.pu-creation-roll .form-footer { flex-wrap: wrap; }
+.pu-creation-roll .form-footer button { flex: 1 1 45%; }
+
+/* Skill roll modifiers (v1.22.0): compact window */
+.pu-skill-mods .pu-sm { display: flex; flex-direction: column; gap: 6px; }
+.pu-skill-mods .pu-sm p { margin: 0; }
+.pu-skill-mods .pu-sm-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+.pu-skill-mods .pu-sm-chance { font-family: var(--pu-heading, "Bangers", Impact, sans-serif); font-size: 1.35rem; letter-spacing: 0.04em; color: var(--pu-green, #234d2f); white-space: nowrap; }
+.pu-skill-mods .pu-sm-ask { display: flex; align-items: center; gap: 10px; }
+.pu-skill-mods .pu-sm-ask span { flex: 1; }
+.pu-skill-mods .pu-sm-ask label { display: flex; align-items: center; gap: 3px; }
+.pu-skill-mods .pu-sm-mods { display: flex; flex-direction: column; gap: 4px; }
+.pu-skill-mods .pu-sm-row { display: grid; grid-template-columns: 1fr 5.5em; gap: 6px; }
+.pu-skill-mods .pu-sm-row [hidden] { display: none; }
+.pu-skill-mods .pu-sm-mods[hidden], .pu-skill-mods .pu-sm-row[hidden], .pu-skill-mods .pu-sm-add[hidden] { display: none; }
+.pu-skill-mods .pu-sm-add { font-size: 0.85rem; color: var(--pu-green, #234d2f); cursor: pointer; align-self: flex-start; }
+.pu-skill-mods .pu-sm-list { margin: 0; padding-left: 1.2em; }
+
+/* Tracker (v1.23.0): who goes first, Move Action marker */
+.pu-first-side { display: flex; align-items: center; gap: 4px; padding: 4px 6px; font-size: 0.8rem; }
+.pu-first-side .pu-first-label { flex: 0 0 auto; margin-right: 2px; opacity: 0.8; }
+.pu-first-side .pu-side { flex: 1 1 0; min-width: 0; height: 24px; line-height: 20px; padding: 0 6px; font-size: 0.78rem; white-space: nowrap; border-radius: 4px; }
+.pu-first-side .pu-side.friendly { border-color: #5fae6f; }
+.pu-first-side .pu-side.hostile { border-color: #c0392b; }
+.pu-first-side button.pu-side.friendly.active { background: #3f7f4d; border-color: #5fae6f; color: #fff; }
+.pu-first-side button.pu-side.hostile.active { background: #a03224; border-color: #c0392b; color: #fff; }
+.pu-tracker-actions .pu-move { opacity: 0.35; font-size: 0.8rem; }
+.pu-tracker-actions .pu-move.moved { opacity: 1; color: #e0a526; }
+
+/* Armor layers (v1.23.0): what a Strike does against you; the words are in the tooltip */
+.palladium-universal .pu-armor-layers { display: inline-flex; align-items: center; gap: 3px; margin: 4px 0 0; font-size: 0.72rem; color: var(--pu-ink-soft); cursor: help; }
+.palladium-universal .pu-band { padding: 0 5px; border-radius: 8px; border: 1px solid; font-weight: 700; line-height: 1.35; }
+.palladium-universal .pu-band.natural { border-color: #5fae6f; color: #2f6b3f; }
+.palladium-universal .pu-band.body { border-color: #d9a441; color: #8a5d0c; }
+.palladium-universal .pu-band.you { border-color: #c0392b; color: #a03224; }
+
+/* Creation roll summary card (v1.23.0) */
+.pu-card .pu-cr-summary { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin: 4px 0; }
+.pu-card .pu-cr-summary th { text-align: left; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; opacity: 0.75; border-bottom: 1px solid var(--pu-rule); padding: 2px 4px; }
+.pu-card .pu-cr-summary td { padding: 3px 4px; vertical-align: top; border-bottom: 1px dotted var(--pu-rule); }
+.pu-card .pu-cr-summary td.pu-cr-d { text-align: center; font-weight: 700; white-space: nowrap; }
+.palladium-universal input.pu-level-auto { border-style: dashed; cursor: default; }
+.pu-tracker-actions .pu-cover { opacity: 0.35; font-size: 0.8rem; }
+.pu-tracker-actions .pu-cover.covered { opacity: 1; color: #d98b5f; }

@@ -1,3 +1,4 @@
+import { deathMarkerImage } from "./fx.mjs";
 import { activeParty, addPartyToCombat } from "./party.mjs";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
@@ -87,7 +88,7 @@ export function characterRow(actor) {
   const hp = h.hp ?? { value: 0, max: 0 };
   const sdc = h.sdc ?? { value: 0, max: 0 };
   const conditions = (sys.combat?.conditions?.active ?? []).map(id => ({ id, ...CONFIG.PALLADIUM.CONDITIONS[id] })).filter(c => c.label);
-  if ( actor.statuses?.has?.("dead") ) conditions.push({ id: "dead", label: "Dead", img: "icons/svg/skull.svg" });
+  if ( actor.statuses?.has?.("dead") ) conditions.push({ id: "dead", label: "Dead", img: deathMarkerImage() });
   const skills = actor.items.filter(i => (i.type === "skill") && !i.system.passive)
     .map(i => ({ name: i.name, pct: sys.skillPercentages?.(i)?.primary ?? i.system.base }))
     .sort((a, b) => a.name.localeCompare(b.name));
@@ -96,7 +97,7 @@ export function characterRow(actor) {
   return {
     uuid: actor.uuid, name: actor.name, img: actor.img, type: actor.type,
     level, xp: sys.identity?.xp ?? 0, nextXP: (actor.type === "character") && Number.isFinite(nextXP) ? nextXP : null,
-    levelUp: (actor.type === "character") && ((sys.identity?.xpLevel ?? level) > level),
+    levelUp: (actor.type === "character") && ((sys.health?.hp?.pendingLevels ?? 0) > 0),
     species: sys.identity?.species || "",
     hp: { value: hp.value, max: hp.max, pct: pct(hp.value, hp.max), low: h.bleedingOut, down: h.inComa || (hp.max > 0 && hp.value <= 0) },
     sdc: { value: sdc.value, max: sdc.max, pct: pct(sdc.value, sdc.max) },

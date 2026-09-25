@@ -9,6 +9,12 @@ Two lists, **Professional** and **Amateur**. Each skill shows its % and a d20 bu
 
 The **Skill Notes** box is a rich-text editor (click it to edit; bold, lists, links, and dice such as *1D6* become clickable rolls). Every notes box on the sheets works the same way, including *Money / other possessions* and *Character notes* on the Gear tab.
 
+**Extra modifiers in play.** When a skill is rolled, a small window asks whether there are additional modifiers (p.54): answer **Yes** to pick **Task difficulty** (+20% to −20%), **Tools / materials** (+20% to −20%) or **Physical / mental trauma** (0 to −20%) and its value, and **+ Add a second modifier** if two apply. The window shows the new chance as you go; the chat card lists each modifier. **Configure Settings → System Settings → Skill Roll Modifiers** chooses who answers:
+- **The GM** (default): the window opens on the GM's screen (*Send to player*); the player then sees the result and presses **Roll**. With no GM online, the player is asked.
+- **The player rolling:** they fill it in and press **Roll**.
+- **Off:** no question.
+**Cancel** at any point rolls nothing.
+
 ## Weapon Proficiencies (Combat tab)
 Kinds: **Ancient** (melee: +1 Strike and Parry at levels 1, 4, 7, 10, 13), **Targeting** (ranged Strike), **Modern** (Aimed +3, Burst +1, Wild +0, +1 at levels 4, 7, 10, 13), **Paired Weapons** (no multiple-attacker penalty), **Shield**, and **Black Powder** (see Black Powder). A weapon uses the W.P. whose **Weapon Group** matches the weapon's **Proficiency** (e.g. both "Sword"). *Team Bonus Levels* and *Level Acquired* adjust the progression.
 

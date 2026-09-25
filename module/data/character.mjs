@@ -103,6 +103,26 @@ const combatMods = () => new SchemaField({
 /**
  * Data model for the "character" Actor type (TMNT & Other Strangeness rules).
  */
+/**
+ * What a Strike does against this character's armor layers (p.84, Errata 2026), for the Health panel: under
+ * the Natural Armor A.R. it bounces off (no damage); under the Body Armor A.R. the armor's S.D.C. takes it;
+ * at or above both it hits the character (S.D.C., then Hit Points). 4 or less always misses.
+ * @param {number} natural   Natural Armor A.R.
+ * @param {object} body      {name, ar, sdc: {value}}
+ * @returns {{from: number, to: number|null, kind: string, label: string}[]}
+ */
+export function armorBands(natural = 0, body = {}) {
+  const bodyAR = (body?.ar > 0) && (body?.sdc?.value > 0) ? body.ar : 0;
+  const bands = [];
+  if ( natural > 5 ) bands.push({ from: 5, to: natural - 1, kind: "natural", label: "bounce off natural armor (no damage)" });
+  const bodyFrom = Math.max(5, natural);
+  if ( bodyAR > bodyFrom ) bands.push({ from: bodyFrom, to: bodyAR - 1, kind: "body", label: `hit the ${body.name || "Body Armor"} (its S.D.C.)` });
+  if ( !bands.length ) return [];
+  bands.push({ from: Math.max(5, natural, bodyAR), to: null, kind: "you", label: "hit you (S.D.C., then Hit Points)" });
+  for ( const b of bands ) b.range = b.to === null ? `${b.from}+` : (b.from === b.to ? `${b.from}` : `${b.from}–${b.to}`);
+  return bands;
+}
+
 export default class CharacterData extends foundry.abstract.TypeDataModel {
 
   /** @override */
@@ -263,6 +283,13 @@ export default class CharacterData extends foundry.abstract.TypeDataModel {
 
   /** @override */
   static migrateData(source) {
+    // v1.23.0: Level follows XP; a level typed above the XP raises the XP to that level's minimum.
+    const id = source.identity;
+    if ( this.xpDrivesLevel && id && Number.isFinite(id.level) && Number.isFinite(id.xp) ) {
+      const min = CONFIG.PALLADIUM.XP_LEVELS[Math.min(15, id.level) - 1] ?? 0;
+      if ( id.xp < min ) id.xp = min;
+    }
+
     // v1.9.0: characters whose attributes were already filled in count as rolled.
     if ( source.attributes && (source.generation?.rolled === undefined) ) {
       const values = Object.values(source.attributes).map(a => a?.value);
@@ -353,6 +380,27 @@ export default class CharacterData extends foundry.abstract.TypeDataModel {
   /* -------------------------------------------- */
   /*  Derived Data                                */
   /* -------------------------------------------- */
+
+  /** Characters' Level follows their XP (p.75, v1.23.0); NPCs keep a typed level. */
+  static xpDrivesLevel = true;
+
+  /** Keep the stored Level in step with the XP, so the migration never pulls lowered XP back up. */
+  async _preUpdate(changes, options, user) {
+    const flat = "system.identity.xp" in changes;
+    const xp = flat ? changes["system.identity.xp"] : foundry.utils.getProperty(changes, "system.identity.xp");
+    if ( this.constructor.xpDrivesLevel && Number.isFinite(xp) ) {
+      const level = CONFIG.PALLADIUM.levelForXP(xp);
+      if ( flat ) changes["system.identity.level"] = level;
+      else foundry.utils.setProperty(changes, "system.identity.level", level);
+    }
+    return super._preUpdate?.(changes, options, user);
+  }
+
+  /** @override */
+  prepareBaseData() {
+    super.prepareBaseData?.();
+    if ( this.constructor.xpDrivesLevel ) this.identity.level = CONFIG.PALLADIUM.levelForXP(this.identity.xp ?? 0);
+  }
 
   /** @override */
   prepareDerivedData() {
@@ -445,8 +493,8 @@ export default class CharacterData extends foundry.abstract.TypeDataModel {
     };
     // Species: the animal, its purchased options and the character's abilities / powers (e.g. Hominid
     // attribute boosts, Extraordinary P.E.).
-    const species = collect(items.filter(i => (i.type === "animal") || (i.type === "ability")
-      || i.getFlag?.("palladium-universal", "animalOption")));
+    const species = collect(items.filter(i => ((i.type === "animal") || (i.type === "ability")
+      || i.getFlag?.("palladium-universal", "animalOption")) && !i.getFlag?.("palladium-universal", "injury")));
     const size = G.sizeAttributes.includes(key) ? (CONFIG.PALLADIUM.SIZE_LEVELS[this.mutation.sizeLevel]?.[key] ?? 0) : null;
     const physical = G.physicalAttributes.includes(key)
       ? collect(items.filter(i => (i.type === "skill") && (i.system.category === "physical"))) : null;
@@ -572,6 +620,7 @@ export default class CharacterData extends foundry.abstract.TypeDataModel {
     h.armor.active = worn
       ? { name: worn.name, ar: worn.system.ar, sdc: worn.system.sdc, ballisticOnly: worn.system.ballisticOnly }
       : { name: h.armor.name, ar: h.armor.ar, sdc: h.armor.sdc, ballisticOnly: false };
+    h.armorBands = armorBands(h.naturalArmor.total, h.armor.active);
     const shield = items.find(i => (i.type === "armor") && (i.system.armorType === "shield") && i.system.equipped);
     h.shield = shield ?? null;
 
@@ -619,10 +668,15 @@ export default class CharacterData extends foundry.abstract.TypeDataModel {
       for ( const [key, value] of Object.entries(CONFIG.PALLADIUM.CONDITIONS[id].mods ?? {}) ) condMods[key] = (condMods[key] ?? 0) + value;
     }
     const stunned = active.includes("stunned");
+    const having = flag => active.filter(id => CONFIG.PALLADIUM.CONDITIONS[id][flag]).map(id => CONFIG.PALLADIUM.CONDITIONS[id].label);
     c.conditions = {
       active, mods: condMods, stunned,
-      noDefense: active.filter(id => CONFIG.PALLADIUM.CONDITIONS[id].noDefense).map(id => CONFIG.PALLADIUM.CONDITIONS[id].label)
+      noDefense: having("noDefense"), noActions: having("noActions"), noAttack: having("noAttack"), noSkills: having("noSkills")
     };
+    // Stunned: Speed halved (p.90).
+    if ( stunned && this.movement ) {
+      this.movement = { ...CONFIG.PALLADIUM.movement(Math.floor((this.attributes.spd.total ?? 0) / 2)), halved: true };
+    }
 
     // Each total = training + attribute + skills/abilities + misc, then circumstances and conditions.
     // [training part, attribute part, circumstance/condition key]
@@ -660,7 +714,8 @@ export default class CharacterData extends foundry.abstract.TypeDataModel {
         c.rollBreakdown[key] = breakdown;
       }
     }
-    c.totals.actions = Math.max(0, c.totals.actions);
+    // Paralyzed, Unconscious, Coma: no actions.
+    c.totals.actions = c.conditions.noActions.length ? 0 : Math.max(0, c.totals.actions);
     c.actionsLeft = Math.max(0, c.totals.actions - c.actionsUsed);
     this.#prepareFlight();
   }
@@ -716,6 +771,7 @@ export default class CharacterData extends foundry.abstract.TypeDataModel {
   #prepareProgress() {
     const i = this.identity;
     i.xpLevel = CONFIG.PALLADIUM.levelForXP(i.xp);
+    i.nextXP = CONFIG.PALLADIUM.XP_LEVELS[i.level] ?? null;
   }
 
   /* -------------------------------------------- */

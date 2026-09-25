@@ -43,6 +43,12 @@
       </div>
     </div>
     <p class="hint">Armor: {{#if health.armor.active.ar}}{{health.armor.active.name}} A.R. {{health.armor.active.ar}}, S.D.C. {{health.armor.active.sdc.value}}/{{health.armor.active.sdc.max}}{{else}}none{{/if}}</p>
+
+    {{#if health.armorBands.length}}
+    <p class="pu-armor-layers" data-tooltip="{{#each health.armorBands}}{{range}}: {{label}}<br>{{/each}}4 or less always misses.">
+      <i class="fa-solid fa-shield-halved"></i> Strikes: {{#each health.armorBands}}<span class="pu-band {{kind}}">{{range}}</span>{{/each}}
+    </p>
+    {{/if}}
   </section>
 
   <section class="panel">
@@ -97,6 +103,7 @@
       {{/unless}}
       {{/each}}
       <button type="button" class="roll-button" data-action="rollComa"><i class="fa-solid fa-heart-pulse"></i> vs Coma</button>
+      <button type="button" class="roll-button" data-action="restAndHeal" data-tooltip="Rest &amp; Heal (p.92)"><i class="fa-solid fa-kit-medical"></i> Heal</button>
     </div>
   </section>
 

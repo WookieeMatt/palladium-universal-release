@@ -13,7 +13,7 @@
       <header>
         <a class="pu-pv-name" data-action="openMember" data-tooltip="Open the sheet">{{name}}</a>
         <span class="hint">Level {{level}}{{#if species}} · {{species}}{{/if}}{{#if nextXP}} · XP {{xp}} / {{nextXP}}{{/if}}</span>
-        {{#if levelUp}}<span class="pu-pv-badge levelup" data-tooltip="Their XP has reached the next level"><i class="fa-solid fa-arrow-up"></i> Level up!</span>{{/if}}
+        {{#if levelUp}}<span class="pu-pv-badge levelup" data-tooltip="New level: roll the Hit Points on their sheet"><i class="fa-solid fa-arrow-up"></i> Level up!</span>{{/if}}
         {{#if hp.down}}<span class="pu-pv-badge down"><i class="fa-solid fa-heart-crack"></i> Down</span>{{else if hp.low}}<span class="pu-pv-badge low">Bleeding out</span>{{/if}}
       </header>
       <div class="pu-pv-stats">

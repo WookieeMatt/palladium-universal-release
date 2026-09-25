@@ -1,5 +1,35 @@
 # Changelog
 
+## 1.24.0
+- **Rules Reference** page in the System Guide: experience levels and awards (p.75), the S.D.C. table and shooting through cover (p.90), damage effects and recovery (p.92), the optional side-effect tables (p.93).
+- **Roll with Impact** only against **blunt** attacks (p.84): weapons have a **Blunt** box (fists, kicks, staffs, clubs, chains; explosions and maneuvers always count; bullets, energy and blades never). After a successful Roll with Impact, **Apply** halves that attack's damage for that character by itself. GM macro **Mark Blunt Weapons** ticks Blunt on existing weapons (world, sheets, tokens, unlocked compendiums).
+- **Cover** (p.90): a bricks icon on each combatant in the Combat Tracker; pick what they're behind (one dropdown, the book's S.D.C. table or a custom S.D.C.). It lasts the whole combat. Firearm, energy and black powder damage loses 2% of the cover's S.D.C., and the cover wears down until it breaks.
+- **Bleeding Out** (p.92): a condition that goes on by itself when damage brings the Hit Points to 25% or less and off when healed above; 1 H.P. every 4 rounds in combat. A successful First Aid / Paramedic / Medical Doctor roll has a **Stop the Bleeding** button.
+- **Heal** button (Health & Damage, NPC stats): Hit Points by treatment and days (1 / 2 / 2-then-4 a day), 5 S.D.C. per hour of rest.
+- **Save vs Coma** card: one try an hour, and the P.E.-hours limit.
+- **Optional Damage Side-Effects** setting (p.93): leave it to the GM (default), ask the GM (whispered card) or roll and apply automatically. Results are Injury items that carry the penalties.
+- **Blood & Death Effects** (client setting, on): a blood splash on the token when Bleeding Out starts; when a character dies, a death marker (bigger splash, "☠ Dead" float, skull overlay, combatant marked defeated). JB2A through Sequencer when installed, otherwise built in.
+- **Death Marker** setting: the preset skull, or pick your own image for dead tokens.
+- **Blunt is kept by code**: every weapon created or imported gets Blunt when the rule says so, and once per world the GM's first login ticks it on existing weapons (the macro stays for unlocked compendiums).
+- Shorter dropdowns in the Cover and Rest & Heal windows.
+- **For macros**: hooks `palladium.condition`, `palladium.hitPoints`, `palladium.stopBleeding`, `palladium.heal`, `palladium.sideEffect`, `palladium.cover`, and API functions for all of it (see For Module Authors).
+- Combat Tracker: every action pip and the Move marker have tooltips. The armor layers readout is a small line (the words are in its tooltip).
+- The TMNT compendium (0.7.0, private) ticks Blunt on its weapons; its rules journal (0.6.0) was removed: the rules pages are in this guide.
+
+## 1.23.0
+- **Conditions do what they say**: Paralyzed, Unconscious and Coma leave no actions; Held, Paralyzed, Unconscious and Coma block attacks and maneuvers (Held alone turns an attack into a **Break Free** Strike the holder may Parry); Stunned and Unconscious block skill checks; Stunned halves Speed and, applied in combat, rolls **1D4 rounds** and ends by itself; Horrified and Deafened **lose the Initiative** (bottom of the order); Horrified refuses the **first Parry or Dodge** of the round; removing Prone in combat spends an action (standing up); Pain costs 1 HP every 4 rounds; **Coma** is set at 0 HP or less (removed above 0) and **Dead** below −P.E.
+- **Who goes first** (p.84: the GM decides): **Friendly first / Hostile first** at the top of the Combat Tracker orders the combatants by side, alternating from the chosen side, random within each side. ⇈ / ⇊ still cut in line.
+- **Move Action marker** (p.85, once per round): a walking figure next to each combatant's action dots; click it when moving (spends an action; click again to undo). Resets each round.
+- **Level follows XP** (p.75): a character's Level is worked out from the XP total (no longer typed). Older characters whose XP is below their level's minimum get the minimum. NPCs keep a typed level.
+- **Armor layers** on the Health panel: what a Strike does against you, e.g. *5–7 bounce off natural armor · 8–10 hit the Kevlar Vest · 11+ hit you*.
+- **Creation rolls** post one chat card when the chain is done (every roll, the result and what was used), not one per step.
+- The TMNT compendium (0.6.0, private) adds a **TMNT: Rules Reference** journal with the Experience page (p.75).
+
+## 1.22.0
+- **Roll the Animal and the Origin**: the Creation Checklist's Animal and Origin steps have a 🎲 button that rolls on the book's tables (p.13–15), one step at a time (category → animal; origin → Wild Animal Education or Creator Organization → experiment result). Each result opens a small window: use a matching compendium entry (only when one exists), fill it in yourself, or cancel; the next table waits for the player to roll it. The tables (names only) are also in the new **Palladium Universal Tables** compendium.
+- **Skill roll modifiers in play**: before a skill roll, a window asks for extra modifiers (task difficulty, tools / materials, physical or mental trauma; up to two). Setting **Skill Roll Modifiers**: the GM (default; the player then presses Roll), the player rolling, or off.
+- **Combat Training checked against the book** (all six trainings, every level): the tables match. Fixed: thrown weapons no longer add the training's melee damage. New melee **Sneak Attack** mode: no defense, and a Critical Strike or Stun when the training grants it.
+
 ## 1.21.0
 - **Parry with a hand-held weapon**: a character with a hand-held Parry penalty (e.g. Partial Hands, −3) is asked when they Parry, from the sheet or an attack card's Defend button: *Yes: with a hand-held weapon (−3 Parry)* or *No: bare hands or natural weapons (no penalty)*. Closing the question cancels the Parry.
 - **Vehicle Maneuver** button: the pilot describes the maneuver, the GM sets the difficulty (task difficulty, p.54), and a Control Roll decides it; the card leaves the outcome to the GM. It spends the vehicle's action in combat. The System Guide's Vehicles page explains how to run vehicle combat until the book's maneuver list is built in.

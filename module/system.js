@@ -14,7 +14,12 @@ import PalladiumPartySheet from "./sheets/party-sheet.mjs";
 import { registerPartySettings } from "./party.mjs";
 import { initPartyView } from "./party-view.mjs";
 import { initCombatTracker } from "./combat-tracker.mjs";
+import { initConditions } from "./conditions.mjs";
+import { initRecovery } from "./recovery.mjs";
+import { initBlunt } from "./blunt.mjs";
+import { initFx } from "./fx.mjs";
 import { initMoney } from "./money.mjs";
+import { initSkillModifiers } from "./skill-modifiers.mjs";
 import { onRenderChatMessage } from "./combat.mjs";
 import { onDeleteCombat, onUpdateCombat } from "./actions.mjs";
 import { buildApi } from "./api.mjs";
@@ -27,6 +32,7 @@ Hooks.once("init", function () {
   registerPartySettings();
   initPartyView();
   initMoney();
+  initSkillModifiers();
   initAudit();
   console.log("Palladium Universal | Initializing system");
 
@@ -131,6 +137,10 @@ Hooks.once("init", function () {
   // Initiative: d20 + Initiative bonus, highest first (p.84)
   CONFIG.Combat.initiative = { formula: "1d20 + @combat.totals.initiative", decimals: 0 };
   initCombatTracker();
+  initConditions();
+  initRecovery();
+  initBlunt();
+  initFx();
 
   // Sheets
   foundry.documents.collections.Actors.registerSheet("palladium-universal", PalladiumCharacterSheet, {

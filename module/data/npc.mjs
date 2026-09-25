@@ -8,6 +8,9 @@ const { NumberField, StringField } = foundry.data.fields;
  */
 export default class NpcData extends CharacterData {
 
+  /** NPCs keep their typed book level. */
+  static xpDrivesLevel = false;
+
   /** @override */
   static defineSchema() {
     return {

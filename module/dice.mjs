@@ -1,3 +1,5 @@
+import { stopBleedingButton } from "./recovery.mjs";
+import { askSkillModifiers } from "./skill-modifiers.mjs";
 
 const { DialogV2 } = foundry.applications.api;
 
@@ -210,7 +212,7 @@ export async function rollSave(actor, key, { threat } = {}) {
  * @param {boolean} [options.skill=true] Apply the 95% skill cap
  * @param {object} [options.breakdown]   How the percentage is made up (skill breakdown), shown in the details
  */
-export async function rollPercent(actor, { label, target, skill = true, item, breakdown } = {}) {
+export async function rollPercent(actor, { label, target, skill = true, item, breakdown, successButtons = "" } = {}) {
   const chance = skill ? Math.min(target, 95) : target;
   const roll = await new Roll("1d100").evaluate();
   const success = (roll.total <= chance) && !(skill && (roll.total >= 96));
@@ -226,7 +228,8 @@ export async function rollPercent(actor, { label, target, skill = true, item, br
   if ( skill && (target > 95) ) lines.push(["Skill cap", "95%"]);
   if ( !breakdown || (chance !== target) ) lines.push(["Chance", `${chance}%`]);
   lines.push(["d100", roll.total]);
-  return postCard(actor, { title: label, item, label, result: roll.total, lines, rolls: [roll],
+  const flags = (success && successButtons) ? { "palladium-universal": { card: "skill", actorUuid: actor.uuid } } : undefined;
+  return postCard(actor, { title: label, item, label, result: roll.total, lines, rolls: [roll], buttons: success ? successButtons : "", flags,
     notes: [`<span class="${success ? "pu-success" : "pu-failure"}">${success ? "Success" : "Failure"} (${chance}% or under)</span>`] });
 }
 
@@ -239,13 +242,25 @@ export async function rollPercent(actor, { label, target, skill = true, item, br
  * @param {boolean} [secondary=false]   Roll the skill's second percentage (e.g. Medical Doctor "Treat")
  */
 export async function rollSkill(actor, skill, secondary = false) {
+  const blocked = actor.system.combat?.conditions?.noSkills ?? [];
+  if ( blocked.length ) return ui.notifications.warn(`${actor.name} can't make skill checks while ${blocked.join(", ")}.`), null;
   const pct = actor.system.skillPercentages(skill);
   const target = secondary ? pct.secondary : pct.primary;
   const label = secondary && skill.system.label2 ? `${skill.name}: ${skill.system.label2}` : skill.name;
   const hookData = { label, target, secondary };
   if ( Hooks.call("palladium.preRollSkill", actor, skill, hookData) === false ) return null;
   const breakdown = { ...pct.breakdown, base: secondary ? skill.system.base2 : pct.breakdown.base };
-  const result = await rollPercent(actor, { label: hookData.label, target: hookData.target, skill: true, item: skill, breakdown });
+  // In play: extra modifiers (task difficulty, tools, trauma), asked of the GM or the player per the setting.
+  const asked = await askSkillModifiers({ actorName: actor.name, label: hookData.label, target: hookData.target });
+  if ( !asked ) return null;
+  let chance = hookData.target;
+  for ( const m of asked.mods ) {
+    breakdown[`${m.label}${asked.by ? ` (${asked.by})` : ""}`] = m.value;
+    chance += m.value;
+  }
+  // First aid skills: a success can stop Bleeding Out (p.92).
+  const successButtons = CONFIG.PALLADIUM.FIRST_AID_SKILLS.test(skill.name) ? stopBleedingButton() : "";
+  const result = await rollPercent(actor, { label: hookData.label, target: chance, skill: true, item: skill, breakdown, successButtons });
   Hooks.callAll("palladium.rollSkill", actor, skill, { ...hookData, result });
   return result;
 }
@@ -285,5 +300,6 @@ export async function rollSaveVsComa(actor) {
   if ( recovered && (actor.system.health.hp.value < 1) ) await actor.update({ "system.health.hp.value": 1 });
   return postCard(actor, { title: "Save vs Coma", label: "Successes", result: `${successes} of 3`, lines, rolls,
     caption: `Three tries at ${save.target}+`,
-    notes: [`<span class="${recovered ? "pu-success" : "pu-failure"}">${recovered ? "Recovers: stabilised at 1 HP." : "Still in a coma."}</span>`] });
+    notes: [`<span class="${recovered ? "pu-success" : "pu-failure"}">${recovered ? "Recovers: stabilised at 1 HP." : "Still in a coma."}</span>`,
+      ...(recovered ? [] : [`<span class="hint">One try an hour. Failing isn't death unless the coma has lasted more than ${actor.system.health.comaHours} hours (P.E.) untreated; the bleeding must be stopped first (p.93).</span>`])] });
 }

@@ -242,6 +242,7 @@ export class WeaponData extends ItemDataBase {
       burstDamage: textField(),          // three-round burst damage (automatic weapons)
       range: textField(),
       twoHanded: new BooleanField(),
+      blunt: new BooleanField(),         // blunt physical attack: can be Rolled with (p.84; explosions always can)
       strikeBonus: intField(),           // quality bonus, e.g. "Great Wind" +2
       parryBonus: intField(),
       damageBonus: intField(),

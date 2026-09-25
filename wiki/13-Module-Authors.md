@@ -61,6 +61,8 @@ Follow the shape of the existing entries: log `CONFIG.PALLADIUM.CONDITIONS` in t
 | Time travel | `temporalMishap()`, `rollTemporalMishap(actor)`, `deviceMalfunction(key)`, `practiceSpell(actor, spell)` |
 | Vehicles | `applyVehicleDamage(actor, amount, options)`, `rollControl(actor)`, `rollEvade(actor)`, `operateDevice(device)`, `operateTimeMachine(actor)` |
 | Building | `applyAnimal(actor, data)`, `removeAnimal(actor)`, `applyBackground(actor, data)`, `rollAttributes(actor)` (all eight, saved, once), `requestReroll(actor)`, `allowReroll({actorUuid})`, `printAttribute(actor, key)` (score to chat, no roll), `rollAttribute(actor, key)` (one attribute to chat, not saved) |
+| Damage & recovery | `bloodSplash(token, {scale})`, `deathMarker(token)` (this screen only), `stopBleeding(actor, by)`, `restAndHeal(actor, {treatment, days, hours})`, `healDialog(actor)`, `healedHP(treatment, days)`, `rollSideEffect(actor, "sdc"|"hp"|"nearDeath")`, `offerSideEffect(actor, table)`, `sideEffectTable(kind, before, after, max)`, `setCondition(actor, id, active)`; tables `CONFIG.PALLADIUM.HEALING`, `SIDE_EFFECTS`, `FIRST_AID_SKILLS` |
+| Cover & impact | `setCover(combatant, {label, sdc} | null)`, `coverDialog(combatant)`, `actorCover(actor)`, `throughCover(actor, amount, weaponType)`, `coverReduction(sdc)`; `canRollWithImpact(weaponSystem)`, `rolledWithImpact(actor, damageCardFlags)`, `isBluntWeapon(item)`, `markBluntWeapons()` (GM); table `CONFIG.PALLADIUM.COVER_SDC` |
 | Air & space | `airStats(actor)`, `rollTactic(actor, key)`, `rollVeer(actor, {game, penalty})`, `rollPullOut(actor)`, `rollEmergencyLanding(actor)`, `rollCrash(actor, {mph, payload})`, `rollDumbLuck(actor)`; tables `CONFIG.PALLADIUM.SPEED_CLASSES`, `DRIVE_TYPES`, `AIR_TACTICS`, `CHICKEN_GAMES`, `CRASH_DAMAGE`, helper `speedClassFor(mph)` |
 | Animations | `playAnimation(actor, item, {kind, hit})`, `animationNames(name, kind)`; the trigger set is `CONFIG.PALLADIUM.ANIMATION_TRIGGERS` (rules `{match: RegExp, names: [...]}`) and `ANIMATION_FALLBACKS` |
 | Items | `rollItem(actor, item)` (the item's Roll field or description dice), `viewItemCopy(itemData)` (read-only view), `item.system.itemRolls` |
@@ -100,6 +102,22 @@ The system fires these hooks. A `pre…` hook can return `false` to cancel. Its 
 | `palladium.preRollAttribute` | `actor, key, {formula, exceptional, bonusFormula}` | For each attribute generated; change the dice, e.g. `formula = "4d6kh3"`. |
 | `palladium.rollAttribute` | `actor, key, {base, exceptional, exceptionalDie, species, size, physical, total}` | `rollAttribute` (one attribute, chat only). |
 | `palladium.rollAttributes` | `actor, results` | After Roll Attributes saved the scores; `results` has one entry per attribute (`rolled`, `dice`, `score`, …). |
+| `palladium.condition` | `actor, id, active` | A condition (or `dead`) went on or off; on the client that changed it. Good for visual effects (Sequencer, token FX). |
+| `palladium.hitPoints` | `actor, {before, after, max}` | Hit Points changed (characters and NPCs), on the client that changed them. |
+| `palladium.stopBleeding` | `actor, by` | First aid stopped Bleeding Out. |
+| `palladium.heal` | `actor, {treatment, days, hours, hp, sdc}` | After Rest & Heal. |
+| `palladium.sideEffect` | `actor, {table, total, name, penalties, lasts}, item` | After an optional side-effect roll (`item` is the Injury item, or null). |
+| `palladium.cover` | `combatant, cover` | Cover set (`{label, sdc, left}`) or cleared (`null`). |
+
+For example, a red flash when someone starts Bleeding Out (with the Sequencer module):
+
+```js
+Hooks.on("palladium.condition", (actor, id, active) => {
+  if ( (id !== "bleeding") || !active ) return;
+  const token = actor.getActiveTokens()[0];
+  if ( token && window.Sequence ) new Sequence().effect().file("jb2a.liquid.splash.red").atLocation(token).play();
+});
+```
 
 For example, a +2 Strike blessing:
 

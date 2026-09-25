@@ -7,6 +7,8 @@ import { spendActions } from "./actions.mjs";
 import { viewItemCopy } from "./item-rolls.mjs";
 import { playAnimation } from "./animations.mjs";
 import { allowReroll } from "./creation.mjs";
+import { throughCover } from "./cover.mjs";
+import { rollSideEffect, stopBleeding } from "./recovery.mjs";
 
 const { DialogV2 } = foundry.applications.api;
 
@@ -32,6 +34,7 @@ export const POWDER_MODES = {
 /** Melee modes: Leap Attack needs the Combat Training unlock (p.88). */
 export const MELEE_MODES = {
   aimed: { label: "Attack" },
+  sneak: { label: "Sneak Attack" },
   leap: { label: "Leap Attack", requires: "leapAttack" }
 };
 
@@ -219,6 +222,7 @@ export function strikeBonus(actor, weapon, mode = "aimed") {
  * @param {string} [mode="aimed"]
  */
 export async function rollAttack(actor, weapon, mode = "aimed", { weather } = {}) {
+  if ( cantAttack(actor) ) return isOnlyHeld(actor) ? rollBreakFree(actor) : null;
   const w = weapon.system;
   if ( w.isModern && (mode !== "aimed") && !w.burstDamage ) mode = "aimed";
   if ( w.isPowder && !(mode in POWDER_MODES) ) mode = "aimed";
@@ -260,18 +264,22 @@ export async function rollAttack(actor, weapon, mode = "aimed", { weather } = {}
   const roll = await new Roll(`1d20 + ${bonus}`).evaluate();
   const natural = roll.dice[0].total;
   const special = naturalSpecials(actor, natural, w.isMelee);
+  // Melee Sneak Attack (p.84): can't be reacted to; training that grants it makes a hit a Critical Strike or Stun.
+  const sneak = (mode === "sneak") && w.isMelee;
+  if ( sneak && actor.system.combat.trainingData.sneak && (roll.total >= 5) ) Object.assign(special, { crit: true, critOrStun: true, sneakCrit: true });
   const modeLabel = w.isModern ? ` (${FIRE_MODES[mode].label})` : w.isPowder ? ` (${POWDER_MODES[mode].label})` : "";
   if ( mode === "wild" ) extra.push(w.isPowder ? `<span class="hint">Shooting wild.</span>`
     : `<span class="hint">20% chance of hitting a bystander.</span>`);
   if ( double ) extra.push(`<strong class="pu-crit">Overloaded: double damage.</strong>`);
   const leap = mode === "leap";
   if ( leap ) extra.push(`<span class="hint">Leap Attack: only at the start of the round and the only offensive action this round; double damage (triple on a Critical or Death Blow). Remaining actions: Parry, Dodge, Roll with Impact or Change Posture only.</span>`);
+  if ( sneak ) extra.push(`<span class="hint">Sneak Attack: the defender can't Parry, Dodge or react${special.sneakCrit ? "; the training makes it a <strong>Critical Strike or Stun</strong> (attacker's choice)" : ""}.</span>`);
   if ( actionNote ) extra.push(actionNote);
   const mult = damageMultiplier({ crit: special.crit, deathBlow: special.deathBlow, double, leap });
   const label = special.deathBlow ? `Roll Death Blow (×${mult} to Hit Points)` : (mult > 1) ? `Roll Damage (×${mult})` : "Roll Damage";
   const message = await postAttackCard(actor, roll, {
     title: `${weapon.name}${leap ? " (Leap Attack)" : modeLabel}`, item: weapon, parts, special, extra,
-    flags: { itemRef: weapon.id, mode, ranged: !w.isMelee, weaponType: w.weaponType, deathBlow: special.deathBlow, double, leap },
+    flags: { itemRef: weapon.id, mode, ranged: !w.isMelee, weaponType: w.weaponType, blunt: canRollWithImpact(w), deathBlow: special.deathBlow, double, leap, noDefense: sneak },
     damageLabel: label
   });
   Hooks.callAll("palladium.rollAttack", actor, weapon, roll, { mode, natural, special, double, leap, message });
@@ -345,12 +353,14 @@ export async function postAttackCard(actor, roll, { title, parts, special, extra
   const hit = crit || (roll.total >= 5);   // 4 or less misses (p.84)
   const notes = [];
   if ( deathBlow ) notes.push(`<strong class="pu-crit">Natural ${natural}: Death Blow! Double damage direct to Hit Points, bypassing armor.</strong>`);
+  else if ( special.sneakCrit ) notes.push(`<strong class="pu-crit">Sneak Attack: Critical Strike or Stun (attacker's choice)!</strong>`);
   else if ( critOrStun ) notes.push(`<strong class="pu-crit">Natural ${natural}: Critical Strike or Stun (attacker's choice)!</strong>`);
   else if ( crit ) notes.push(`<strong class="pu-crit">Natural ${natural}: Critical Strike!</strong>`);
-  if ( crit ) notes.push(`<span class="hint">Only a natural ${natural}+ can defend.</span>`);
+  if ( crit && !flags.noDefense ) notes.push(`<span class="hint">Only a natural ${natural}+ can defend.</span>`);
   if ( natural === 1 ) notes.push(`<strong class="pu-fumble">Natural 1</strong>`);
-  notes.push(hit ? `<span class="pu-success">Hits unless the defender meets or beats ${roll.total}</span>`
-    : `<span class="pu-failure">Miss (4 or less)</span>`);
+  notes.push(!hit ? `<span class="pu-failure">Miss (4 or less)</span>`
+    : flags.noDefense ? `<span class="pu-success">Hits (no defense against a Sneak Attack)</span>`
+      : `<span class="pu-success">Hits unless the defender meets or beats ${roll.total}</span>`);
   notes.push(...extra);
 
   const data = { card: "attack", actorUuid: actor.uuid, strike: roll.total, natural, crit, ...flags };
@@ -360,7 +370,7 @@ export async function postAttackCard(actor, roll, { title, parts, special, extra
     title, item, label: "Strike", result: roll.total, rolls: [roll], notes,
     lines: [["d20", natural], ...bonusLines(parts), ["Total", roll.total]],
     body: text ? `<p class="pu-text">${text}</p>` : "",
-    buttons: `${hit ? defendButtons(data) : ""}${hit && damageLabel ? `<div class="pu-buttons"><button type="button" data-pu-action="damage">
+    buttons: `${hit && !data.noDefense ? defendButtons(data) : ""}${hit && damageLabel ? `<div class="pu-buttons"><button type="button" data-pu-action="damage">
       <i class="fa-solid fa-burst"></i> ${damageLabel}</button></div>` : ""}`,
     flags: { "palladium-universal": data }
   });
@@ -394,7 +404,7 @@ export async function askHandheldParry(actor) {
 function defendButtons(data) {
   const buttons = Object.entries(CONFIG.PALLADIUM.REACTIONS).filter(([key, r]) => {
     if ( r.melee && data.ranged ) return false;
-    if ( (key === "rollImpact") && CONFIG.PALLADIUM.NO_ROLL_WITH_IMPACT.includes(data.weaponType) ) return false;
+    if ( (key === "rollImpact") && !attackAllowsImpact(data) ) return false;
     return true;
   }).map(([key, r]) => `<button type="button" data-pu-action="defend" data-reaction="${key}"
     data-tooltip="${r.label} with the selected token"><i class="fa-solid ${r.icon}"></i><span>${r.label}</span></button>`);
@@ -409,6 +419,32 @@ function defendButtons(data) {
 export const UNARMED_DAMAGE = "1D4";
 
 /**
+ * Roll with Impact (p.84) works against blunt physical attacks (fists, feet, staffs, blunt objects), explosions
+ * and falls; not bullets, energy blasts or blades.
+ * @param {object} w   A weapon's system data
+ */
+export function canRollWithImpact(w) {
+  if ( CONFIG.PALLADIUM.NO_ROLL_WITH_IMPACT.includes(w.weaponType) ) return false;
+  return (w.weaponType === "explosive") || !!w.blunt;
+}
+
+/**
+ * Did this character Roll with Impact against the attack behind a damage card? (Apply then halves it.)
+ * @param {Actor} target
+ * @param {object} data    The damage card's flags
+ * @param {string} mode    "normal", "half" or "hp"
+ */
+export function rolledWithImpact(target, data, mode = "normal") {
+  return (mode === "normal") && !!data.attackMessage && (target.getFlag?.("palladium-universal", "rolledImpact") === data.attackMessage);
+}
+
+/** Whether an attack card allows Roll with Impact (cards from before 1.24 only know the weapon type). */
+function attackAllowsImpact(data) {
+  if ( data.blunt !== undefined ) return !!data.blunt;
+  return !CONFIG.PALLADIUM.NO_ROLL_WITH_IMPACT.includes(data.weaponType);
+}
+
+/**
  * Roll a combat maneuver (Hold, Entangle, Tackle, Throw) with the melee Strike bonus.
  * @param {Actor} actor
  * @param {string} key   A CONFIG.PALLADIUM.MANEUVERS key
@@ -417,6 +453,7 @@ export async function rollManeuver(actor, key) {
   const m = CONFIG.PALLADIUM.MANEUVERS[key];
   if ( !m ) return;
   const c = actor.system.combat;
+  if ( cantAttack(actor) ) return isOnlyHeld(actor) ? rollBreakFree(actor) : null;
   if ( m.requires && !c.trainingData.unlocks.includes(m.requires) ) {
     return ui.notifications.warn(`${actor.name}'s Combat Training hasn't unlocked ${m.label}.`);
   }
@@ -427,11 +464,47 @@ export async function rollManeuver(actor, key) {
   const parts = { "Strike": c.totals.strike };
   return postAttackCard(actor, roll, {
     title: m.label, parts, special, text: m.text, extra: actionNote ? [actionNote] : [],
-    flags: { maneuver: key, ranged: false, weaponType: "unarmed", deathBlow: special.deathBlow, leap: !!m.leap },
+    flags: { maneuver: key, ranged: false, weaponType: "unarmed", blunt: true, deathBlow: special.deathBlow, leap: !!m.leap },
     damageLabel: m.damage ? (() => {
       const mult = damageMultiplier({ crit: special.crit, deathBlow: special.deathBlow, leap: !!m.leap });
       return mult > 1 ? `Roll Unarmed Damage (×${mult})` : "Roll Unarmed Damage";
     })() : null
+  });
+}
+
+/**
+ * Conditions that stop attacks and maneuvers (Held, Paralyzed, Unconscious, Coma). Warns, except for a Hold alone
+ * (the attack becomes a Strike to break free).
+ * @param {Actor} actor
+ * @returns {boolean}
+ */
+function cantAttack(actor) {
+  const blocked = actor.system.combat?.conditions?.noAttack ?? [];
+  if ( !blocked.length ) return false;
+  if ( !isOnlyHeld(actor) ) ui.notifications.warn(`${actor.name} can't attack while ${blocked.join(", ")}.`);
+  return true;
+}
+
+/** Whether Held is the only condition stopping attacks. */
+function isOnlyHeld(actor) {
+  const blocked = actor.system.combat?.conditions?.noAttack ?? [];
+  return (blocked.length === 1) && actor.statuses?.has("held");
+}
+
+/**
+ * Held (p.87): the victim's Attack Action is a Strike roll to break free; the holder may Parry it without
+ * using an action. A success ends the Hold (remove Held).
+ * @param {Actor} actor
+ */
+export async function rollBreakFree(actor) {
+  const c = actor.system.combat;
+  const actionNote = await spendActions(actor, 1, "breaking free");
+  const roll = await new Roll(`1d20 + ${c.totals.strike}`).evaluate();
+  const special = { ...naturalSpecials(actor, roll.dice[0].total, true), critOrStun: false, deathBlow: false };
+  return postAttackCard(actor, roll, {
+    title: "Break Free from the Hold", parts: { "Strike": c.totals.strike }, special, extra: actionNote ? [actionNote] : [],
+    text: "Held: this Attack Action is a Strike roll to break free. The holder may Parry it without using an action; if it gets through, the Hold is broken (remove Held).",
+    flags: { maneuver: "breakFree", ranged: false, weaponType: "unarmed", blunt: true }
   });
 }
 
@@ -441,13 +514,13 @@ export async function rollManeuver(actor, key) {
  * @param {object} [options]
  */
 export async function rollUnarmedDamage(actor, { crit = false, strike = null, label = "Unarmed", deathBlow = false,
-  leap = false } = {}) {
+  leap = false, attackMessage = null } = {}) {
   const parts = { "Combat": actor.system.combat.totals.damage };
   let formula = parts.Combat ? `${UNARMED_DAMAGE} + ${parts.Combat}` : UNARMED_DAMAGE;
   const mult = damageMultiplier({ crit, deathBlow, leap });
   if ( mult > 1 ) formula = `(${formula}) * ${mult}`;
   const roll = await new Roll(formula).evaluate();
-  const flags = { "palladium-universal": { card: "damage", actorUuid: actor.uuid, damage: roll.total, strike, crit } };
+  const flags = { "palladium-universal": { card: "damage", actorUuid: actor.uuid, damage: roll.total, strike, crit, attackMessage } };
   return postCard(actor, { title: `${label}: Damage${mult > 1 ? ` (×${mult})` : ""}`, label: "Damage", result: roll.total,
     lines: damageLines(roll, UNARMED_DAMAGE, parts, { mult }), rolls: [roll], buttons: damageButtons(), flags });
 }
@@ -478,10 +551,15 @@ export async function rollDefense(defender, key, attack, attackerName = "the att
   if ( (key === "parry") && attack.ranged && !sys.health.shield ) {
     return ui.notifications.warn("Ranged attacks can't be Parried without a shield: Dodge instead.");
   }
-  if ( (key === "rollImpact") && CONFIG.PALLADIUM.NO_ROLL_WITH_IMPACT.includes(attack.weaponType) ) {
-    return ui.notifications.warn("You can't Roll with Impact against bullets or energy blasts.");
+  if ( (key === "rollImpact") && !attackAllowsImpact(attack) ) {
+    return ui.notifications.warn("Roll with Impact only works against blunt attacks, explosions and falls: not bullets, energy blasts or blades.");
   }
 
+  // Horrified: can't Parry or Dodge the first attack this round (Transdimensional p.89).
+  if ( ["parry", "dodge"].includes(key) && defender.statuses?.has("shocked") && !defender.getFlag?.("palladium-universal", "shockFirstTaken") ) {
+    if ( defender.isOwner ) await defender.setFlag("palladium-universal", "shockFirstTaken", true);
+    return ui.notifications.warn(`${defender.name} is Horrified: the first attack this round can't be Parried or Dodged. The next one can.`);
+  }
   const hookOptions = { attack, attackerName };
   if ( Hooks.call("palladium.preRollDefense", defender, key, hookOptions) === false ) return null;
   let bonus = c.totals[r.total];
@@ -510,18 +588,19 @@ export async function rollDefense(defender, key, attack, attackerName = "the att
     const outcome = {
       parry: "The attack is parried: no damage.",
       dodge: "The attack is dodged: no damage.",
-      rollImpact: "Half damage (use Apply ½), and Stun attacks don't stun.",
+      rollImpact: "Half damage (Apply halves it automatically for this character), and Stun attacks don't stun.",
       entangle: "The attacking limb or weapon is entangled: it can't be used until released or it breaks free. You're +5 to Hold it later.",
       disarm: `The weapon is knocked away${natural >= c.critRange ? " — and a Critical lets you take it" : ""}.`,
       throw: "The attacker is thrown: knocked Prone and loses the Initiative."
     }[key];
     notes.push(`<span>${outcome}</span>`);
   }
+  // A successful Roll with Impact: the damage from this attack is halved when applied to this character.
+  if ( (key === "rollImpact") && success && attack.messageId && defender.isOwner ) {
+    await defender.setFlag("palladium-universal", "rolledImpact", attack.messageId);
+  }
   const usesAction = r.usesAction || ((key === "parry") && !c.trainingData.autoParry);
   if ( usesAction ) notes.push(await spendActions(defender, 1, r.label));
-  if ( sys.combat.conditions.active.includes("shocked") ) {
-    notes.push(`<span class="hint">Horrified: can't Parry or Dodge the first attack this round.</span>`);
-  }
 
   const message = await postCard(defender, {
     title: `${r.label} vs ${attackerName}`, label: r.label, result: roll.total, rolls: [roll], notes,
@@ -579,16 +658,9 @@ export function requestHorrorSaves(actor) {
     buttons: `<div class="pu-buttons"><button type="button" data-pu-action="horror-save"><i class="fa-solid fa-ghost"></i> Save vs H.F. ${hf}</button></div>` });
 }
 
-/** Apply the Horrified condition and drop the actor to the bottom of the Initiative order. */
+/** Apply the Horrified condition (the conditions hook drops the actor to the bottom of the Initiative order). */
 async function applyHorrified(actor) {
   if ( actor.isOwner ) await actor.toggleStatusEffect("shocked", { active: true });
-  const combat = game.combat;
-  const combatants = combat?.combatants.filter(c => c.actor === actor && c.isOwner) ?? [];
-  if ( !combatants.length ) return;
-  const lowest = Math.min(...combat.combatants.map(c => c.initiative ?? 0));
-  for ( const c of combatants ) {
-    if ( c.initiative !== null ) await c.update({ initiative: lowest - 1 });
-  }
 }
 
 /* -------------------------------------------- */
@@ -605,13 +677,17 @@ async function applyHorrified(actor) {
  * @param {number} [options.strike]  The Strike roll total, used to resolve armor
  */
 export async function rollDamage(actor, weapon, { crit = false, mode = "aimed", strike = null, deathBlow = false,
-  double = false, leap = false } = {}) {
+  double = false, leap = false, attackMessage = null } = {}) {
   const w = weapon.system;
   const sys = actor.system;
   const effects = sys.weaponEffects(weapon);
   let base = (w.isModern && (mode !== "aimed") && w.burstDamage) ? w.burstDamage : (w.damage || "0");
   const parts = {};
-  if ( w.addsStrengthDamage ) parts["Combat"] = sys.combat.totals.damage;
+  if ( w.addsStrengthDamage ) {
+    // Combat Training damage is melee only (p.62–63): thrown weapons get the P.S. and other bonuses without it.
+    const training = sys.combat.conditions?.stunned ? 0 : (sys.combat.breakdown?.damage?.training ?? 0);
+    parts["Combat"] = (w.weaponType === "thrown") ? sys.combat.totals.damage - training : sys.combat.totals.damage;
+  }
   parts["Weapon"] = w.damageBonus;
   parts["Skills"] = effects.damage;
   const notes = [];
@@ -639,7 +715,7 @@ export async function rollDamage(actor, weapon, { crit = false, mode = "aimed", 
   const roll = await new Roll(formula).evaluate();
 
   const flags = { "palladium-universal": { card: "damage", actorUuid: actor.uuid, itemRef: weapon.id,
-    damage: roll.total, strike, crit, deathBlow } };
+    damage: roll.total, strike, crit, deathBlow, attackMessage, weaponType: w.weaponType } };
   const title = deathBlow ? `Death Blow (×${mult}, to Hit Points)` : leap ? `Leap Attack Damage (×${mult})`
     : crit ? "Damage (Critical ×2)" : double ? "Damage (×2)" : "Damage";
   const cardNotes = [];
@@ -796,7 +872,7 @@ async function onCardButton(event, message, data) {
     if ( !defenders.length ) return ui.notifications.warn("Select your token (or set your character) to defend.");
     const attacker = await fromUuid(data.actorUuid);
     for ( const defender of defenders ) {
-      await rollDefense(defender, event.currentTarget.dataset.reaction, data, attacker?.name);
+      await rollDefense(defender, event.currentTarget.dataset.reaction, { ...data, messageId: message.id }, attacker?.name);
     }
     return;
   }
@@ -807,6 +883,21 @@ async function onCardButton(event, message, data) {
     if ( action === "te-change" ) return applyTeChange(actor, Number(event.currentTarget.dataset.direction));
     if ( action === "change-save" ) return rollChangeSave(actor);
     return rollTemporalMishap(actor);
+  }
+
+  if ( action === "stop-bleeding" ) {
+    const targets = damageTargets();
+    if ( !targets.length ) return ui.notifications.warn("Target (or select) the character who is Bleeding Out.");
+    const medic = await fromUuid(data.actorUuid ?? "");
+    for ( const target of targets ) await stopBleeding(target, medic?.name ?? message.speaker?.alias ?? "");
+    return;
+  }
+
+  if ( action === "side-effect" ) {
+    if ( !game.user.isGM ) return ui.notifications.warn("Only the GM rolls optional side-effects.");
+    const actor = await fromUuid(data.actorUuid);
+    if ( actor ) return rollSideEffect(actor, event.currentTarget.dataset.table ?? data.table);
+    return;
   }
 
   if ( action === "horror-save" ) {
@@ -837,7 +928,7 @@ async function onCardButton(event, message, data) {
     const actor = await fromUuid(data.actorUuid);
     if ( !actor?.isOwner ) return ui.notifications.warn("Only the attacker's owner can roll its damage.");
     return rollUnarmedDamage(actor, { crit: data.crit, strike: data.strike, label: CONFIG.PALLADIUM.MANEUVERS[data.maneuver]?.label,
-      deathBlow: data.deathBlow, leap: data.leap });
+      deathBlow: data.deathBlow, leap: data.leap, attackMessage: message.id });
   }
 
   if ( action === "damage" ) {
@@ -846,7 +937,7 @@ async function onCardButton(event, message, data) {
     if ( !weapon ) return ui.notifications.warn("That weapon no longer exists.");
     if ( !actor.isOwner ) return ui.notifications.warn("Only the attacker's owner can roll its damage.");
     return rollDamage(actor, weapon, { crit: data.crit, mode: data.mode, strike: data.strike, deathBlow: data.deathBlow,
-      double: data.double, leap: data.leap });
+      double: data.double, leap: data.leap, attackMessage: message.id });
   }
 
   // Apply buttons
@@ -859,8 +950,14 @@ async function onCardButton(event, message, data) {
       ui.notifications.warn(`You don't have permission to damage ${target.name}; ask the GM.`);
       continue;
     }
-    const text = await applyDamage(target, data.damage, { strike: data.strike, mode });
-    results.push(`<li><strong>${target.name}</strong>: ${text}</li>`);
+    // This character Rolled with Impact against the attack: Apply halves it.
+    const rolled = rolledWithImpact(target, data, mode);
+    // Behind cover this combat: bullets, energy and black powder lose 2% of the cover's S.D.C. (p.90).
+    const cover = (mode === "hp") ? { amount: data.damage, note: "" } : await throughCover(target, data.damage, data.weaponType);
+    let text = await applyDamage(target, cover.amount, { strike: data.strike, mode: rolled ? "half" : mode });
+    if ( cover.note ) text = `${cover.note[0].toUpperCase()}${cover.note.slice(1)}: ${text}`;
+    if ( rolled ) await target.unsetFlag("palladium-universal", "rolledImpact");
+    results.push(`<li><strong>${target.name}</strong>${rolled ? " (Rolled with Impact: ½)" : ""}: ${text}</li>`);
   }
   if ( !results.length ) return;
   const label = { normal: "Damage Applied", half: "Damage Applied (½, Roll with Impact)", hp: "Damage Applied to Hit Points" }[mode];

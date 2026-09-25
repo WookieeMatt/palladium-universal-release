@@ -259,22 +259,91 @@ export const CIRCUMSTANCES = {
 };
 
 /**
- * Conditions, shown as token status effects. mods are added to combat totals;
- * stunned cuts actions to 1 and removes combat bonuses (p.90); noDefense blocks Reactions.
+ * Conditions, shown as token status effects (v1.23.0: each does what its text says).
+ * mods: added to combat totals. stunned: actions 1, no combat bonuses, Speed halved (p.90).
+ * noDefense: no Reactions. noActions: 0 actions. noAttack: no attacks or maneuvers (Held: a Strike to break free).
+ * noSkills: no skill rolls. losesInitiative: drops to the bottom of the order.
+ * rounds: lasts that many rounds when applied in combat. hpLoss: {every: rounds} (1 HP a minute = 4 rounds).
  */
 export const CONDITIONS = {
-  stunned: { label: "Stunned", img: "icons/svg/daze.svg", text: "1 action per round, Speed halved, no combat bonuses, no skill checks (1D4 rounds)." },
-  shocked: { label: "Horrified", img: "icons/svg/terror.svg", mods: { actions: -1 }, text: "Failed a Horror Factor save: loses the Initiative, can't Parry or Dodge the first attack, loses one action (1 round)." },
+  stunned: { label: "Stunned", img: "icons/svg/daze.svg", noSkills: true, rounds: "1d4",
+    text: "1 action per round, Speed halved, no combat bonuses, no skill checks. Lasts 1D4 rounds (rolled when applied in combat)." },
+  shocked: { label: "Horrified", img: "icons/svg/terror.svg", mods: { actions: -1 }, losesInitiative: true, firstAttackUndefended: true,
+    text: "Failed a Horror Factor save: loses the Initiative, can't Parry or Dodge the first attack, loses one action (1 round)." },
   blind: { label: "Blind", img: "icons/svg/blind.svg", mods: { strike: -10, parry: -10, dodge: -10, initiative: -10 }, text: "−10 to Strike, Parry, Dodge and Initiative." },
-  held: { label: "Held", img: "icons/svg/net.svg", noDefense: true, text: "In a Hold: can't move, attack, parry, dodge or react. Break free with a Strike roll as an Attack Action." },
+  held: { label: "Held", img: "icons/svg/net.svg", noDefense: true, noAttack: true,
+    text: "In a Hold: can't move, attack, parry, dodge or react. Attacking rolls a Strike to break free instead (an Attack Action)." },
   entangled: { label: "Entangled", img: "icons/svg/net.svg", text: "The entangled limb and its weapon can't be used. Break free with a Strike roll." },
-  prone: { label: "Prone", img: "icons/svg/falling.svg", text: "Can only crawl; standing up takes an action." },
-  deafened: { label: "Deafened", img: "icons/svg/deaf.svg", mods: { strike: -3, parry: -3, dodge: -3 }, text: "−3 Strike/Parry/Dodge (−6 Parry/Dodge vs attacks from behind); automatically loses initiative." },
-  pain: { label: "Pain", img: "icons/svg/degen.svg", mods: { strike: -6, parry: -6, dodge: -6 }, text: "−6 Strike/Parry/Dodge; 1 HP damage per minute." },
-  paralyzed: { label: "Paralyzed", img: "icons/svg/paralysis.svg", noDefense: true, text: "Can't strike, parry or dodge; can see, hear, speak and think." },
-  unconscious: { label: "Unconscious", img: "icons/svg/unconscious.svg", noDefense: true, text: "Knocked out." },
-  coma: { label: "Coma", img: "icons/svg/blood.svg", noDefense: true, text: "0 HP or less: Save vs Coma (2 of 3); bleeding out." }
+  prone: { label: "Prone", img: "icons/svg/falling.svg", text: "Can only crawl; standing up takes an action (spent when Prone is removed in combat)." },
+  deafened: { label: "Deafened", img: "icons/svg/deaf.svg", mods: { strike: -3, parry: -3, dodge: -3 }, losesInitiative: true,
+    text: "−3 Strike/Parry/Dodge (−6 Parry/Dodge vs attacks from behind); automatically loses initiative." },
+  pain: { label: "Pain", img: "icons/svg/degen.svg", mods: { strike: -6, parry: -6, dodge: -6 }, hpLoss: { every: 4 },
+    text: "−6 Strike/Parry/Dodge; 1 HP damage per minute (every 4 rounds in combat)." },
+  paralyzed: { label: "Paralyzed", img: "icons/svg/paralysis.svg", noDefense: true, noAttack: true, noActions: true,
+    text: "Can't move, strike, parry or dodge (no actions); can see, hear, speak and think." },
+  unconscious: { label: "Unconscious", img: "icons/svg/unconscious.svg", noDefense: true, noAttack: true, noActions: true, noSkills: true,
+    text: "Knocked out: no actions, no defense." },
+  bleeding: { label: "Bleeding Out", img: "icons/svg/blood.svg", hpLoss: { every: 4 },
+    text: "At 25% of Hit Points or less (applied automatically): 1 H.P. every minute (4 rounds) until first aid stops it (p.92)." },
+  coma: { label: "Coma", img: "icons/svg/sleep.svg", noDefense: true, noAttack: true, noActions: true, noSkills: true,
+    text: "0 HP or less (applied automatically): Save vs Coma (2 of 3); bleeding out. Below −P.E.: dead." }
 };
+
+/**
+ * Healing (p.92): Hit Points a day by treatment ([first day, each day after]) and S.D.C. per hour of rest.
+ */
+export const HEALING = {
+  none: { label: "No treatment", perDay: [1, 1] },
+  nonProfessional: { label: "Non-professional", perDay: [2, 2] },
+  professional: { label: "Professional", perDay: [2, 4] }
+};
+export const SDC_PER_HOUR = 5;
+
+/** Skills whose success can stop Bleeding Out (p.92). */
+export const FIRST_AID_SKILLS = /first aid|paramedic|medical doctor|field surgery|field medic/i;
+
+/**
+ * Optional Damage Side-Effects (p.93). Each result: [low, high, injury, penalties text, effects].
+ * Effects use the item effect targets (attributes.<key>, attributes.<key>.halve, combat.<key>, skills.all).
+ */
+export const SIDE_EFFECTS = {
+  sdc: { label: "S.D.C. Side-Effects", when: "75% or more of the S.D.C. is gone", duration: "2d4", unit: "days",
+    results: [[1, 15, "Minor bruises and lacerations", "Spd −2", [["attributes.spd", -2]]],
+      [16, 30, "Bruised and battered muscles", "Spd −3, P.P. −1", [["attributes.spd", -3], ["attributes.pp", -1]]],
+      [31, 45, "Injured arm or shoulder", "P.P. −2, −2 Parry", [["attributes.pp", -2], ["combat.parry", -2]]],
+      [46, 60, "Injured leg or hip", "½ Spd, −2 Dodge", [["attributes.spd.halve", 1], ["combat.dodge", -2]]],
+      [61, 75, "Injured hand or wrist", "P.S. −2, P.P. −1", [["attributes.ps", -2], ["attributes.pp", -1]]],
+      [76, 90, "Concussion or head injury", "−5% on all skills", [["skills.all", -5]]],
+      [91, 100, "Injured back or pelvis", "P.E. −2, P.P. −2", [["attributes.pe", -2], ["attributes.pp", -2]]]] },
+  hp: { label: "Hit Point Side-Effects", when: "75% to 99% of the Hit Points are gone", duration: "1d4", unit: "weeks",
+    results: [[1, 9, "Severe bruises and lacerations", "P.E. −2, P.P. −2", [["attributes.pe", -2], ["attributes.pp", -2]]],
+      [10, 19, "Torn arm muscle", "P.S. −2, −2 Parry", [["attributes.ps", -2], ["combat.parry", -2]]],
+      [20, 29, "Torn leg muscle", "Spd −4, −2 Dodge", [["attributes.spd", -4], ["combat.dodge", -2]]],
+      [30, 39, "Fractured bone: arm", "P.S. −4, −4 Parry", [["attributes.ps", -4], ["combat.parry", -4]]],
+      [40, 49, "Fractured bone: leg", "½ Spd, −4 Dodge", [["attributes.spd.halve", 1], ["combat.dodge", -4]]],
+      [50, 59, "Fractured bone: ribs or pelvis", "P.E. −4, P.P. −4", [["attributes.pe", -4], ["attributes.pp", -4]]],
+      [60, 69, "Broken bone: arm", "½ P.S., −6 Parry", [["attributes.ps.halve", 1], ["combat.parry", -6]]],
+      [70, 79, "Broken bone: leg", "½ Spd, −6 Dodge", [["attributes.spd.halve", 1], ["combat.dodge", -6]]],
+      [80, 89, "Broken bones: torso", "P.E. −4, ½ P.P.", [["attributes.pe", -4], ["attributes.pp.halve", 1]]],
+      [90, 100, "Severe concussion", "−10% on all skills", [["skills.all", -10]]]] },
+  nearDeath: { label: "Near Death Side-Effects", when: "all the Hit Points were lost (a coma)", duration: "", unit: "permanent",
+    results: [[1, 10, "No permanent damage", "None", []],
+      [11, 20, "Minor stiffness in joints", "P.P. −1", [["attributes.pp", -1]]],
+      [21, 39, "Major stiffness in joints", "P.P. −2", [["attributes.pp", -2]]],
+      [40, 55, "Legs impaired; limps", "Spd −2", [["attributes.spd", -2]]],
+      [56, 70, "Major scarring", "P.B. −2", [["attributes.pb", -2]]],
+      [71, 82, "Chronic pain", "P.E. −2", [["attributes.pe", -2]]],
+      [83, 92, "Minor brain damage", "I.Q. −1", [["attributes.iq", -1]]],
+      [93, 100, "Major brain damage", "I.Q. −2", [["attributes.iq", -2]]]] }
+};
+
+/** S.D.C. of common objects (p.90), for cover: [label, S.D.C.]. */
+export const COVER_SDC = [
+  ["Cardboard box", 2], ["Wood crate", 15], ["Metal crate", 50], ["Car door", 75], ["Windshield", 25],
+  ["Interior door", 50], ["Wood door", 100], ["Metal grill door", 250], ["Metal door", 400], ["Safe door", 600],
+  ["Vault door", 5000], ["Plaster wall", 75], ["Wood wall", 150], ["Brick wall", 200],
+  ["Cinder block wall", 300], ["Concrete wall", 400], ["Glass window", 20], ["Plexiglass window", 50]
+];
 
 /** Token status effects: the conditions plus Foundry's "dead" (used to mark defeated combatants). */
 export function statusEffects() {
@@ -919,3 +988,50 @@ export const XP_AWARDS = [
   { group: "Danger", label: "Risked their own life to help others", min: 100, max: 300 },
   { group: "Danger", label: "Self-sacrifice in a life-and-death situation", min: 500, max: 700 }
 ];
+
+/**
+ * Character creation tables (TMNT & Other Strangeness p.13–15), names only, rolled step by step from the
+ * Creation Checklist. Each table: label, the header field its result fills ("animal", "origin", "creator",
+ * "education"; null for the Animal Category, which only leads on), and [low, high, name, next table?].
+ */
+const T = (label, field, results, next = null) => ({ label, field, next, results });
+export const CREATION_TABLES = {
+  animalCategory: T("Animal Category", null, [
+    [1, 25, "Urban", "urban"], [26, 40, "Rural", "rural"], [41, 65, "Wild", "wild"], [66, 75, "Wild Birds", "wildBirds"],
+    [76, 90, "Zoo", "zoo"], [91, 100, "Lab", "lab"]]),
+  urban: T("Urban Animals", "animal", [[1, 25, "Dog"], [26, 45, "Cat"], [46, 50, "Newt"], [51, 55, "Crow"],
+    [56, 60, "Pet Rodent (Gerbil, Hamster, etc.)"], [61, 65, "Squirrel"], [66, 75, "Pet Ferret"], [76, 83, "Pigeon"],
+    [84, 85, "Bird (Songbird or Parrot)"], [86, 88, "Bat"], [89, 92, "Turtle"], [93, 96, "Frog"], [97, 100, "Lizard"]]),
+  rural: T("Rural Animals", "animal", [[1, 5, "Dog"], [6, 10, "Cat"], [11, 15, "Cow or Bull"], [16, 20, "Pig"], [21, 30, "Chicken"],
+    [31, 35, "Duck"], [36, 50, "Horse"], [51, 60, "Rabbit"], [61, 65, "Rat"], [66, 70, "Sheep"], [71, 80, "Goat"], [81, 85, "Turkey"],
+    [86, 88, "Bat"], [89, 94, "Raccoon"], [95, 98, "Frog"], [99, 100, "Salamander"]]),
+  wild: T("Wild Animals", "animal", [[1, 5, "Wolf"], [6, 10, "Coyote"], [11, 15, "Fox"], [16, 20, "Badger"], [21, 25, "Black Bear"],
+    [26, 27, "Grizzly Bear"], [28, 30, "Cougar"], [31, 33, "Bobcat"], [34, 35, "Lynx"], [36, 37, "Wolverine"], [38, 45, "Weasel"],
+    [46, 49, "Alligator"], [50, 52, "Otter"], [53, 55, "Beaver"], [56, 60, "Muskrat"], [61, 65, "Raccoon"], [66, 70, "Boar"],
+    [71, 75, "Skunk"], [76, 80, "Porcupine"], [81, 83, "Opossum"], [84, 85, "Marten"], [86, 88, "Armadillo"], [89, 95, "Deer"],
+    [96, 97, "Elk"], [98, 99, "Moose"], [100, 100, "Mole"]]),
+  wildBirds: T("Wild Birds", "animal", [[1, 5, "Duck"], [6, 10, "Goose"], [11, 15, "Swan"], [16, 20, "Cardinal"], [21, 30, "Wild Turkey"],
+    [31, 35, "Small Wild Bird"], [36, 50, "Wild Game Bird"], [51, 60, "Raven"], [61, 65, "Pigeon"], [66, 70, "Wild Songbird"],
+    [71, 80, "Hawk"], [81, 85, "Falcon"], [86, 90, "Eagle"], [91, 95, "Owl"], [96, 98, "Escaped Pet Songbird"], [99, 100, "Escaped Pet Parrot"]]),
+  zoo: T("Zoo Animals", "animal", [[1, 4, "Lion"], [5, 8, "Tiger"], [9, 12, "Leopard"], [13, 16, "Cheetah"], [17, 20, "Polar Bear"],
+    [21, 24, "Crocodile (or Alligator)"], [25, 28, "Aardvark"], [29, 32, "Rhinoceros"], [33, 36, "Hippopotamus"], [37, 40, "Elephant"],
+    [41, 44, "Chimpanzee"], [45, 48, "Orangutan"], [49, 52, "Gorilla"], [53, 56, "Monkey"], [57, 60, "Baboon"], [61, 64, "Camel"],
+    [65, 68, "Bison (or Buffalo)"], [69, 72, "Lemur"], [73, 76, "Shark"], [77, 80, "Octopus"], [81, 84, "Squid"], [85, 88, "Penguin"],
+    [89, 92, "Kodiak (Brown Bear)"], [93, 96, "Lizard"], [97, 100, "Komodo Dragon"]]),
+  lab: T("Lab Animals", "animal", [[1, 25, "Mouse"], [26, 45, "Rat"], [46, 50, "Songbird"], [51, 55, "Dog"], [56, 60, "Cat"],
+    [61, 65, "Rabbit"], [66, 75, "Guinea Pig"], [76, 80, "Hamster"], [81, 85, "Chimpanzee"], [86, 89, "Monkey"], [90, 93, "Pig"],
+    [94, 97, "Sheep"], [98, 100, "Salamander"]]),
+  origin: T("Mutant Animal Origin", "origin", [[1, 14, "Random Mutation", "wildEducation"], [15, 60, "Accidental Encounter", "wildEducation"],
+    [61, 100, "Deliberate Experimentation", "creator"]]),
+  creator: T("Creator Organization", "creator", [[1, 25, "Public Biological Research Facility"], [26, 45, "Private Industry"],
+    [46, 50, "Secret Medical Experiment Organization"], [51, 55, "Secret Criminal Organization"], [56, 60, "Secret Crime Fighting Organization"],
+    [61, 65, "Secret Private Contractor Military Organization"], [66, 70, "Secret Espionage Organization"],
+    [71, 75, "Secret Medical Research Organization"], [76, 100, "Secret Government Military Organization"]], "experiment"),
+  experiment: T("Deliberate Experimentation", "education", [[1, 10, "Experiment: Adopted into Researcher's Family"],
+    [11, 20, "Experiment: Raised as a Pet"], [21, 30, "Experiment: Pet Gone Awry", "wildEducation"], [31, 40, "Experiment: Trained and Punished"],
+    [41, 50, "Experiment: Caged Experimental Animal", "wildEducation"], [51, 60, "Experiment: Educated as a Normal Human"],
+    [61, 70, "Experiment: Rescued by a Friendly Researcher"], [71, 80, "Experiment: Valuable Employee"], [81, 90, "Experiment: Enslaved Specialist"],
+    [91, 100, "Experiment: Bred for Combat"]]),
+  wildEducation: T("Wild Animal Education", "education", [[1, 20, "Wild: Self-Taught in the Wild"], [21, 40, "Wild: Skulked on the Fringes"],
+    [41, 90, "Wild: Adopted by a Mentor"], [91, 100, "Wild: Went Public"]])
+};

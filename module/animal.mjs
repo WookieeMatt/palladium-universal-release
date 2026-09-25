@@ -2,6 +2,8 @@
  * Applying Animal and Background items to a character (Steps 2–4, p.13–19).
  */
 
+import { isBluntWeapon } from "./blunt.mjs";
+
 const FLAG = "palladium-universal";
 
 /** Items on the actor that were bought from its animal's option list. */
@@ -82,7 +84,7 @@ export async function setOptionPurchased(actor, optionId, buy) {
   const itemData = option.kind === "weapon"
     ? { name: option.name, type: "weapon", img: "icons/skills/melee/unarmed-punch-fist.webp", flags,
       system: { weaponType: "natural", damage: option.damage || "1D6", bioe: option.bioe, effects: option.effects,
-        description } }
+        description, blunt: isBluntWeapon({ type: "weapon", name: option.name, system: { weaponType: "natural" } }) } }
     : { name: option.name, type: "ability", img: "icons/magic/nature/wolf-paw-glow-large-green.webp", flags,
       system: { bioe: option.bioe, naturalAR: option.naturalAR, effects: option.effects, description } };
   await actor.createEmbeddedDocuments("Item", [itemData]);

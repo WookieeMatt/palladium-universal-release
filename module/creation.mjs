@@ -342,7 +342,7 @@ export function attributeBonusText(system, key) {
     case "pb": return b.pb.pbPercent ? `${b.pb.pbPercent}% charm / impress` : "";
     case "spd": {
       const mv = system.movement;
-      return mv ? `Move ${mv.move} yd · Run ${mv.fullRun} yd/round · ${mv.sprint} yd/min` : "";
+      return mv ? `Move ${mv.move} yd · Run ${mv.fullRun} yd/round · ${mv.sprint} yd/min${mv.halved ? " (Stunned: Speed halved)" : ""}` : "";
     }
   }
   return "";

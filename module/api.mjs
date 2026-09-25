@@ -4,6 +4,7 @@ import * as combat from "./combat.mjs";
 import * as creation from "./creation.mjs";
 import * as dice from "./dice.mjs";
 import * as welcome from "./welcome.mjs";
+import * as creationTables from "./creation-tables.mjs";
 import * as audit from "./audit.mjs";
 import * as party from "./party.mjs";
 import * as partyView from "./party-view.mjs";
@@ -14,6 +15,10 @@ import * as air from "./air-combat.mjs";
 import * as magic from "./magic.mjs";
 import * as timetravel from "./timetravel.mjs";
 import * as vehicle from "./vehicle.mjs";
+import * as blunt from "./blunt.mjs";
+import * as cover from "./cover.mjs";
+import * as recovery from "./recovery.mjs";
+import * as fx from "./fx.mjs";
 import CharacterData from "./data/character.mjs";
 import NpcData from "./data/npc.mjs";
 import VehicleData from "./data/vehicle.mjs";
@@ -43,6 +48,7 @@ export function buildApi() {
     rollSkill: dice.rollSkill,
     rollSave: dice.rollSave,
     showRecommendedModules: welcome.showRecommendedModules,
+    rollCreationTable: creationTables.rollCreationTable,
     activeParty: party.activeParty,
     addPartyMember: party.addMember,
     addPartyToCombat: party.addPartyToCombat,
@@ -54,6 +60,20 @@ export function buildApi() {
     openAudit: audit.openAudit,
     recommendedModules: welcome.recommendedModules,
     rollSaveVsComa: dice.rollSaveVsComa,
+
+    // Damage effects & recovery (p.92–93): for macros, e.g. visual effects on these hooks:
+    // palladium.condition(actor, id, active), palladium.hitPoints(actor, {before, after, max}),
+    // palladium.stopBleeding(actor, by), palladium.heal(actor, result), palladium.sideEffect(actor, result, item), palladium.cover(combatant, cover)
+    bloodSplash: fx.bloodSplash,
+    deathMarker: fx.deathMarker,
+    stopBleeding: recovery.stopBleeding,
+    restAndHeal: recovery.restAndHeal,
+    healDialog: recovery.healDialog,
+    healedHP: recovery.healedHP,
+    rollSideEffect: recovery.rollSideEffect,
+    offerSideEffect: recovery.offerSideEffect,
+    sideEffectTable: recovery.sideEffectTable,
+    setCondition: (actor, id, active = true, options = {}) => actor.toggleStatusEffect(id, { active, ...options }),
     cardHeader: dice.cardHeader,
     postCard: dice.postCard,
     enrichDice: dice.enrichDice,
@@ -81,6 +101,15 @@ export function buildApi() {
     damageMultiplier: combat.damageMultiplier,
     damageButtons: combat.damageButtons,
     spendActions: actions.spendActions,
+    isBluntWeapon: blunt.isBluntWeapon,
+    markBluntWeapons: blunt.markBluntWeapons,
+    canRollWithImpact: combat.canRollWithImpact,
+    rolledWithImpact: combat.rolledWithImpact,
+    setCover: cover.setCover,
+    coverDialog: cover.coverDialog,
+    actorCover: cover.actorCover,
+    throughCover: cover.throughCover,
+    coverReduction: cover.coverReduction,
 
     // Magic and psionics
     castSpell: magic.castSpell,

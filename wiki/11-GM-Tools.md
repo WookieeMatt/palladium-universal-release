@@ -5,11 +5,18 @@
 
 **Configure Settings → System Settings → Default Portrait**: the portrait and token new characters and NPCs start with: **Mutant turtle (black and white)** (the default), **Mutant turtle (color)**, or **Foundry's mystery man**. Compendium NPCs that still have a default portrait follow the setting when imported. Your own art is never replaced.
 
+**Configure Settings → System Settings → Optional Damage Side-Effects** (p.93): *Leave it to the GM* (default), *Ask the GM* (a whispered card with a Roll button when a character loses 75% of their S.D.C., 75% of their Hit Points, or goes into a coma) or *Roll and apply automatically*. Results are **Injury** items carrying the penalties (see **Rules Reference**).
+
+**Configure Settings → System Settings → Blood & Death Effects** (each player's own screen, on by default): a blood splash on the token when a character starts Bleeding Out, and a death marker when they die (a bigger splash, a "☠ Dead" float, the skull overlay, and the combatant marked defeated). Uses JB2A's splash through Sequencer when installed, otherwise a built-in one.
+
+**Configure Settings → System Settings → Death Marker**: the image over a dead character's token (and in the Party View). Blank = the preset skull; pick any image with the file picker to replace it. New deaths use it (for a token that's already dead, remove Dead and apply it again).
+
 **Configure Settings → System Settings → TMNT Journal Style** (on by default): journals and journal pages, including the compendium journals and this guide, use the character sheet look: green title bar, parchment pages, comic headings, green-headed striped tables and green link chips. Turn it off to keep Foundry's own journal style (e.g. with a journal module that has its own theme).
 
 ## GM macros
 The **Palladium Universal Macros (GM)** compendium (hidden from players) holds ready-made macros; drag one to your hotbar:
 - **Scene Weather (black powder)**: sets this scene's black powder weather (dry, humid +5%, rain +15%, downpour or dunking +35%), the default in every character's weather prompt when they fire black powder here. Announced in chat; "Not set" clears it.
+- **Mark Blunt Weapons**: ticks **Blunt** (Roll with Impact works against it) on every weapon that should have it: world items, characters' and NPCs' weapons, tokens, and **unlocked** compendiums (unlock yours first; locked ones are listed). W.P. Blunt / Staff / Chain weapons (not bladed ones), punches, kicks, tails, hooves and head butts. It never unticks anything; a whispered card lists what changed. You rarely need it: the system does the same by itself (once per world on the GM's first login, and for every weapon created or imported afterwards, e.g. from an older NPC module), so no compendium rebuild can undo it. Untick a weapon by hand and it stays unticked.
 
 ## Party, Party View and Session Tools
 See **Party & Session Tools**: the Party actor, the live GM Party View (with Add Party to Combat) and the Session Tools (Award XP, the session record and Print to Journal).
@@ -60,7 +67,7 @@ With the *Dice So Nice* module enabled, the system adds the **T.C.R.I. Dice**, a
 - A failed Horror Factor save drops that combatant to the bottom of the order.
 
 ## Conditions
-Token HUD status effects are this system's conditions (Stunned, Horrified, Blind, Held, Entangled, Prone, Deafened, Pain, Paralyzed, Unconscious, Coma, Dead). Their modifiers apply to combat totals; Held, Paralyzed, Unconscious and Coma block Reactions.
+Token HUD status effects are this system's conditions (Stunned, Horrified, Blind, Held, Entangled, Prone, Deafened, Pain, Bleeding Out, Paralyzed, Unconscious, Coma, Dead). Each does what its text says (see **Combat → Conditions**); Bleeding Out, Coma and Dead go on and off by themselves with the Hit Points.
 
 ## Built-in tables
 The system rolls these itself when needed; you can also roll some directly.
@@ -79,7 +86,9 @@ Flavor tables (time period encounters, surprise details, branch points, technolo
 |---|---|---|
 | Defend (Parry, Dodge...) | The defender | Their selected token or assigned character |
 | Roll Damage | The attacker | The attacking actor |
-| Apply / Apply ½ / To HP | Whoever owns the target (usually the GM) | Targeted tokens, else selected |
+| Apply / Apply ½ / To HP | Whoever owns the target (usually the GM) | Targeted tokens, else selected (Apply halves after their successful Roll with Impact, and takes cover off gunfire) |
+| Stop the Bleeding (successful first aid roll) | The medic, or the GM | Targeted tokens, else selected |
+| Roll … Side-Effects (whispered) | The GM | The character named on the card |
 | Save vs Magic / Dodge / Save vs Psionics / Save vs H.F. | Each target | Their selected token or assigned character |
 | Take damage (misfire, practice), Devolve / Evolve, Temporal Mishap | The actor's owner | The actor that made the roll |
 | The card's title (📖) | Anyone | Opens a read-only view of the item the card is about |

@@ -2,6 +2,7 @@ import { castSpell, newDay, rollChangeSave, rollMagicAbility, rollSpellDamage, u
 import { operateDevice } from "../vehicle.mjs";
 import { practiceSpell, rollTemporalMishap } from "../timetravel.mjs";
 import { rollD20, rollPercent, rollSave, rollSaveVsComa, rollSkill, signed } from "../dice.mjs";
+import { healDialog } from "../recovery.mjs";
 import { attributeBonusText, printAttribute, rollAttributes, rollHitPoints, rollLevelHitPoints } from "../creation.mjs";
 import { rollDumbLuck, rollPullOut, rollTactic, rollVeer } from "../air-combat.mjs";
 import { rollItem } from "../item-rolls.mjs";
@@ -10,6 +11,7 @@ import {
 } from "../combat.mjs";
 import { creationChecklist } from "../checklist.mjs";
 import { moneySources } from "../money.mjs";
+import { rollCreationTable } from "../creation-tables.mjs";
 import { BACKGROUND_KINDS, SKILL_CATEGORIES, WEAPON_TYPES, WP_KINDS, inlineDice } from "../data/items.mjs";
 import { NOTES_FIELDS } from "../data/character.mjs";
 import { applyAnimal, applyBackground, purchasedItems, removeAnimal, setOptionPurchased } from "../animal.mjs";
@@ -51,6 +53,7 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
       rollCombat: PalladiumCharacterSheet.#onRollCombat,
       rollSave: PalladiumCharacterSheet.#onRollSave,
       rollComa: PalladiumCharacterSheet.#onRollComa,
+      restAndHeal: PalladiumCharacterSheet.#onRestAndHeal,
       rollInfluence: PalladiumCharacterSheet.#onRollInfluence,
       printAttribute: PalladiumCharacterSheet.#onPrintAttribute,
       rollAirTactic: PalladiumCharacterSheet.#onRollAirTactic,
@@ -60,6 +63,7 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
       rollAttributes: PalladiumCharacterSheet.#onRollAttributes,
       rollHitPoints: PalladiumCharacterSheet.#onRollHitPoints,
       checklistGo: PalladiumCharacterSheet.#onChecklistGo,
+      creationRoll: PalladiumCharacterSheet.#onCreationRoll,
       checklistToggle: PalladiumCharacterSheet.#onChecklistToggle,
       rollItem: PalladiumCharacterSheet.#onRollItem,
       rollSpellDamage: PalladiumCharacterSheet.#onRollSpellDamage,
@@ -571,6 +575,11 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
     return rollSaveVsComa(this.actor);
   }
 
+  /** Rest & Heal (p.92): Hit Points by treatment and days, S.D.C. by hours of rest. @this {PalladiumCharacterSheet} */
+  static #onRestAndHeal() {
+    return healDialog(this.actor);
+  }
+
   /** @this {PalladiumCharacterSheet} */
   static #onPrintAttribute(event, target) {
     return printAttribute(this.actor, target.dataset.key);
@@ -604,6 +613,11 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
   /** Roll Hit Points (creation, or re-roll) or the level-up dice. @this {PalladiumCharacterSheet} */
   static #onRollHitPoints(event, target) {
     return target.dataset.hp === "level" ? rollLevelHitPoints(this.actor) : rollHitPoints(this.actor);
+  }
+
+  /** Creation checklist: roll the Animal or the Origin on the book's tables. @this {PalladiumCharacterSheet} */
+  static #onCreationRoll(event, target) {
+    return rollCreationTable(this.actor, target.dataset.table);
   }
 
   /** Creation checklist: open the tab for a step. @this {PalladiumCharacterSheet} */
