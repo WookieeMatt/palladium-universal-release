@@ -549,7 +549,7 @@
 }
 .pu-card .pu-details > summary {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: 6px;
   padding: 6px 10px;
   cursor: pointer;
@@ -557,18 +557,24 @@
 }
 .pu-card .pu-details > summary::-webkit-details-marker { display: none; }
 .pu-card .pu-roll-label {
+  min-width: 0;
+  overflow-wrap: anywhere;
   font-family: var(--pu-heading);
   letter-spacing: 0.05em;
   font-size: 1.15rem;
   color: var(--pu-green);
 }
-.pu-card .pu-roll-eq { color: var(--pu-ink-soft); }
+.pu-card .pu-roll-eq { flex: none; color: var(--pu-ink-soft); }
+/* The result never wraps (a long label like "Save vs Circles & Wards" wraps instead). */
 .pu-card .pu-roll-result {
+  flex: none;
+  white-space: nowrap;
   font-family: var(--pu-heading);
   font-size: 1.5rem;
   color: var(--pu-ink);
 }
 .pu-card .pu-roll-toggle {
+  flex: none;
   margin-left: auto;
   font-size: 0.8rem;
   color: var(--pu-ink-soft);
@@ -715,11 +721,19 @@
 }
 .pu-card .pu-gen-table th,
 .pu-card .pu-gen-table td { padding: 2px 3px; border-bottom: 1px solid var(--pu-rule, #a39d80); }
+/* Header row like the sheet's attribute table (and none of Foundry's default table box). */
+.pu-card .pu-gen-table,
+.pu-card .pu-gen-table thead,
+.pu-card .pu-gen-table thead tr { border: none; background: none; text-shadow: none; }
 .pu-card .pu-gen-table thead th {
-  font-size: 0.8em;
-  font-weight: 700;
+  font-family: var(--pu-heading);
+  font-weight: 400;
+  font-size: 0.85em;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: var(--pu-ink-soft, #5d5a4b);
+  color: var(--pu-parchment);
+  background: var(--pu-green);
+  border: none;
 }
 .pu-card .pu-gen-table tbody th { text-align: left; }
 .pu-card .pu-gen-table td.na { color: var(--pu-ink-soft, #5d5a4b); }

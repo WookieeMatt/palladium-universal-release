@@ -169,7 +169,7 @@ export async function rollAttributes(actor) {
   // The saved score is what the sheet uses (it may include other bonuses, e.g. a background's).
   for ( const r of results ) r.score = actor.system.attributes[r.key].total ?? r.total;
   await postCard(actor, {
-    title: "Rolls Attributes", rolls,
+    title: "Rolled Attributes", rolls,
     body: generationTable(results),
     flags: { "palladium-universal": { card: "attributeGeneration", actorUuid: actor.uuid,
       dice: Object.fromEntries(results.filter(r => r.exceptionalDie).map(r => [r.key, r.exceptionalDie])) } }

@@ -220,7 +220,8 @@ export async function rollPercent(actor, { label, target, skill = true, item, br
     for ( const [k, v] of Object.entries(breakdown) ) if ( v || (k === "base") ) lines.push([names[k] ?? k, k === "base" ? `${v}%` : `${signed(v)}%`]);
     const sum = Object.values(breakdown).reduce((a, b) => a + b, 0);
     if ( sum !== target ) lines.push(["Adjusted", `${signed(target - sum)}%`]);
-    lines.push(["Skill %", `${target}%`]);
+    // Only the base (level 1, no bonuses): the total would just repeat it.
+    if ( lines.length > 1 ) lines.push(["Skill %", `${target}%`]);
   }
   if ( skill && (target > 95) ) lines.push(["Skill cap", "95%"]);
   if ( !breakdown || (chance !== target) ) lines.push(["Chance", `${chance}%`]);

@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.17.1
+- Chat cards: a long roll name (e.g. *Save vs Circles & Wards*) wraps instead of breaking the result number onto two lines.
+- The attribute roll card is titled **Rolled Attributes**, and its column headings use the sheet's green header instead of a black box.
+- Skill cards at level 1 with no bonuses show just the base, without repeating it as "Skill %".
+
 ## 1.17.0
 - **Welcome card for the GM**: the first time the system runs in a world, the GM gets a one-time chat card (whispered) recommending the modules the system works with: Dice So Nice, Automated Animations, Sequencer and JB2A. Each shows *Active*, *Installed, not enabled* or *Not installed*, with a link to its page and install steps. It never shows again; `game.palladium.showRecommendedModules()` brings it back.
 
