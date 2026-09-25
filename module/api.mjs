@@ -73,6 +73,9 @@ export function buildApi() {
     toggleCombatantSide: tracker.toggleCombatantSide,
     orderBySide: tracker.orderBySide,
     shiftInitiative: tracker.shiftInitiative,
+    hasMoved: tracker.hasMoved,
+    toggleMove: tracker.toggleMove,
+    combatantActions: tracker.combatantActions,
     rollShowdown: showdown.rollShowdown,
     bloodSplash: fx.bloodSplash,
     deathMarker: fx.deathMarker,
@@ -97,6 +100,9 @@ export function buildApi() {
     // Combat
     strikeBonus: combat.strikeBonus,
     rollAttack: combat.rollAttack,
+    attackModes: combat.attackModes,
+    rollCombat: combat.rollCombat,
+    COMBAT_ROLLS: combat.COMBAT_ROLLS,
     askPowderWeather: combat.askPowderWeather,
     scenePowderWeather: combat.scenePowderWeather,
     setScenePowderWeather: combat.setScenePowderWeather,
@@ -128,6 +134,7 @@ export function buildApi() {
     newDay: magic.newDay,
     rollChangeSave: magic.rollChangeSave,
     usePsionic: magic.usePsionic,
+    rollMagicAbility: magic.rollMagicAbility,
 
     // Time travel
     temporalMishap: timetravel.temporalMishap,

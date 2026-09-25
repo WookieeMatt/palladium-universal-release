@@ -1,13 +1,13 @@
 import { castSpell, newDay, rollChangeSave, rollMagicAbility, rollSpellDamage, usePsionic } from "../magic.mjs";
 import { operateDevice } from "../vehicle.mjs";
 import { practiceSpell, rollTemporalMishap } from "../timetravel.mjs";
-import { rollD20, rollPercent, rollSave, rollSaveVsComa, rollSkill, signed } from "../dice.mjs";
+import { rollPercent, rollSave, rollSaveVsComa, rollSkill, signed } from "../dice.mjs";
 import { healDialog } from "../recovery.mjs";
 import { attributeBonusText, printAttribute, rollAttributes, rollHitPoints, rollLevelHitPoints } from "../creation.mjs";
 import { rollDumbLuck, rollPullOut, rollTactic, rollVeer } from "../air-combat.mjs";
 import { rollItem } from "../item-rolls.mjs";
 import {
-  FIRE_MODES, MELEE_MODES, POWDER_MODES, askHandheldParry, misfireChance, rollAttack, rollDamage, rollHorrorFactor, rollManeuver, strikeBonus
+  COMBAT_ROLLS, attackModes, misfireChance, rollAttack, rollCombat, rollDamage, rollHorrorFactor, rollManeuver
 } from "../combat.mjs";
 import { creationChecklist } from "../checklist.mjs";
 import { moneySources } from "../money.mjs";
@@ -27,16 +27,6 @@ const EFFECT_LABELS = {
   "skills.all": "all skills %"
 };
 
-/** Combat rolls available from the Combat tab. */
-const COMBAT_ROLLS = {
-  initiative: "Initiative",
-  strike: "Strike",
-  parry: "Parry",
-  dodge: "Dodge",
-  rollImpact: "Roll with Impact",
-  pullPunch: "Pull Punch",
-  disarm: "Disarm"
-};
 
 /**
  * ApplicationV2 sheet for the "character" Actor type.
@@ -274,15 +264,7 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
 
     const weapons = byType("weapon").map(item => {
       const w = item.system;
-      const modes = w.isModern
-        ? Object.entries(FIRE_MODES).filter(([k]) => (k === "aimed") || w.burstDamage)
-          .map(([k, m]) => ({ key: k, label: m.label, strike: signed(strikeBonus(actor, item, k).bonus) }))
-        : w.isPowder
-          ? Object.entries(POWDER_MODES).map(([k, m]) => ({ key: k, label: m.label, strike: signed(strikeBonus(actor, item, k).bonus) }))
-          : w.isMelee
-            ? Object.entries(MELEE_MODES).filter(([, m]) => !m.requires || system.combat.trainingData.unlocks.includes(m.requires))
-              .map(([k, m]) => ({ key: k, label: m.label, strike: signed(strikeBonus(actor, item, k).bonus) }))
-            : [{ key: "aimed", label: "Attack", strike: signed(strikeBonus(actor, item).bonus) }];
+      const modes = attackModes(actor, item).map(m => ({ key: m.key, label: m.label, strike: signed(m.bonus) }));
       const proficient = !!system.proficiencyFor(item);
       return {
         id: item.id, name: item.name, img: item.img, type: WEAPON_TYPES[w.weaponType], damage: w.damage,
@@ -474,21 +456,7 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
 
   /** @this {PalladiumCharacterSheet} */
   static async #onRollCombat(event, target) {
-    const key = target.dataset.roll;
-    const c = this.actor.system.combat;
-    const options = { label: COMBAT_ROLLS[key], bonus: c.totals[key], breakdown: c.rollBreakdown[key] };
-    if ( key === "parry" ) {
-      const handheld = await askHandheldParry(this.actor);
-      if ( handheld === null ) return null;
-      if ( handheld ) {
-        options.bonus += handheld;
-        options.breakdown = { ...(options.breakdown ?? {}), "Hand-held weapon": handheld };
-        options.label = "Parry (hand-held weapon)";
-      }
-    }
-    if ( ["strike", "disarm"].includes(key) ) options.critRange = c.critRange;
-    if ( key === "pullPunch" ) options.target = CONFIG.PALLADIUM.PULL_PUNCH_TARGET;   // 10+ (Errata 2026)
-    return rollD20(this.actor, options);
+    return rollCombat(this.actor, target.dataset.roll);
   }
 
   /** @this {PalladiumCharacterSheet} */

@@ -1,5 +1,5 @@
 import { openAudit } from "./audit.mjs";
-import { bonusLines, cardHeader, decodeItem, postCard, signed } from "./dice.mjs";
+import { bonusLines, cardHeader, decodeItem, postCard, rollD20, signed } from "./dice.mjs";
 import { onMagicCardButton, rollChangeSave } from "./magic.mjs";
 import { applyTeChange, rollTemporalMishap } from "./timetravel.mjs";
 import { applyVehicleDamage, rollVehicleDamage } from "./vehicle.mjs";
@@ -474,6 +474,57 @@ export async function rollManeuver(actor, key) {
       return mult > 1 ? `Roll Unarmed Damage (×${mult})` : "Roll Unarmed Damage";
     })() : null
   });
+}
+
+/** The combat rolls on the Combat tab (and the Token Action HUD): key → label. */
+export const COMBAT_ROLLS = {
+  initiative: "Initiative",
+  strike: "Strike",
+  parry: "Parry",
+  dodge: "Dodge",
+  rollImpact: "Roll with Impact",
+  pullPunch: "Pull Punch",
+  disarm: "Disarm"
+};
+
+/**
+ * The attack modes a weapon offers this actor: modern fire modes (burst only with burst damage), black powder modes,
+ * melee modes (Leap Attack only when the training unlocks it), or a plain attack.
+ * @param {Actor} actor
+ * @param {Item} weapon
+ * @returns {{key: string, label: string, bonus: number}[]}
+ */
+export function attackModes(actor, weapon) {
+  const w = weapon.system;
+  const entries = w.isModern ? Object.entries(FIRE_MODES).filter(([k]) => (k === "aimed") || w.burstDamage)
+    : w.isPowder ? Object.entries(POWDER_MODES)
+      : w.isMelee ? Object.entries(MELEE_MODES).filter(([, m]) => !m.requires || actor.system.combat.trainingData.unlocks.includes(m.requires))
+        : [["aimed", { label: "Attack" }]];
+  return entries.map(([key, m]) => ({ key, label: m.label, bonus: strikeBonus(actor, weapon, key).bonus }));
+}
+
+/**
+ * Roll a combat total (Initiative, Strike, Parry, Dodge, Roll with Impact, Pull Punch, Disarm) on its own, as the
+ * Combat tab's d20 buttons do. Parry asks about a hand-held weapon when that matters.
+ * @param {Actor} actor
+ * @param {string} key   A COMBAT_ROLLS key
+ */
+export async function rollCombat(actor, key) {
+  const c = actor.system.combat;
+  if ( !c || !(key in COMBAT_ROLLS) ) return null;
+  const options = { label: COMBAT_ROLLS[key], bonus: c.totals[key], breakdown: c.rollBreakdown[key] };
+  if ( key === "parry" ) {
+    const handheld = await askHandheldParry(actor);
+    if ( handheld === null ) return null;
+    if ( handheld ) {
+      options.bonus += handheld;
+      options.breakdown = { ...(options.breakdown ?? {}), "Hand-held weapon": handheld };
+      options.label = "Parry (hand-held weapon)";
+    }
+  }
+  if ( ["strike", "disarm"].includes(key) ) options.critRange = c.critRange;
+  if ( key === "pullPunch" ) options.target = CONFIG.PALLADIUM.PULL_PUNCH_TARGET;   // 10+ (Errata 2026)
+  return rollD20(actor, options);
 }
 
 /**
