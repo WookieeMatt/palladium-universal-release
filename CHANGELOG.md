@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.35.0
+- **Bows and black powder guns already on sheets** now count their ammo: a one-time pass when the GM loads the world gives each one with no Ammo set a quiver of 12 (bows, crossbows) or one load (black powder; a pair of pistols two). Change it on the weapon. New copies of such weapons get it too.
+- TMNT compendium 0.9.3: the core book's **vehicles** (p.73): to buy in *TMNT: Gear → Vehicles* (the price counts against the character's money) and to drive in the new *TMNT: Vehicles* pack.
+
 ## 1.34.0
 - **Ammo tracking**: guns, bows and black powder weapons show ammo left on their row (− / + and **Reload**). Each attack uses it: Aimed 1, Burst / Wild Burst 3 (p.89); the attack card shows what's left; an empty weapon still rolls, with a warning.
 - **Thrown weapons and grenades** count down: `×12` on the row with − / +; each throw uses one; at 0 it asks first.

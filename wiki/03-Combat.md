@@ -33,7 +33,7 @@ Strike bonuses: melee = your Strike total + W.P. + weapon bonus + skill effects;
 - **Guns, bows and black powder weapons** with an **Ammo** max show `8/10` on their row, with − / + and a **Reload** button (back to the max; the weapon's Reload time is in its tooltip). Each attack uses ammo: **Aimed 1, Burst or Wild Burst 3** (a burst is three rounds, p.89); bows and black powder 1 a shot. The attack card shows what's left.
 - **Empty**: the attack still rolls (the GM decides), the card says *Empty! Reload* and you get a warning.
 - **Thrown weapons** (shuriken, knives, javelins) and **grenades** show how many you have (`×12`) with − / +. Each throw uses one; use + when you pick one up. At 0 the sheet asks before throwing anyway.
-- Weapons from the TMNT compendium come with their magazine; a black powder gun holds one load (a pair of pistols two); bows and crossbows start with a quiver of 12 (change it to what you carry). Set **Ammo** on the weapon's card for anything else; leave it at 0 not to track it.
+- Weapons from the TMNT compendium come with their magazine; a black powder gun holds one load (a pair of pistols two); bows and crossbows start with a quiver of 12 (change it to what you carry). Bows and black powder guns that were on sheets before ammo was counted got the same defaults once (1.35). Set **Ammo** on the weapon's card for anything else; leave it at 0 not to track it.
 
 ## Attack cards
 An attack posts a card with **Strike = total** (click it for the d20 and each bonus), natural-roll specials and:
