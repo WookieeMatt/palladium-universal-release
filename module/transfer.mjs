@@ -179,8 +179,8 @@ const signed = n => (Number(n) >= 0 ? `+${Number(n)}` : `−${Math.abs(Number(n)
 const COMBAT = [["actions", "Actions"], ["initiative", "Initiative"], ["strike", "Strike"], ["parry", "Parry"], ["dodge", "Dodge"],
   ["damage", "Damage"], ["rollImpact", "Roll w/ Impact"], ["pullPunch", "Pull Punch"], ["disarm", "Disarm"]];
 
-/** One readable page of the character, as a complete HTML document. */
-export function printableHTML(actor) {
+/** One readable page of the character, as a complete HTML document. `img`: the portrait (a data: or full URL). */
+export function printableHTML(actor, { img = "" } = {}) {
   const s = actor.system, id = s.identity ?? {}, P = CONFIG.PALLADIUM ?? {};
   const items = type => actor.items.filter(i => i.type === type).sort((a, b) => a.name.localeCompare(b.name));
   const row = (k, v) => (v === undefined || v === null || v === "") ? "" : `<div><span>${escape(k)}</span><b>${escape(v)}</b></div>`;
@@ -212,10 +212,12 @@ export function printableHTML(actor) {
     table.attrs td span { display: block; font-size: 9px; text-transform: uppercase; } table.attrs td b { font-size: 16px; }
     ul { margin: 0; padding-left: 16px; columns: 2; } li { break-inside: avoid; }
     p { margin: 2px 0; } .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 0 18px; }
-    .print { position: fixed; top: 8px; right: 8px; } @media print { .print { display: none; } }
+    .print { position: fixed; bottom: 12px; right: 12px; font-size: 14px; padding: 6px 12px; } @media print { .print { display: none; } }
+    .portrait { float: right; width: 110px; height: 110px; object-fit: contain; margin: 0 0 6px 12px; border: 2px solid #234d2f; border-radius: 50%; background: #f7f3e3; }
+    .id { clear: none; } h2 { clear: both; }
     </style></head><body>
     <button class="print" onclick="print()">Print / Save as PDF</button>
-    <h1>${escape(actor.name)}</h1>
+    ${img ? `<img class="portrait" src="${escape(img)}" alt="">` : ""}<h1>${escape(actor.name)}</h1>
     <div class="id">${row("Animal", id.species)}${row("Alignment", P.ALIGNMENTS?.[id.alignment] ?? id.alignment)}${row("Level", id.level)}${row("XP", id.xp)}
       ${row("Origin", id.origin)}${row("Education", id.education)}${row("Age / Sex", [id.age, id.sex].filter(x => x).join(" / "))}${row("Height / Weight", [id.height, id.weight].filter(x => x).join(" / "))}
       ${row("Size Level", s.mutation?.sizeLevel)}${row("Education Bonus", id.educationBonus ? `${id.educationBonus}%` : "")}</div>
@@ -231,9 +233,33 @@ export function printableHTML(actor) {
     </body></html>`;
 }
 
+/** The picture for the printable sheet: the portrait, or the token image when the portrait is Foundry's default. */
+export function printImage(actor) {
+  const portrait = actor.img ?? "";
+  const token = actor.prototypeToken?.texture?.src ?? "";
+  const isDefault = !portrait || /mystery-man|icons\/svg\//.test(portrait);
+  return (isDefault && token) ? token : portrait;
+}
+
+/** Embed an image as a data: URL, so it prints and survives the download (falls back to its full URL). */
+async function embedImage(src) {
+  if ( !src ) return "";
+  const url = new URL(src, window.location.href).href;
+  try {
+    const blob = await (await fetch(url)).blob();
+    return await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  }
+  catch(err) { return url; }
+}
+
 /** Open the printable sheet in a new window (or download it when pop-ups are blocked). */
-export function printCharacter(actor) {
-  const html = printableHTML(actor);
+export async function printCharacter(actor) {
+  const html = printableHTML(actor, { img: await embedImage(printImage(actor)) });
   const w = window.open("", "_blank");
   if ( w?.document ) {
     w.document.open();

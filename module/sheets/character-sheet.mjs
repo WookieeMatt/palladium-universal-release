@@ -7,7 +7,7 @@ import { attributeBonusText, printAttribute, rollAttributes, rollHitPoints, roll
 import { rollDumbLuck, rollPullOut, rollTactic, rollVeer } from "../air-combat.mjs";
 import { rollItem } from "../item-rolls.mjs";
 import {
-  COMBAT_ROLLS, attackModes, misfireChance, rollAttack, rollCombat, rollDamage, rollHorrorFactor, rollManeuver
+  COMBAT_ROLLS, attackModes, misfireChance, reloadWeapon, rollAttack, rollCombat, rollDamage, rollHorrorFactor, rollManeuver
 } from "../combat.mjs";
 import { creationChecklist, openStepCompendiums, stepCompendiums } from "../checklist.mjs";
 import { resetCharacter, resetState } from "../reset.mjs";
@@ -57,6 +57,8 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
       rollAttributes: PalladiumCharacterSheet.#onRollAttributes,
       rollHeightWeight: PalladiumCharacterSheet.#onRollHeightWeight,
       exportCharacter: PalladiumCharacterSheet.#onExportCharacter,
+      itemCount: PalladiumCharacterSheet.#onItemCount,
+      itemReload: PalladiumCharacterSheet.#onItemReload,
       importCharacter: PalladiumCharacterSheet.#onImportCharacter,
       printCharacter: PalladiumCharacterSheet.#onPrintCharacter,
       rollHitPoints: PalladiumCharacterSheet.#onRollHitPoints,
@@ -290,7 +292,10 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
       return {
         id: item.id, name: item.name, img: item.img, type: WEAPON_TYPES[w.weaponType], damage: w.damage,
         burstDamage: w.burstDamage, range: w.range, modes, equipped: w.equipped, proficient,
-        misfire: w.isPowder ? misfireChance(item) : null,  // dry; the weather is asked when it fires reload: w.reload, overload: w.isPowder && w.powder.overload,
+        misfire: w.isPowder ? misfireChance(item) : null,  // dry; the weather is asked when it fires
+        reload: w.reload, overload: w.isPowder && w.powder.overload,
+        ammo: w.tracksAmmo ? { value: w.ammo.value, max: w.ammo.max } : null,
+        thrown: w.tracksQuantity, counted: w.tracksQuantity, quantity: w.quantity,
         needsWP: !["natural", "explosive"].includes(w.weaponType), bioe: w.bioe
       };
     });
@@ -302,7 +307,7 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
     }));
 
     const simple = type => byType(type).map(item => ({
-      id: item.id, name: item.name, img: item.img, bioe: item.system.bioe, quantity: item.system.quantity,
+      id: item.id, name: item.name, img: item.img, bioe: item.system.bioe, quantity: item.system.quantity, counted: type === "gear",
       range: item.system.range, duration: item.system.duration, save: item.system.save,
       ...rollInfo(item)
     }));
@@ -631,6 +636,23 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
       { icon: "fa-solid fa-file-import", label: "Import Character", action: "importCharacter", visible: this.actor.isOwner }
     );
     return controls;
+  }
+
+  /** Ammo / quantity ticker: −1 or +1 (ammo stays within 0 and the max). @this {PalladiumCharacterSheet} */
+  static #onItemCount(event, target) {
+    const item = this.#itemFromEvent(target);
+    if ( !item ) return;
+    const delta = Number(target.dataset.delta) || 0;
+    if ( target.dataset.field === "ammo" ) {
+      const { value = 0, max = 0 } = item.system.ammo ?? {};
+      return item.update({ "system.ammo.value": Math.max(0, Math.min(max || Infinity, value + delta)) });
+    }
+    return item.update({ "system.quantity": Math.max(0, (item.system.quantity ?? 0) + delta) });
+  }
+
+  /** Reload a weapon to its Ammo max. @this {PalladiumCharacterSheet} */
+  static #onItemReload(event, target) {
+    return reloadWeapon(this.#itemFromEvent(target));
   }
 
   /** @this {PalladiumCharacterSheet} */

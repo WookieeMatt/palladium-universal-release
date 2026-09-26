@@ -128,6 +128,6 @@ For Hit Points, the button in Health & Damage turns amber: **Roll HP for Level N
 
 ## Export, import and printing
 The character sheet's **⋮** menu (top right) has:
-- **Printable Sheet**: one readable page (identity, attributes, health, saves, combat, weapons and W.P.s, skills with their %, abilities and powers, gear) in a new window, with a **Print / Save as PDF** button.
+- **Printable Sheet**: one readable page with the portrait (or the token image if the portrait is Foundry's default) and the identity, attributes, health, saves, combat, weapons and W.P.s, skills with their %, abilities and powers, gear) in a new window, with a **Print / Save as PDF** button.
 - **Export Character**: saves the character (sheet, items, effects) as a file.
 - **Import Character** (owners): replaces this character with a file, from **Export Character** or Foundry's own *Export Data*, from this world or another one. It asks first. The owner, permissions and folder stay; everything on the sheet is replaced. Files from older versions of the system are updated; items linked to a compendium this world doesn't have are kept, re-linked to a compendium item with the same name when there is one. The audit notes one line. Export the character first if you want to keep it.

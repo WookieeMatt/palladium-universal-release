@@ -1,0 +1,11 @@
+{{!-- Ammo / quantity ticker (v1.34). Weapon rows: ammo with Reload, or ×N for thrown weapons. Gear: ×N. --}}
+{{#if ammo}}<span class="pu-counter" data-tooltip="Ammo left: each shot uses 1, a Burst 3">
+  <button type="button" class="pu-tick" data-action="itemCount" data-field="ammo" data-delta="-1" aria-label="One less">−</button>
+  <b class="{{#unless ammo.value}}warning{{/unless}}">{{ammo.value}}/{{ammo.max}}</b>
+  <button type="button" class="pu-tick" data-action="itemCount" data-field="ammo" data-delta="1" aria-label="One more">+</button>
+  <button type="button" class="pu-tick pu-reload" data-action="itemReload" data-tooltip="Reload{{#if reload}} ({{reload}}){{/if}}" aria-label="Reload"><i class="fa-solid fa-rotate-right"></i></button>
+</span>{{else if counted}}<span class="pu-counter" data-tooltip="{{#if thrown}}How many you have: each throw uses one{{else}}Quantity{{/if}}">
+  <button type="button" class="pu-tick" data-action="itemCount" data-field="quantity" data-delta="-1" aria-label="One less">−</button>
+  <b class="{{#if thrown}}{{#unless quantity}}warning{{/unless}}{{/if}}">×{{quantity}}</b>
+  <button type="button" class="pu-tick" data-action="itemCount" data-field="quantity" data-delta="1" aria-label="One more">+</button>
+</span>{{/if}}

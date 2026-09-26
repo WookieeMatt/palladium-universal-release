@@ -80,6 +80,7 @@
       <li class="item-row weapon-row" data-item-id="{{id}}">
         <img src="{{img}}" alt="" class="item-icon" />
         <div class="item-name"><a data-action="itemEdit">{{name}}</a><span class="hint">{{damage}}{{#if range}} · {{range}}{{/if}}</span></div>
+        {{> "systems/palladium-universal/templates/actor/parts/counter.hbs"}}
         <span class="weapon-modes">
           {{#each modes}}
           <button type="button" class="roll-button" data-action="rollAttack" data-mode="{{key}}"><i class="fa-solid fa-dice-d20"></i> {{label}} {{strike}}</button>

@@ -286,6 +286,21 @@ export class WeaponData extends ItemDataBase {
   get isModern() {
     return ["firearm", "energy"].includes(this.weaponType);
   }
+
+  /** Does firing it use up ammo (a magazine, arrows, charges: any ranged weapon with an Ammo max)? (v1.34) */
+  get tracksAmmo() {
+    return !this.isMelee && (this.ammo?.max > 0);
+  }
+
+  /** Is the weapon itself used up when attacking (thrown weapons, grenades without an Ammo max)? (v1.34) */
+  get tracksQuantity() {
+    return (this.weaponType === "thrown") || ((this.weaponType === "explosive") && !this.tracksAmmo);
+  }
+
+  /** Rounds one attack uses: a Burst or Wild Burst is three rounds (p.89), anything else one. */
+  ammoCost(mode = "aimed") {
+    return (this.isModern && ["burst", "wild"].includes(mode)) ? 3 : 1;
+  }
 }
 
 /* -------------------------------------------- */

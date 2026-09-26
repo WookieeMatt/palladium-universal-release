@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.34.0
+- **Ammo tracking**: guns, bows and black powder weapons show ammo left on their row (− / + and **Reload**). Each attack uses it: Aimed 1, Burst / Wild Burst 3 (p.89); the attack card shows what's left; an empty weapon still rolls, with a warning.
+- **Thrown weapons and grenades** count down: `×12` on the row with − / +; each throw uses one; at 0 it asks first.
+- **Quantity ticker** on the Gear tab (and the NPC sheet).
+- Fixed: the Combat tab now shows a weapon's reload time and "overloaded" again.
+- TMNT compendium 0.9.2: black powder guns hold one load (pairs two), bows and crossbows a quiver of 12. Token Action HUD 0.1.3 shows ammo / quantity and a Reload entry.
+- **Printable Sheet** shows the character's portrait (or the token image when the portrait is Foundry's default), embedded so it prints and saves to PDF.
+
 ## 1.33.0
 - **Export / Import / Printable Sheet** in the character sheet's ⋮ menu (characters and NPCs; players on their own). Import replaces an existing character from a file (ours or Foundry's Export Data), keeps its owner, permissions and folder, updates older files, re-links compendium items by name when their compendium isn't in this world, and the audit notes one line. The printable sheet is one page to print or save as PDF.
 

@@ -41,7 +41,7 @@
       <li class="item-row" data-item-id="{{id}}">
         <img src="{{img}}" alt="" class="item-icon" />
         <div class="item-name"><a data-action="itemEdit">{{name}}</a></div>
-        <span class="derived">×{{quantity}}</span>
+        {{> "systems/palladium-universal/templates/actor/parts/counter.hbs"}}
         {{> "systems/palladium-universal/templates/actor/parts/item-roll.hbs"}}
         <button type="button" class="icon-button" data-action="itemDelete" data-tooltip="Delete"><i class="fa-solid fa-trash"></i></button>
       </li>

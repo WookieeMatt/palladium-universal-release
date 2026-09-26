@@ -1539,3 +1539,15 @@
 }
 .palladium-universal .window-content .pu-checklist-steps button.pu-step-tool:hover { background: var(--pu-green-light); }
 .palladium-universal .window-content .pu-checklist-steps button.pu-step-tool i { color: #fff; margin: 0; }
+
+/* Ammo / quantity ticker (v1.34): −  8/10  +  ⟳ on weapon rows, ×N on thrown weapons and gear. */
+.palladium-universal .pu-counter { display: inline-flex; align-items: center; gap: 2px; white-space: nowrap; flex: none; }
+.palladium-universal .pu-counter b { min-width: 2.6em; text-align: center; font-variant-numeric: tabular-nums; }
+.palladium-universal .pu-counter b.warning { color: var(--pu-red); }
+.palladium-universal .window-content .pu-counter button.pu-tick {
+  width: 20px; height: 20px; min-height: 0; padding: 0; margin: 0; line-height: 1; font-size: 0.85rem;
+  display: inline-grid; place-items: center; border-radius: 4px;
+  color: var(--pu-ink); background: var(--pu-paper); border: 1px solid var(--pu-rule);
+}
+.palladium-universal .window-content .pu-counter button.pu-tick:hover { color: #fff; background: var(--pu-green); border-color: #16301d; }
+.palladium-universal .window-content .pu-counter button.pu-reload { margin-left: 2px; color: #fff; background: var(--pu-green); border-color: #16301d; }

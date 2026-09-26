@@ -241,6 +241,8 @@ export async function rollAttack(actor, weapon, mode = "aimed", { weather } = {}
   if ( Hooks.call("palladium.preRollAttack", actor, weapon, hookOptions) === false ) return null;
   mode = hookOptions.mode;
   weather = hookOptions.weather;
+  // Thrown weapons and grenades: none left? Ask (maybe one was picked up and not counted).
+  if ( w.tracksQuantity && !(w.quantity > 0) && !(await confirmNoneLeft(weapon)) ) return null;
 
   // Actions: Leap Attack uses two; a black powder Aimed shot without the W.P. counts as two attacks.
   const wp = actor.system.proficiencyFor(weapon);
@@ -278,6 +280,8 @@ export async function rollAttack(actor, weapon, mode = "aimed", { weather } = {}
   if ( leap ) extra.push(`<span class="hint">Leap Attack: only at the start of the round and the only offensive action this round; double damage (triple on a Critical or Death Blow). Remaining actions: Parry, Dodge, Roll with Impact or Change Posture only.</span>`);
   if ( sneak ) extra.push(`<span class="hint">Sneak Attack: the defender can't Parry, Dodge or react${special.sneakCrit ? "; the training makes it a <strong>Critical Strike or Stun</strong> (attacker's choice)" : ""}.</span>`);
   if ( actionNote ) extra.push(actionNote);
+  const ammoNote = await spendAmmo(weapon, mode);
+  if ( ammoNote ) extra.push(ammoNote);
   const mult = damageMultiplier({ crit: special.crit, deathBlow: special.deathBlow, double, leap });
   const label = special.deathBlow ? `Roll Death Blow (×${mult} to Hit Points)` : (mult > 1) ? `Roll Damage (×${mult})` : "Roll Damage";
   const message = await postAttackCard(actor, roll, {
@@ -287,6 +291,62 @@ export async function rollAttack(actor, weapon, mode = "aimed", { weather } = {}
   });
   Hooks.callAll("palladium.rollAttack", actor, weapon, roll, { mode, natural, special, double, leap, message });
   return message;
+}
+
+/* -------------------------------------------- */
+/*  Ammo and thrown weapons (v1.34)             */
+/* -------------------------------------------- */
+
+/** "No shuriken left. Throw one anyway?" */
+async function confirmNoneLeft(weapon) {
+  return foundry.applications.api.DialogV2.confirm({
+    classes: ["palladium-universal", "pu-skill-mods"],
+    window: { title: weapon.name },
+    content: `<p>No ${foundry.utils.escapeHTML(weapon.name)} left (quantity 0). Attack anyway?</p>`,
+    yes: { label: "Attack anyway" }, no: { label: "Cancel", default: true }
+  });
+}
+
+/**
+ * Use up what an attack uses: ammo (Aimed 1, Burst / Wild Burst 3) or one thrown weapon. Never blocks the attack;
+ * an empty weapon still rolls (the GM decides), with a warning.
+ * @param {Item} weapon
+ * @param {string} [mode="aimed"]
+ * @returns {Promise<string>}  A note for the attack card ("" when nothing is tracked)
+ */
+export async function spendAmmo(weapon, mode = "aimed") {
+  const w = weapon?.system;
+  if ( !w || !weapon.parent ) return "";
+  const esc = foundry.utils.escapeHTML;
+  if ( w.tracksAmmo ) {
+    const cost = w.ammoCost(mode), have = w.ammo.value ?? 0;
+    if ( have <= 0 ) {
+      ui.notifications?.warn(`${weapon.name} is empty: reload it.`);
+      return `<strong class="pu-failure">Empty! Reload${w.reload ? ` (${esc(w.reload)})` : ""}.</strong>`;
+    }
+    const left = Math.max(0, have - cost);
+    await weapon.update({ "system.ammo.value": left });
+    const short = have < cost ? ` Only ${have} left: fired ${have}.` : "";
+    if ( !left ) ui.notifications?.warn(`${weapon.name} is empty now: reload it.`);
+    return `<span class="hint">Ammo ${have} → <strong>${left}</strong> of ${w.ammo.max}.${short}${left ? "" : " <strong class=\"pu-failure\">Empty: reload.</strong>"}</span>`;
+  }
+  if ( w.tracksQuantity ) {
+    const have = w.quantity ?? 0;
+    const left = Math.max(0, have - 1);
+    if ( have > 0 ) await weapon.update({ "system.quantity": left });
+    return `<span class="hint">${esc(weapon.name)}: <strong>${left}</strong> left.</span>`;
+  }
+  return "";
+}
+
+/** Reload a weapon to its Ammo max. */
+export async function reloadWeapon(weapon) {
+  const w = weapon?.system;
+  if ( !w?.tracksAmmo ) return null;
+  await weapon.update({ "system.ammo.value": w.ammo.max });
+  ui.notifications?.info(`${weapon.name} reloaded (${w.ammo.max})${w.reload ? `: takes ${w.reload}` : ""}.`);
+  Hooks.callAll("palladium.reload", weapon);
+  return w.ammo.max;
 }
 
 /**

@@ -108,6 +108,8 @@ export function buildApi() {
     rollAttack: combat.rollAttack,
     attackModes: combat.attackModes,
     rollCombat: combat.rollCombat,
+    spendAmmo: combat.spendAmmo,
+    reloadWeapon: combat.reloadWeapon,
     COMBAT_ROLLS: combat.COMBAT_ROLLS,
     askPowderWeather: combat.askPowderWeather,
     scenePowderWeather: combat.scenePowderWeather,

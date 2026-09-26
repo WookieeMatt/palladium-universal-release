@@ -146,6 +146,7 @@
           <span class="hint">{{type}}{{#if range}} · {{range}}{{/if}}{{#if (ne misfire null)}} · misfire {{misfire}}% + weather{{/if}}{{#if overload}} · overloaded{{/if}}{{#if reload}} · reload: {{reload}}{{/if}}{{#if needsWP}}{{#unless proficient}} · <span class="warning">no WP</span>{{/unless}}{{/if}}</span>
         </div>
         <span class="weapon-damage" data-tooltip="Damage">{{damage}}{{#if burstDamage}} / {{burstDamage}} burst{{/if}}</span>
+        {{> "systems/palladium-universal/templates/actor/parts/counter.hbs"}}
         <span class="weapon-modes">
           {{#each modes}}
           <button type="button" class="roll-button" data-action="rollAttack" data-mode="{{key}}" data-tooltip="Roll to Strike">
