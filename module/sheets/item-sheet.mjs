@@ -21,6 +21,7 @@ function effectTargets() {
   targets["weapon.damage"] = "Weapon group: Damage";
   targets.skill = "Skill: % bonus";
   targets["skills.all"] = "All skills: % bonus";
+  targets["skills.amateur"] = "Amateur skills: % bonus";
   targets["handheld.strike"] = "Hand-held weapons: Strike";
   targets["handheld.parry"] = "Hand-held weapons: Parry";
   return targets;

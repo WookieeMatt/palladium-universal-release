@@ -11,6 +11,7 @@ import {
 } from "../combat.mjs";
 import { creationChecklist, openStepCompendiums, stepCompendiums } from "../checklist.mjs";
 import { resetCharacter, resetState } from "../reset.mjs";
+import { rollHeightWeight } from "../height-weight.mjs";
 import { moneySources } from "../money.mjs";
 import { rollCreationTable } from "../creation-tables.mjs";
 import { BACKGROUND_KINDS, SKILL_CATEGORIES, WEAPON_TYPES, WP_KINDS, inlineDice } from "../data/items.mjs";
@@ -25,7 +26,8 @@ const TEMPLATE_PATH = "systems/palladium-universal/templates/actor";
 /** Short labels for Human Feature effects shown on the Combat tab. */
 const EFFECT_LABELS = {
   "handheld.strike": "Strike with hand-held weapons", "handheld.parry": "Parry with hand-held weapons",
-  "skills.all": "all skills %"
+  "skills.all": "all skills %",
+  "skills.amateur": "amateur skills %"
 };
 
 
@@ -52,6 +54,7 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
       rollPullOut: PalladiumCharacterSheet.#onRollPullOut,
       rollDumbLuck: PalladiumCharacterSheet.#onRollDumbLuck,
       rollAttributes: PalladiumCharacterSheet.#onRollAttributes,
+      rollHeightWeight: PalladiumCharacterSheet.#onRollHeightWeight,
       rollHitPoints: PalladiumCharacterSheet.#onRollHitPoints,
       checklistGo: PalladiumCharacterSheet.#onChecklistGo,
       creationRoll: PalladiumCharacterSheet.#onCreationRoll,
@@ -615,6 +618,11 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
       : actor.setFlag("palladium-universal", "checklistHidden", true);
   }
 
+  /** Creation checklist: roll Height & Weight (p.17). @this {PalladiumCharacterSheet} */
+  static #onRollHeightWeight() {
+    return rollHeightWeight(this.actor);
+  }
+
   /** Creation checklist: open the step's compendium(s). @this {PalladiumCharacterSheet} */
   static #onChecklistCompendium(event, target) {
     return openStepCompendiums(target.dataset.step);
@@ -658,7 +666,8 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
     if ( training ) system.training = training;
     if ( armorType ) system.armorType = armorType;
     const label = game.i18n.localize(CONFIG.Item.typeLabels[type]);
-    const [item] = await this.actor.createEmbeddedDocuments("Item", [{ name: `New ${label}`, type, system }]);
+    // puBlank: a new blank item (armor made here isn't auto-equipped, see module/equip.mjs).
+    const [item] = await this.actor.createEmbeddedDocuments("Item", [{ name: `New ${label}`, type, system }], { puBlank: true });
     item?.sheet.render({ force: true });
   }
 

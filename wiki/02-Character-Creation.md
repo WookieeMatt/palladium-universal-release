@@ -5,7 +5,7 @@ The top of the sheet holds the character's **name** and **portrait** (click the 
 - **Animal**, **Alignment**, **Origin** and **Education**.
 - **Level**: set by the XP total (p.75). You can't type it.
 - **XP**: the character's total Experience Points.
-- **Education Bonus %**: added to Professional skills.
+- **Education Bonus %**: added to Basic Academics and every Professional skill, never to Amateur skills (p.64). Set by the Education (or by an Origin that gives the education itself).
 - **Age**, **Sex**, **Height** and **Weight**.
 
 New characters and NPCs get a round token with a green ring.
@@ -15,18 +15,19 @@ A new character's Core tab starts with a **Creation Checklist**: the steps in bo
 1. **Roll Attributes**
 2. **Choose the animal**: drag an Animal onto the sheet, or type it in the header.
 3. **Spend Bio-E**: shows how much is left, or how much you've overspent.
-4. **Origin** and 5. **Education**: drag the backgrounds onto the sheet, or type them in the header.
-6. **Skills**
-7. **Alignment**
-8. **Starting Money**: roll the money your Origin and Education give, and enter it on the Gear tab.
-9. **Roll Hit Points** (see *Health & Damage* below)
+4. **Height & Weight**: rolled on the book's table (p.17) for the final Size Level and the animal's build (Short, Medium or Long), so spend the Bio-E (and settle the size) first. The results go in the header. Size Levels 21–25 (giant dinosaurs) have no table: type them in.
+5. **Origin** and 6. **Education**: drag the backgrounds onto the sheet, or type them in the header.
+7. **Skills**
+8. **Alignment**
+9. **Starting Money**: roll the money your Origin and Education give, and enter it on the Gear tab.
+10. **Roll Hit Points** (see *Health & Damage* below)
 
 Click an unfinished step to jump to the tab where it's done.
 
-When all nine steps are done, the checklist disappears. To put it away sooner (for example, to keep some Bio-E for later), click **Hide**. *Show the creation checklist*, at the bottom of the Core tab, brings it back at any time. NPCs don't have a checklist.
+When all ten steps are done, the checklist disappears. To put it away sooner (for example, to keep some Bio-E for later), click **Hide**. *Show the creation checklist*, at the bottom of the Core tab, brings it back at any time. NPCs don't have a checklist.
 
 Some steps have small green buttons:
-- 🎲 **Roll**: Choose the animal, Origin, Roll Attributes and Roll Hit Points.
+- 🎲 **Roll**: Roll Attributes, Choose the animal, Height & Weight, Origin and Roll Hit Points.
 - 📖 **Open the compendium**: Choose the animal, Origin, Education and Skills, when a compendium with those items is installed (for example the TMNT animals, backgrounds and skills). The Skills book also opens the compendium with the W.P.s (Weapon Proficiencies, on the Combat tab). No compendium, no book.
 
 The buttons disappear once the step is done, and so do **Roll Attributes** and **Roll Hit Points** on the Core tab.
@@ -86,7 +87,7 @@ One chat card shows the results in a table: the 3D6, the exceptional die, Specie
   - Characters made before version 1.18 keep their typed maximum until they roll.
 - **S.D.C.**: the maximum is calculated from the Size Level's S.D.C. (doubled by effects such as *Extraordinary P.E.*), plus skills, plus the **S.D.C. Bonus** box.
 - **Natural Armor A.R.**: an ability with a higher A.R. replaces it.
-- **Body Armor**: equip an Armor item on the Combat tab, or type its name, A.R. and S.D.C. here.
+- **Body Armor**: equip an Armor item on the Combat tab, or type its name, A.R. and S.D.C. here. Armor you drag onto a character or NPC who isn't wearing any is equipped straight away (body armor and shields separately); if one is already worn, the new one waits unequipped.
 - **Status line**: when the character falls into a coma (0 HP) and dies (below −P.E.), how many hours a coma lasts without treatment, and warnings for *In a coma* and *Bleeding out* (at 25% of HP or less).
 
 ## Bio-E / Mutation tab

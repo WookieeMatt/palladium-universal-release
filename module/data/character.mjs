@@ -786,7 +786,8 @@ export default class CharacterData extends foundry.abstract.TypeDataModel {
     const name = item.name.toLowerCase();
     const extra = this.itemEffects.conditional
       .filter(e => (e.target === "skill") && (e.group.toLowerCase() === name))
-      .reduce((n, e) => n + e.value, 0) + this.#effect("skills.all");
+      .reduce((n, e) => n + e.value, 0) + this.#effect("skills.all")
+      + (item.system.training === "amateur" ? this.#effect("skills.amateur") : 0);
     return item.system.percentages(this, extra);
   }
 

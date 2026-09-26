@@ -119,6 +119,8 @@ export async function applyBackground(actor, data) {
     update["system.identity.education"] = item.name;
     update["system.identity.educationBonus"] = b.educationBonus;
   }
+  // Some origins give the education themselves (Transdimensional time travellers and cross-dimensional visitors).
+  else if ( b.educationBonus > 0 ) update["system.identity.educationBonus"] = b.educationBonus;
   if ( b.combatTraining && (b.combatTraining in CONFIG.PALLADIUM.COMBAT_TRAINING)
     && (actor.system.combat.training === "none") ) {
     update["system.combat.training"] = b.combatTraining;

@@ -50,7 +50,7 @@ Bio-E, Size Level (1–25), Build, Length/Height, Weight, and:
 - **Bonuses**: attribute bonuses the mutation grants.
 
 ## Background
-Kind (Mutant Animal Origin, Creator Organization, Education / Background), table roll range, Education Bonus %, Professional and Amateur skills, Combat Training granted, equipment, money, "hunted", Bonuses.
+Kind (Mutant Animal Origin, Creator Organization, Education / Background), table roll range, Education Bonus %, Professional and Amateur skills, Combat Training granted, equipment, money, "hunted", Bonuses. Skill bonuses go in Bonuses: *Skill* (one named skill, e.g. Prowl +25), *Amateur skills* (e.g. "10 Amateur skills at +5%") or *All skills*.
 
 ## Device
 Type (Time Machine, Cross-Dimensional Device, Readout / Navigation Aid, Other), **Operator Skill** (skill name), Max Area, Recharge, Charged, **Malfunction Table** (None, Temporal Mishap, Gateway Generator, Portable C-D Device, Miniature C-D Device), Malfunction text, Weight, Cost. Readouts instead have **Assists** (which device type) and **Bonus to Operate %**.

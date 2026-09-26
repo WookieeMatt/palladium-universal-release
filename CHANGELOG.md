@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.32.0
+- **Check Backgrounds** macro (GM, Palladium Universal Macros): finds characters' and NPCs' backgrounds that are older than the compendium's, shows what changed and updates them in one click.
+- **Education Bonus** now also goes to **Basic Academics** (p.64), as well as every Professional skill. Origins that give the education themselves (Transdimensional time travellers, cross-dimensional visitors) set it too.
+- New bonus target **Amateur skills %** (for "Amateur skills at +5%").
+- TMNT compendium 0.9.1: every background's named skill bonuses are now applied (Self-Taught in the Wild, Skulked on the Fringes, Adopted by a Mentor, Wild: Ninja, Scientist / Observer). Characters that already have one of these backgrounds: run the **Check Backgrounds** macro (or drag the background onto the sheet again).
+- **Height & Weight** (p.17): a new Creation Checklist step after Spend Bio-E. Its 🎲 rolls height and weight for the character's Size Level and build and writes them in the header (one chat card). Rolled once like the other creation rolls; Reset Character clears it. Size Levels 21–25 have no table (type them in).
+- **Armor equips itself**: body armor or a shield dragged onto a character or NPC who wears none of that kind is equipped at once. One already worn stays on; blank armor made with the + button isn't equipped.
+
 ## 1.31.1
 - **Reset Character** also clears the W.P.s (picked at creation with the skills).
 - The **Skills** step's 📖 also opens any compendium holding W.P.s (the TMNT compendium keeps them with the skills from 0.9.0).

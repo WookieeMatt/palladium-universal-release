@@ -20,7 +20,7 @@ const choiceField = (choices, initial) => new StringField({ required: true, init
  *   attributes.<iq|me|ma|ps|pp|pe|pb|spd>, bioe (bonus Bio-E points), sdc, sdc.doubleSize (any value > 0 doubles the Size Level S.D.C.),
  *   combat.<strike|parry|dodge|damage|rollImpact|pullPunch|actions|initiative|disarm>,
  *   weapon.<strike|parry|damage> (only with weapons whose proficiency group matches `group`),
- *   skill (adds % to the skill named in `group`), skills.all (% to every skill),
+ *   skill (adds % to the skill named in `group`), skills.all (% to every skill), skills.amateur (% to Amateur skills),
  *   handheld.<strike|parry> (with hand-held, non-natural weapons),
  *   attributes.<key>.halve (any value > 0 halves that attribute, e.g. featureless Looks: P.B. halved)
  */
@@ -163,7 +163,9 @@ export class SkillData extends ItemDataBase {
     const level = actorSystem.identity.level;
     const progress = this.perLevel * Math.max(0, level - this.levelAcquired);
     const iq = actorSystem.bonuses?.iq.iqSkill ?? 0;
-    const education = this.training === "professional" ? actorSystem.identity.educationBonus : 0;
+    // The Education Bonus goes to Basic Academics and every Professional skill, not Amateur ones (p.64).
+    const basicAcademics = String(this.parent?.name ?? "").trim().toLowerCase() === "basic academics";
+    const education = (this.training === "professional") || basicAcademics ? actorSystem.identity.educationBonus : 0;
     const team = this.perLevel * this.teamLevels;
     const common = progress + iq + education + team + this.bonus + extra;
     return {

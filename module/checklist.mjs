@@ -1,3 +1,5 @@
+import { hasHeightWeight, HEIGHT_WEIGHT } from "./height-weight.mjs";
+
 /**
  * The Core tab's creation checklist: the character-creation steps in book order, each done or not,
  * with what's missing and the tab to go to. Characters only; it hides once every step is done.
@@ -32,6 +34,12 @@ export function creationChecklist(actor) {
       detail: animal?.name || id.species || "Drag an Animal onto the sheet, or roll one with the dice" },
     { key: "bioe", label: "Spend Bio-E", tab: "mutation", done: !!(animal || id.species) && (bioe.remaining === 0),
       detail: bioeDetail },
+    { key: "heightWeight", label: "Height & Weight", tab: "core", done: hasHeightWeight(actor),
+      action: HEIGHT_WEIGHT[sys.mutation?.sizeLevel] ? "rollHeightWeight" : null, actionHint: "Roll height and weight for the Size Level (once)",
+      detail: hasHeightWeight(actor) ? `${id.height}, ${id.weight}`
+        : !(animal || id.species) ? "Choose the animal first"
+          : HEIGHT_WEIGHT[sys.mutation?.sizeLevel] ? `Click the dice: Size Level ${sys.mutation.sizeLevel}, ${sys.mutation.build ?? "medium"} build`
+            : "No table for this size: type them at the top" },
     { key: "origin", label: "Origin", tab: "mutation", roll: "origin", done: !!origin,
       detail: origin || "Drag an Origin onto the sheet, type it at the top, or roll one with the dice" },
     { key: "education", label: "Education", tab: "mutation", done: !!education,

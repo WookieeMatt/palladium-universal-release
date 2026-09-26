@@ -19,6 +19,7 @@ import { initRecovery } from "./recovery.mjs";
 import { initBlunt } from "./blunt.mjs";
 import { initFx } from "./fx.mjs";
 import { initPause } from "./pause.mjs";
+import { initAutoEquip } from "./equip.mjs";
 import { initShowdown } from "./showdown.mjs";
 import { initMoney } from "./money.mjs";
 import { initSkillModifiers } from "./skill-modifiers.mjs";
@@ -146,6 +147,7 @@ Hooks.once("init", function () {
   initBlunt();
   initFx();
   initPause();
+  initAutoEquip();
   initShowdown();
 
   // Sheets
