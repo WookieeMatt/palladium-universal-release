@@ -69,7 +69,7 @@ let packCache = null;
 /**
  * The Item compendiums for the checklist's steps: {animal: [pack], origin: [...], education: [...], skills: [...]}.
  * A step gets the packs that are mostly its item type and hold at least one entry for it (e.g. the
- * Origins & Education pack for both Origin and Education). Empty lists when no such compendium is installed.
+ * Origins & Education pack for both Origin and Education). Skills also gets any pack holding W.P.s. Empty lists when no such compendium is installed.
  */
 export async function stepCompendiums() {
   const packs = game.packs?.filter(p => (p.documentName === "Item") && p.visible !== false) ?? [];
@@ -84,6 +84,8 @@ export async function stepCompendiums() {
     for ( const [step, test] of Object.entries(STEP_ITEMS) ) {
       const ofType = entries.filter(e => e.type === STEP_TYPE[step]).length;
       if ( (ofType * 2 > entries.length) && entries.some(test) ) result[step].push(pack);
+      // Skills: W.P.s are picked with them, and live in the weapons compendiums (mixed packs).
+      else if ( (step === "skills") && entries.some(e => e.type === "wp") ) result[step].push(pack);
     }
   }
   packCache = { key, result };

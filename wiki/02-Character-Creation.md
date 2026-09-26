@@ -27,13 +27,13 @@ When all nine steps are done, the checklist disappears. To put it away sooner (f
 
 Some steps have small green buttons:
 - 🎲 **Roll**: Choose the animal, Origin, Roll Attributes and Roll Hit Points.
-- 📖 **Open the compendium**: Choose the animal, Origin, Education and Skills, when a compendium with those items is installed (for example the TMNT animals, backgrounds and skills). No compendium, no book.
+- 📖 **Open the compendium**: Choose the animal, Origin, Education and Skills, when a compendium with those items is installed (for example the TMNT animals, backgrounds and skills). The Skills book also opens the compendium with the W.P.s (Weapon Proficiencies, on the Combat tab). No compendium, no book.
 
 The buttons disappear once the step is done, and so do **Roll Attributes** and **Roll Hit Points** on the Core tab.
 
 ### Reset Character
 The checklist ends with a **Reset Character** button: the only way to redo character creation, and only for a **level 1** character. It asks first, telling you what will be cleared, what will be kept and how many resets the character has left.
-- **Cleared:** the animal and everything bought with Bio-E (abilities, natural weapons, psionics, size, Human Features), the Origin, Creator Organization and Education, skills and Combat Training, the attributes, Hit Points, alignment, age, sex, height, weight and starting money.
+- **Cleared:** the animal and everything bought with Bio-E (abilities, natural weapons, psionics, size, Human Features), the Origin, Creator Organization and Education, skills, W.P.s and Combat Training, the attributes, Hit Points, alignment, age, sex, height, weight and starting money.
 - **Kept:** the name, portrait and token, XP and level, weapons, armor and gear, notes and spells.
 
 The GM sets how many resets each character gets (**Character Resets Allowed** in the System Settings; 1 by default, 0 for none). The GM can always reset a character, and it doesn't count. The audit only notes that a reset happened, and who did it.

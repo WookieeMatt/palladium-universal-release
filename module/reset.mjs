@@ -4,7 +4,7 @@ import { auditNote } from "./audit.mjs";
 /**
  * Reset Character (v1.31.0): the only way to roll a character's creation again. The button sits at the end of
  * the Creation Checklist. It clears everything made during character creation and keeps the rest:
- *  - cleared: the animal and everything bought with Bio-E, the backgrounds, skills (Combat Training included),
+ *  - cleared: the animal and everything bought with Bio-E, the backgrounds, skills and W.P.s (Combat Training included),
  *    psionics, attributes, Hit Points, the header's creation fields, Bio-E / size / Human Features, starting money;
  *  - kept: name, portrait and token, XP and level, weapons, armor and gear, notes, spells.
  * Only level 1 characters can be reset. Owners get the number of resets the GM sets in the world setting "Character Resets Allowed" (per character);
@@ -16,7 +16,7 @@ const SETTING = "characterResets";
 const USED = "resetsUsed";
 
 /** Items made during character creation. */
-const CREATION_TYPES = new Set(["animal", "background", "skill", "psionic"]);
+const CREATION_TYPES = new Set(["animal", "background", "skill", "wp", "psionic"]);
 
 /** Register the setting (in "init"). */
 export function registerResetSettings() {
@@ -116,7 +116,7 @@ function confirmText(actor, left) {
     : `<p>This character has <strong>${left} reset${left === 1 ? "" : "s"}</strong> left. After this one: <strong>${left - 1}</strong>.</p>`;
   return `<p><strong>Start ${name}'s character creation over?</strong> This can't be undone.</p>
     <p><strong>Cleared:</strong> the animal and everything bought with Bio-E (abilities, natural weapons, psionics, size,
-    Human Features), Origin, Creator Organization and Education, skills and Combat Training, the attributes, Hit Points,
+    Human Features), Origin, Creator Organization and Education, skills, W.P.s and Combat Training, the attributes, Hit Points,
     alignment, age, sex, height, weight and starting money.</p>
     <p><strong>Kept:</strong> name, portrait and token, XP and level, weapons, armor and gear, notes and spells.</p>
     ${count}`;

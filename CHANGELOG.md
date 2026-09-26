@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.31.1
+- **Reset Character** also clears the W.P.s (picked at creation with the skills).
+- The **Skills** step's 📖 also opens any compendium holding W.P.s (the TMNT compendium keeps them with the skills from 0.9.0).
+
 ## 1.31.0
 - **In-game guide**: the install steps are gone from *Getting Started* (anyone reading it already has the system). They stay in the public README.
 - **Reset Character** (end of the Creation Checklist): the only way to redo character creation, for **level 1** characters only. A popup says what's cleared (animal and Bio-E purchases, backgrounds, skills, attributes, Hit Points, the header's creation fields, starting money), what's kept (name, portrait and token, XP, weapons, armor, gear, notes, spells) and how many resets are left. The GM sets resets per character (**Character Resets Allowed**, default 1); the GM's own resets don't count. The audit notes only that a reset happened.
