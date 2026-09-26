@@ -7,6 +7,7 @@ import * as welcome from "./welcome.mjs";
 import * as reset from "./reset.mjs";
 import * as heightWeight from "./height-weight.mjs";
 import * as checkBg from "./check-backgrounds.mjs";
+import * as transfer from "./transfer.mjs";
 import * as creationTables from "./creation-tables.mjs";
 import * as audit from "./audit.mjs";
 import * as party from "./party.mjs";
@@ -176,6 +177,10 @@ export function buildApi() {
     resetCharacter: reset.resetCharacter,
     rollHeightWeight: heightWeight.rollHeightWeight,
     checkBackgrounds: checkBg.checkBackgrounds,
+    exportCharacter: transfer.exportCharacter,
+    importCharacter: transfer.importCharacter,
+    applyImport: transfer.applyImport,
+    printCharacter: transfer.printCharacter,
     outdatedBackgrounds: checkBg.outdatedBackgrounds,
     resetsLeft: reset.resetsLeft,
     allowReroll: creation.allowReroll,

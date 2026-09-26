@@ -31,6 +31,7 @@ const conditionIds = effect => [...(effect.statuses ?? [])].filter(id => cond(id
  * @param {string} userId
  */
 export async function onCreateEffect(effect, options, userId) {
+  if ( options?.puImport ) return; // importing a character: its conditions come in as they were
   if ( userId !== game.user.id ) return;
   const actor = effect.parent;
   if ( !actor || (actor.documentName !== "Actor") ) return;
@@ -61,6 +62,7 @@ export async function onCreateEffect(effect, options, userId) {
  * @param {string} userId
  */
 export async function onDeleteEffect(effect, options, userId) {
+  if ( options?.puImport ) return;
   if ( userId !== game.user.id ) return;
   const actor = effect.parent;
   if ( !actor || (actor.documentName !== "Actor") ) return;

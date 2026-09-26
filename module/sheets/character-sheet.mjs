@@ -12,6 +12,7 @@ import {
 import { creationChecklist, openStepCompendiums, stepCompendiums } from "../checklist.mjs";
 import { resetCharacter, resetState } from "../reset.mjs";
 import { rollHeightWeight } from "../height-weight.mjs";
+import { exportCharacter, importCharacter, printCharacter } from "../transfer.mjs";
 import { moneySources } from "../money.mjs";
 import { rollCreationTable } from "../creation-tables.mjs";
 import { BACKGROUND_KINDS, SKILL_CATEGORIES, WEAPON_TYPES, WP_KINDS, inlineDice } from "../data/items.mjs";
@@ -55,6 +56,9 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
       rollDumbLuck: PalladiumCharacterSheet.#onRollDumbLuck,
       rollAttributes: PalladiumCharacterSheet.#onRollAttributes,
       rollHeightWeight: PalladiumCharacterSheet.#onRollHeightWeight,
+      exportCharacter: PalladiumCharacterSheet.#onExportCharacter,
+      importCharacter: PalladiumCharacterSheet.#onImportCharacter,
+      printCharacter: PalladiumCharacterSheet.#onPrintCharacter,
       rollHitPoints: PalladiumCharacterSheet.#onRollHitPoints,
       checklistGo: PalladiumCharacterSheet.#onChecklistGo,
       creationRoll: PalladiumCharacterSheet.#onCreationRoll,
@@ -616,6 +620,32 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
     const hidden = !!actor.getFlag("palladium-universal", "checklistHidden");
     return hidden ? actor.unsetFlag("palladium-universal", "checklistHidden")
       : actor.setFlag("palladium-universal", "checklistHidden", true);
+  }
+
+  /** The window's ⋮ menu: Export / Import / Printable Sheet (v1.33). */
+  _getHeaderControls() {
+    const controls = super._getHeaderControls();
+    controls.push(
+      { icon: "fa-solid fa-print", label: "Printable Sheet", action: "printCharacter" },
+      { icon: "fa-solid fa-file-export", label: "Export Character", action: "exportCharacter" },
+      { icon: "fa-solid fa-file-import", label: "Import Character", action: "importCharacter", visible: this.actor.isOwner }
+    );
+    return controls;
+  }
+
+  /** @this {PalladiumCharacterSheet} */
+  static #onExportCharacter() {
+    return exportCharacter(this.actor);
+  }
+
+  /** @this {PalladiumCharacterSheet} */
+  static #onImportCharacter() {
+    return importCharacter(this.actor);
+  }
+
+  /** @this {PalladiumCharacterSheet} */
+  static #onPrintCharacter() {
+    return printCharacter(this.actor);
   }
 
   /** Creation checklist: roll Height & Weight (p.17). @this {PalladiumCharacterSheet} */

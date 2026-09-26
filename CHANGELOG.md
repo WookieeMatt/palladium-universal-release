@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.33.0
+- **Export / Import / Printable Sheet** in the character sheet's ⋮ menu (characters and NPCs; players on their own). Import replaces an existing character from a file (ours or Foundry's Export Data), keeps its owner, permissions and folder, updates older files, re-links compendium items by name when their compendium isn't in this world, and the audit notes one line. The printable sheet is one page to print or save as PDF.
+
 ## 1.32.0
 - **Check Backgrounds** macro (GM, Palladium Universal Macros): finds characters' and NPCs' backgrounds that are older than the compendium's, shows what changed and updates them in one click.
 - **Education Bonus** now also goes to **Basic Academics** (p.64), as well as every Professional skill. Origins that give the education themselves (Transdimensional time travellers, cross-dimensional visitors) set it too.

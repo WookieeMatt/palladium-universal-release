@@ -215,10 +215,11 @@ export function initAudit() {
     if ( mine(userId) && audited(actor) ) { record(actor, "Deleted"); flush(actor.uuid); }
   });
   Hooks.on("createItem", (item, options, userId) => {
+    if ( options.puImport ) return; // Import: one "imported" line instead (auditNote)
     if ( mine(userId) && audited(item.parent) ) record(item.parent, `Added ${escape(itemLabel(item))}: <strong>${escape(item.name)}</strong>`);
   });
   Hooks.on("deleteItem", (item, options, userId) => {
-    if ( options.puReset ) return; // Reset Character: one "reset" line instead (auditNote)
+    if ( options.puReset || options.puImport ) return; // Reset / Import: one line instead (auditNote)
     if ( mine(userId) && audited(item.parent) ) record(item.parent, `Removed ${escape(itemLabel(item))}: <strong>${escape(item.name)}</strong>`);
   });
   // Money / other possessions: remember the old text before the update, compare after.

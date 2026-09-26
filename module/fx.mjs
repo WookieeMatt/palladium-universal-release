@@ -71,7 +71,8 @@ export function deathMarker(token) {
 }
 
 /** createActiveEffect (every client): play the effect for Bleeding Out and Dead. */
-export function onEffectFx(effect) {
+export function onEffectFx(effect, options) {
+  if ( options?.puImport ) return;
   if ( !effectsOn() ) return;
   const actor = effect.parent;
   if ( actor?.documentName !== "Actor" ) return;
