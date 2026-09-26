@@ -11,6 +11,8 @@
 
 **Configure Settings → System Settings → Character Resets Allowed**: how many times a player may use **Reset Character** (end of the Creation Checklist) on each of their level 1 characters to redo character creation. 1 by default; 0 = never. Your own resets as GM don't count. Each reset shows in the audit as one line (who reset it), without the details of what was cleared. Macro: `game.palladium.resetCharacter(actor)`.
 
+**Configure Settings → System Settings → Attribute Dice**: *Book only (3D6)* (the default) or *Players may use Custom dice*. With Custom allowed, Roll Attributes lets players type their own dice (e.g. `4d6kh3`) and exploding rule; the chat card shows it and the audit records one line. You can always use Custom yourself.
+
 **Configure Settings → System Settings → Optional Damage Side-Effects** (p.93): *Leave it to the GM* (default), *Ask the GM* (a whispered card with a Roll button when a character loses 75% of their S.D.C., 75% of their Hit Points, or goes into a coma) or *Roll and apply automatically*. Results are **Injury** items carrying the penalties (see **Rules Reference**).
 
 **Configure Settings → System Settings → Blood & Death Effects** (each player's own screen, on by default): a blood splash on the token when a character starts Bleeding Out, and a death marker when they die (a bigger splash, a "☠ Dead" float, the skull overlay, and the combatant marked defeated). Uses JB2A's splash through Sequencer when installed, otherwise a built-in one.

@@ -1551,3 +1551,12 @@
 }
 .palladium-universal .window-content .pu-counter button.pu-tick:hover { color: #fff; background: var(--pu-green); border-color: #16301d; }
 .palladium-universal .window-content .pu-counter button.pu-reload { margin-left: 2px; color: #fff; background: var(--pu-green); border-color: #16301d; }
+
+/* Roll Attributes popups (v1.36): setup and placement. */
+.pu-skill-mods .pu-custom-dice { border: 1px solid var(--pu-rule); border-radius: 6px; padding: 4px 8px; margin: 6px 0; }
+.pu-skill-mods .pu-custom-dice legend { font-weight: 700; padding: 0 4px; }
+.pu-skill-mods .pu-chip { display: inline-block; padding: 1px 6px; margin: 1px 2px; border: 1px solid var(--pu-rule); border-radius: 10px; background: var(--pu-paper); white-space: nowrap; }
+.pu-skill-mods .pu-place-table { width: 100%; border-collapse: collapse; }
+.pu-skill-mods .pu-place-table th { text-align: left; padding: 2px 8px 2px 0; width: 4em; }
+.pu-skill-mods .pu-place-table td { padding: 2px 4px; }
+.pu-skill-mods .pu-place-table select { width: 100%; }

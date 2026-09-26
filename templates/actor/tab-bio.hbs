@@ -1,0 +1,19 @@
+<section class="tab sheet-body {{tab.cssClass}}" data-group="primary" data-tab="bio">
+  {{!-- Bio (v1.36): the character's fluff, in one place. --}}
+  <section class="panel">
+    <div class="panel-header"><h2>Appearance</h2><span class="hint">Looks, clothes, voice, anything people notice first.</span></div>
+    <prose-mirror name="system.bio.appearance" value="{{system.bio.appearance}}" toggled="true">{{{enriched.bio_appearance}}}</prose-mirror>
+  </section>
+  <section class="panel">
+    <div class="panel-header"><h2>Personality</h2><span class="hint">Attitude, habits, likes and dislikes, catchphrases.</span></div>
+    <prose-mirror name="system.bio.personality" value="{{system.bio.personality}}" toggled="true">{{{enriched.bio_personality}}}</prose-mirror>
+  </section>
+  <section class="panel">
+    <div class="panel-header"><h2>Background &amp; History</h2><span class="hint">Where they came from, what happened, who they owe.</span></div>
+    <prose-mirror name="system.bio.history" value="{{system.bio.history}}" toggled="true">{{{enriched.bio_history}}}</prose-mirror>
+  </section>
+  <section class="panel">
+    <div class="panel-header"><h2>Notes</h2><span class="hint">Anything else.</span></div>
+    <prose-mirror name="system.notes" value="{{system.notes}}" toggled="true">{{{enriched.notes}}}</prose-mirror>
+  </section>
+</section>

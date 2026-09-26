@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.36.0
+- **Roll Attributes asks first**: the dice (**Book: 3D6**, 16+ explodes +1D6, or **Custom**: your own expression, exploding trigger and bonus die, when the GM's new *Attribute Dice* setting allows it) and the placement (**Random** in order, or **I'll place them myself**: roll all eight, then put each result on the attribute you want). Custom dice are noted on the chat card and in the audit; hand placement on the chat card. Still rolled once.
+- **Bio tab**: Appearance, Personality, Background & History and Notes (moved from the Gear tab), all on the Printable Sheet.
+- **Combat Notes** at the end of the Combat tab (jumping distance, movement, reminders).
+
 ## 1.35.0
 - **Bows and black powder guns already on sheets** now count their ammo: a one-time pass when the GM loads the world gives each one with no Ammo set a quiver of 12 (bows, crossbows) or one load (black powder; a pair of pistols two). Change it on the weapon. New copies of such weapons get it too.
 - TMNT compendium 0.9.3: the core book's **vehicles** (p.73): to buy in *TMNT: Gear → Vehicles* (the price counts against the character's money) and to drive in the new *TMNT: Vehicles* pack.

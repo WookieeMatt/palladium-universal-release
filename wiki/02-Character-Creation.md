@@ -55,9 +55,13 @@ Each result appears in a small window with three choices:
 When you finish, stop or cancel, **one chat card** lists every roll, its result and what you chose. To roll again, click the 🎲 again.
 
 ## Rolling attributes
-Attributes are rolled **once**, when the character is created, with the **Roll Attributes** button on the Core tab. It rolls all eight at once and saves them. For each attribute:
+Attributes are rolled **once**, when the character is created, with the **Roll Attributes** button on the Core tab (or the 🎲 on the checklist). A small window asks first:
+- **Dice:** **Book: 3D6** (a 16 or more "explodes": +1D6), or **Custom**, if the GM allows it (*Attribute Dice* in the System Settings). Custom asks for the dice expression (for example `4d6kh3`, four dice keeping the best three), the total that makes it explode (blank: never) and the bonus die. Custom dice are written on the chat card and in the GM's audit.
+- **Placement:** **Random** puts the rolls in order (I.Q., M.E., M.A. ...). **I'll place them myself** rolls all eight first, then shows them (A to H, an exploded roll with its bonus die) so you can put each one on the attribute you want. Each roll is used once; the species, size and skill bonuses of each attribute are shown next to it. Closing that window keeps the rolled order: the dice are already rolled. The chat card says the rolls were placed by the player.
+
+Then, for each attribute:
 1. **Base:** roll 3D6.
-2. **Exceptional:** on a 16, 17 or 18, add 1D6. With the **Team Character Generation** world setting on, if another character in the same Actors folder rolled a higher bonus die for that attribute, the higher die is used.
+2. **Exploding (Exceptional):** on a 16, 17 or 18, add 1D6. With the **Team Character Generation** world setting on, if another character in the same Actors folder rolled a higher bonus die for that attribute, the higher die is used.
 3. **Species:** add the animal's bonus, plus bonuses from the animal options you bought and from abilities and powers (for example a Hominid's attribute boosts, or Extraordinary P.E.).
 4. **Size Level:** add the size modifier (I.Q., P.S., P.E. and Spd only).
 5. **Physical skills:** add their bonuses (P.S., P.P., P.E. and Spd only). Dice bonuses, such as Boxing's +1D4, are rolled now.
@@ -125,6 +129,9 @@ Add the Experience Points to **XP** in the header, or use the GM's **Award XP**.
 Skills, W.P.s, Combat Training, magic and anything else that improves "per level" update automatically.
 
 For Hit Points, the button in Health & Damage turns amber: **Roll HP for Level N** rolls 1D6 for each new level and adds the total to both the maximum and the current HP.
+
+## Bio tab and Combat Notes
+The **Bio** tab (the last tab) holds the character's fluff: **Appearance**, **Personality**, **Background & History** and **Notes**. The Combat tab ends with **Combat Notes** for things to remember in a fight (jumping distance, movement, favourite moves). All of them print on the Printable Sheet. The Gear tab keeps the **Money / Other Possessions** box.
 
 ## Export, import and printing
 The character sheet's **⋮** menu (top right) has:

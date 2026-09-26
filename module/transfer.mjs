@@ -179,6 +179,13 @@ const signed = n => (Number(n) >= 0 ? `+${Number(n)}` : `−${Math.abs(Number(n)
 const COMBAT = [["actions", "Actions"], ["initiative", "Initiative"], ["strike", "Strike"], ["parry", "Parry"], ["dodge", "Dodge"],
   ["damage", "Damage"], ["rollImpact", "Roll w/ Impact"], ["pullPunch", "Pull Punch"], ["disarm", "Disarm"]];
 
+/** A notes section for the printable sheet (rich text kept; empty → nothing). */
+function printNotes(title, html) {
+  const text = String(html ?? "").trim();
+  if ( !text || !text.replace(/<[^>]*>/g, "").trim() ) return "";
+  return `<h2>${escape(title)}</h2><div class="notes">${text}</div>`;
+}
+
 /** One readable page of the character, as a complete HTML document. `img`: the portrait (a data: or full URL). */
 export function printableHTML(actor, { img = "" } = {}) {
   const s = actor.system, id = s.identity ?? {}, P = CONFIG.PALLADIUM ?? {};
@@ -211,7 +218,7 @@ export function printableHTML(actor, { img = "" } = {}) {
     table.attrs { width: 100%; border-collapse: collapse; } table.attrs td { border: 1px solid #b9b39a; text-align: center; padding: 3px; }
     table.attrs td span { display: block; font-size: 9px; text-transform: uppercase; } table.attrs td b { font-size: 16px; }
     ul { margin: 0; padding-left: 16px; columns: 2; } li { break-inside: avoid; }
-    p { margin: 2px 0; } .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 0 18px; }
+    p { margin: 2px 0; } .notes p { margin: 0 0 4px; } .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 0 18px; }
     .print { position: fixed; bottom: 12px; right: 12px; font-size: 14px; padding: 6px 12px; } @media print { .print { display: none; } }
     .portrait { float: right; width: 110px; height: 110px; object-fit: contain; margin: 0 0 6px 12px; border: 2px solid #234d2f; border-radius: 50%; background: #f7f3e3; }
     .id { clear: none; } h2 { clear: both; }
@@ -230,6 +237,8 @@ export function printableHTML(actor, { img = "" } = {}) {
     <h2>Skills</h2>${skills ? `<ul>${skills}</ul>` : "<p>None</p>"}${passive ? `<p><span>Also:</span> ${passive}</p>` : ""}
     ${powers ? `<h2>Abilities, Powers & Spells</h2><p>${powers}</p>` : ""}
     <h2>Gear</h2><p>${gear || "None"}</p>
+    ${printNotes("Combat Notes", s.combat?.notes)}${printNotes("Appearance", s.bio?.appearance)}${printNotes("Personality", s.bio?.personality)}
+    ${printNotes("Background & History", s.bio?.history)}${printNotes("Notes", s.notes)}
     </body></html>`;
 }
 

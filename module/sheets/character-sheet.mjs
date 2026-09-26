@@ -106,7 +106,8 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
     powers: { template: `${TEMPLATE_PATH}/tab-powers.hbs`, scrollable: [""] },
     skills: { template: `${TEMPLATE_PATH}/tab-skills.hbs`, scrollable: [""] },
     gear: { template: `${TEMPLATE_PATH}/tab-gear.hbs`, scrollable: [""] },
-    modules: { template: `${TEMPLATE_PATH}/tab-modules.hbs`, scrollable: [""] }
+    modules: { template: `${TEMPLATE_PATH}/tab-modules.hbs`, scrollable: [""] },
+    bio: { template: `${TEMPLATE_PATH}/tab-bio.hbs`, scrollable: [""] }
   };
 
   /** @override */
@@ -119,7 +120,8 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
         { id: "powers" },
         { id: "skills" },
         { id: "gear" },
-        { id: "modules" }
+        { id: "modules" },
+        { id: "bio" }
       ],
       initial: "core",
       labelPrefix: "PALLADIUMUNIVERSAL.Tabs"
@@ -136,7 +138,7 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
     // Notes boxes (ProseMirror): their display HTML, with written dice as clickable rolls.
     const enriched = {};
     const TextEditor = foundry.applications.ux.TextEditor.implementation;
-    for ( const path of [...NOTES_FIELDS, "notes"] ) {
+    for ( const path of [...NOTES_FIELDS, "notes", "bio.appearance", "bio.personality", "bio.history", "combat.notes"] ) {
       enriched[path.replaceAll(".", "_")] = await TextEditor.enrichHTML(inlineDice(foundry.utils.getProperty(system, path) ?? ""),
         { relativeTo: actor, secrets: actor.isOwner });
     }
@@ -379,7 +381,7 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
   #generationState() {
     const g = this.actor.system.generation ?? {};
     if ( g.rolled && !g.rerollAllowed ) return null;
-    return { label: "Roll Attributes", icon: "fa-dice", hint: "Rolls every attribute once: 3D6 each, +1D6 on a 16–18." };
+    return { label: "Roll Attributes", icon: "fa-dice", hint: "Rolls every attribute once: 3D6 each, +1D6 on a 16–18. First you choose the dice and whether to place the results yourself." };
   }
 
   /** The Roll Hit Points button: the first roll, or a level-up roll; hidden otherwise. */

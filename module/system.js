@@ -35,6 +35,13 @@ import { registerResetSettings } from "./reset.mjs";
 Hooks.once("init", function () {
   registerAuditSettings();
   registerResetSettings();
+  // Attribute dice (v1.36): the book's 3D6 only, or let players roll with Custom dice (noted on the card and audit).
+  game.settings.register("palladium-universal", "attributeDice", {
+    name: "Attribute Dice",
+    hint: "Roll Attributes always offers the book's 3D6 (16+ explodes +1D6). Allow Custom to let players type their own dice (e.g. 4d6kh3) and exploding rule; the chat card and the audit say so. The GM can always use Custom.",
+    scope: "world", config: true, type: String,
+    choices: { book: "Book only (3D6)", custom: "Players may use Custom dice" }, default: "book"
+  });
   registerPartySettings();
   initPartyView();
   initMoney();

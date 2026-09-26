@@ -249,4 +249,8 @@
     <p class="hint">Toxins: 14+ lethal, 16+ non-lethal, 15+ drugs. Magic: 12+ apprentice, 16+ master.</p>
   </section>
   {{> "systems/palladium-universal/templates/actor/parts/air-combat.hbs"}}
+  <section class="panel">
+    <div class="panel-header"><h2>Combat Notes</h2><span class="hint">Jumping distance, movement, favourite moves, reminders.</span></div>
+    <prose-mirror name="system.combat.notes" value="{{system.combat.notes}}" toggled="true">{{{enriched.combat_notes}}}</prose-mirror>
+  </section>
 </section>

@@ -216,6 +216,7 @@ export default class CharacterData extends foundry.abstract.TypeDataModel {
         bonusLevels: intField(0, { min: 0 }),   // Team Characters skill-level bonus
         mod: combatMods(),
         actionsUsed: intField(0, { min: 0 }),   // actions spent this round (reset each round)
+        notes: notesField(),                    // Combat Notes (v1.36): jumping distance, tactics...
         // Temporary situational modifiers (cover, darkness, a +5 Hold after a Tackle...).
         circ: new SchemaField(Object.fromEntries(Object.keys(CONFIG.PALLADIUM.CIRCUMSTANCES).map(key => [key, intField()])))
       }),
@@ -273,7 +274,13 @@ export default class CharacterData extends foundry.abstract.TypeDataModel {
         insanityEffects: notesField()
       }),
 
-      notes: new HTMLField({ required: true, blank: true })
+      notes: new HTMLField({ required: true, blank: true }),
+      // Bio tab (v1.36): the character's fluff, for the player.
+      bio: new SchemaField({
+        appearance: notesField(),
+        personality: notesField(),
+        history: notesField()
+      })
     };
   }
 
