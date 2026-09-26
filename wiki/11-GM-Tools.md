@@ -9,6 +9,8 @@
 
 **Configure Settings → System Settings → Turn Off Pause**: the world opens unpaused and can't be paused (Space or the pause button is undone at once). Off by default: Foundry's normal pause.
 
+**Configure Settings → System Settings → Character Resets Allowed**: how many times a player may use **Reset Character** (end of the Creation Checklist) on each of their level 1 characters to redo character creation. 1 by default; 0 = never. Your own resets as GM don't count. Each reset shows in the audit as one line (who reset it), without the details of what was cleared. Macro: `game.palladium.resetCharacter(actor)`.
+
 **Configure Settings → System Settings → Optional Damage Side-Effects** (p.93): *Leave it to the GM* (default), *Ask the GM* (a whispered card with a Roll button when a character loses 75% of their S.D.C., 75% of their Hit Points, or goes into a coma) or *Roll and apply automatically*. Results are **Injury** items carrying the penalties (see **Rules Reference**).
 
 **Configure Settings → System Settings → Blood & Death Effects** (each player's own screen, on by default): a blood splash on the token when a character starts Bleeding Out, and a death marker when they die (a bigger splash, a "☠ Dead" float, the skull overlay, and the combatant marked defeated). Uses JB2A's splash through Sequencer when installed, otherwise a built-in one.

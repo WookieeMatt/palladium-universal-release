@@ -698,9 +698,9 @@
 .palladium-universal .pu-checklist-steps .pu-step { font-weight: 700; white-space: nowrap; }
 .palladium-universal .pu-checklist-steps a.pu-step { color: var(--pu-green); text-decoration: underline dotted; cursor: pointer; }
 .palladium-universal .pu-checklist-steps .pu-step-detail { color: var(--pu-ink-soft); font-size: 0.9em; }
-.palladium-universal .pu-checklist-steps li.done i { color: var(--pu-green-light); }
+.palladium-universal .pu-checklist-steps li.done > i { color: var(--pu-green-light); }
 .palladium-universal .pu-checklist-steps li.done .pu-step { color: var(--pu-ink-soft); font-weight: 400; }
-.palladium-universal .pu-checklist-steps li.todo i { color: var(--pu-red); }
+.palladium-universal .pu-checklist-steps li.todo > i { color: var(--pu-red); }
 .palladium-universal .pu-checklist-restore { text-align: right; margin: 4px 8px; }
 .palladium-universal .pu-checklist-restore a { cursor: pointer; }
 
@@ -1520,3 +1520,22 @@
 .palladium-universal.sheet .option-columns h3 { font-size: 1.05rem; margin: 2px 0; }
 .palladium-universal.sheet .option-list li { padding: 2px 0; }
 .palladium-universal.sheet .option-list .hint { display: block; margin: 0 0 0 1.7em; line-height: 1.25; }
+
+/* Reset Character (v1.31.0): at the end of the Creation Checklist, a quiet red-outline button. */
+.palladium-universal .pu-reset-row { display: flex; align-items: center; gap: 10px; margin-top: 6px; padding-top: 6px; border-top: 1px dashed var(--pu-rule); }
+.palladium-universal .window-content button.pu-reset-character {
+  font-family: var(--pu-body); font-weight: 700; font-size: 0.85rem; line-height: 1.5; padding: 2px 10px;
+  color: var(--pu-red); background: var(--pu-paper); border: 1px solid var(--pu-red); border-radius: 6px;
+}
+.palladium-universal .window-content button.pu-reset-character:hover:not(:disabled) { color: #fff; background: var(--pu-red); }
+.palladium-universal .window-content button.pu-reset-character:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* Checklist tools (v1.31.0): the dice and the compendium book as clear little buttons, white on green. */
+.palladium-universal .pu-checklist-steps .pu-step-tools { display: inline-flex; gap: 4px; align-self: center; }
+.palladium-universal .window-content .pu-checklist-steps button.pu-step-tool {
+  width: 26px; height: 24px; min-height: 0; padding: 0; margin: 0; flex: none;
+  display: inline-grid; place-items: center; font-size: 0.85rem; line-height: 1;
+  color: #fff; background: var(--pu-green); border: 1px solid #16301d; border-radius: 5px; cursor: pointer;
+}
+.palladium-universal .window-content .pu-checklist-steps button.pu-step-tool:hover { background: var(--pu-green-light); }
+.palladium-universal .window-content .pu-checklist-steps button.pu-step-tool i { color: #fff; margin: 0; }

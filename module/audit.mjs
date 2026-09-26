@@ -72,6 +72,11 @@ function record(actor, line) {
   p.timer = setTimeout(() => flush(actor.uuid), DELAY);
 }
 
+/** Add one line to an actor's audit (e.g. "Character reset"), following the audit settings. */
+export function auditNote(actor, line) {
+  if ( audited(actor) ) record(actor, line);
+}
+
 /** Send every waiting entry now (tests, and before the page unloads). */
 export async function flushAll() {
   for ( const uuid of [...pending.keys()] ) await flush(uuid);
@@ -213,6 +218,7 @@ export function initAudit() {
     if ( mine(userId) && audited(item.parent) ) record(item.parent, `Added ${escape(itemLabel(item))}: <strong>${escape(item.name)}</strong>`);
   });
   Hooks.on("deleteItem", (item, options, userId) => {
+    if ( options.puReset ) return; // Reset Character: one "reset" line instead (auditNote)
     if ( mine(userId) && audited(item.parent) ) record(item.parent, `Removed ${escape(itemLabel(item))}: <strong>${escape(item.name)}</strong>`);
   });
   // Money / other possessions: remember the old text before the update, compare after.

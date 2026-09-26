@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.31.0
+- **In-game guide**: the install steps are gone from *Getting Started* (anyone reading it already has the system). They stay in the public README.
+- **Reset Character** (end of the Creation Checklist): the only way to redo character creation, for **level 1** characters only. A popup says what's cleared (animal and Bio-E purchases, backgrounds, skills, attributes, Hit Points, the header's creation fields, starting money), what's kept (name, portrait and token, XP, weapons, armor, gear, notes, spells) and how many resets are left. The GM sets resets per character (**Character Resets Allowed**, default 1); the GM's own resets don't count. The audit notes only that a reset happened.
+- **Roll buttons disappear once used**: the checklist's 🎲 (animal, origin, and now attributes and Hit Points too), **Roll Attributes** and **Roll Hit Points**. The Hit Points button comes back for level-ups. The old *Ask GM to Re-roll* is gone (an Allow Re-roll card already in chat still works).
+- **Compendium book** on the checklist's Choose the animal, Origin, Education and Skills steps: opens the matching compendium (only shown when one is installed; disappears when the step is done).
+- **Checklist buttons easier to see**: the dice and the book are white on dark green little buttons.
+- The checklist can be shown again after it's complete (*Show the creation checklist*), to reach Reset Character.
+- **Creation Checklist** (character sheet, Core tab) reworded: each step says plainly what to do and where (the Roll Attributes and Roll Hit Points buttons are *below* the checklist, not above), and the tooltips are clearer.
+- **Character Creation guide page** rewritten in plainer words: shorter sentences, one idea per bullet, button names as they appear on the sheet.
+
 ## 1.30.0
 - **Turn Off Pause** (System Settings, GM): the world opens unpaused and can't be paused. Off by default.
 

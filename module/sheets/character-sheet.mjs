@@ -9,7 +9,8 @@ import { rollItem } from "../item-rolls.mjs";
 import {
   COMBAT_ROLLS, attackModes, misfireChance, rollAttack, rollCombat, rollDamage, rollHorrorFactor, rollManeuver
 } from "../combat.mjs";
-import { creationChecklist } from "../checklist.mjs";
+import { creationChecklist, openStepCompendiums, stepCompendiums } from "../checklist.mjs";
+import { resetCharacter, resetState } from "../reset.mjs";
 import { moneySources } from "../money.mjs";
 import { rollCreationTable } from "../creation-tables.mjs";
 import { BACKGROUND_KINDS, SKILL_CATEGORIES, WEAPON_TYPES, WP_KINDS, inlineDice } from "../data/items.mjs";
@@ -55,6 +56,8 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
       checklistGo: PalladiumCharacterSheet.#onChecklistGo,
       creationRoll: PalladiumCharacterSheet.#onCreationRoll,
       checklistToggle: PalladiumCharacterSheet.#onChecklistToggle,
+      resetCharacter: PalladiumCharacterSheet.#onResetCharacter,
+      checklistCompendium: PalladiumCharacterSheet.#onChecklistCompendium,
       rollItem: PalladiumCharacterSheet.#onRollItem,
       rollSpellDamage: PalladiumCharacterSheet.#onRollSpellDamage,
       changeSize: PalladiumCharacterSheet.#onChangeSize,
@@ -130,6 +133,14 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
     }
     // Creation checklist (characters only): hidden once complete, or when the player hides it.
     const checklist = actor.type === "character" ? creationChecklist(actor) : null;
+    if ( checklist ) {
+      // A book button on the steps with a compendium installed (animals, origins, educations, skills).
+      const packs = await stepCompendiums();
+      for ( const step of checklist.steps ) {
+        const list = packs[step.key] ?? [];
+        if ( list.length ) step.compendium = { hint: `Open the compendium: ${list.map(p => p.title).join(", ")}` };
+      }
+    }
     // Money (characters): starting money from the backgrounds' dice, spending from priced items.
     const m = system.money ?? {};
     const fmt = n => CONFIG.PALLADIUM.formatCost(n ?? 0);
@@ -140,14 +151,17 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
       sources: await Promise.all(moneySources(actor).map(async s => ({ ...s,
         html: await TextEditor.enrichHTML(s.html, { relativeTo: actor }) })))
     };
-    const checklistHidden = !!actor.getFlag?.("palladium-universal", "checklistHidden");
+    // Hidden: by the player while unfinished (checklistHidden); once complete, unless shown again (checklistShown).
+    const checklistHidden = checklist?.complete ? !actor.getFlag?.("palladium-universal", "checklistShown")
+      : !!actor.getFlag?.("palladium-universal", "checklistHidden");
     return Object.assign(context, {
       actor,
       system,
       enriched,
       money,
-      checklist: checklist && !checklist.complete && !checklistHidden ? checklist : null,
-      checklistRestore: !!checklist && !checklist.complete && checklistHidden,
+      checklist: checklist && !checklistHidden ? checklist : null,
+      checklistRestore: !!checklist && checklistHidden,
+      reset: resetState(actor),
       systemFields: system.schema.fields,
       attributes: this.#prepareAttributes(),
       generation: this.#generationState(),
@@ -349,28 +363,23 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
     });
   }
 
-  /** The Roll Attributes button's state: first roll, GM-allowed re-roll, or locked (ask the GM). */
+  /** The Roll Attributes button: only until the attributes are rolled (then it disappears; Reset Character starts over). */
   #generationState() {
     const g = this.actor.system.generation ?? {};
-    if ( !g.rolled ) return { label: "Roll Attributes", icon: "fa-dice", hint: "Rolls 3D6 for every attribute (+1D6 on 16–18) once, at character creation." };
-    if ( g.rerollAllowed ) return { label: "Re-roll Attributes", icon: "fa-dice", hint: "The GM has allowed one re-roll." };
-    if ( game.user.isGM ) return { label: "Re-roll Attributes", icon: "fa-lock", locked: true, hint: "Already rolled. As GM you can roll them again." };
-    return { label: "Ask GM to Re-roll", icon: "fa-lock", locked: true, hint: "Attributes are rolled once. Ask the GM for permission to roll again." };
+    if ( g.rolled && !g.rerollAllowed ) return null;
+    return { label: "Roll Attributes", icon: "fa-dice", hint: "Rolls every attribute once: 3D6 each, +1D6 on a 16–18." };
   }
 
-  /** The Roll Hit Points button: first roll, a level-up roll, or a re-roll (GM permission). */
+  /** The Roll Hit Points button: the first roll, or a level-up roll; hidden otherwise. */
   #hpState() {
     const sys = this.actor.system;
     const hp = sys.health.hp;
     const g = sys.generation ?? {};
-    if ( !hp.rolled ) return { action: "roll", label: "Roll Hit Points", icon: "fa-heart-pulse", locked: !g.rolled,
-      hint: g.rolled ? "P.E. + 1D6 (one 1D6 per level), rolled once. Max HP then follows P.E."
-        : "Roll Attributes first: Hit Points are P.E. + 1D6." };
+    if ( !hp.rolled || g.hpRerollAllowed ) return { action: "roll", label: "Roll Hit Points", icon: "fa-heart-pulse", locked: !g.rolled,
+      hint: g.rolled ? "P.E. + 1D6, rolled once. Max HP then follows P.E." : "Roll Attributes first: Hit Points are P.E. + 1D6." };
     if ( hp.pendingLevels ) return { action: "level", label: `Roll HP for Level ${sys.identity.level}`, icon: "fa-heart-circle-plus",
       levelUp: true, hint: `+1D6 per level: ${hp.pendingLevels} level${hp.pendingLevels > 1 ? "s" : ""} to roll. Max and current HP go up by the roll.` };
-    if ( g.hpRerollAllowed ) return { action: "roll", label: "Re-roll Hit Points", icon: "fa-heart-pulse", hint: "The GM has allowed one re-roll." };
-    if ( game.user.isGM ) return { action: "roll", label: "Re-roll HP", icon: "fa-lock", locked: true, hint: "Already rolled. As GM you can roll them again." };
-    return { action: "roll", label: "Ask GM to Re-roll HP", icon: "fa-lock", locked: true, hint: "Hit Points are rolled once. Ask the GM for permission to roll again." };
+    return null;
   }
 
   /** Display text for an attribute's generation modifiers ("N/A" where a step doesn't apply). */
@@ -596,9 +605,24 @@ export default class PalladiumCharacterSheet extends HandlebarsApplicationMixin(
 
   /** Creation checklist: hide it, or show it again. @this {PalladiumCharacterSheet} */
   static #onChecklistToggle() {
-    const hidden = !!this.actor.getFlag("palladium-universal", "checklistHidden");
-    return hidden ? this.actor.unsetFlag("palladium-universal", "checklistHidden")
-      : this.actor.setFlag("palladium-universal", "checklistHidden", true);
+    const actor = this.actor;
+    if ( creationChecklist(actor).complete ) {
+      return actor.getFlag("palladium-universal", "checklistShown") ? actor.unsetFlag("palladium-universal", "checklistShown")
+        : actor.setFlag("palladium-universal", "checklistShown", true);
+    }
+    const hidden = !!actor.getFlag("palladium-universal", "checklistHidden");
+    return hidden ? actor.unsetFlag("palladium-universal", "checklistHidden")
+      : actor.setFlag("palladium-universal", "checklistHidden", true);
+  }
+
+  /** Creation checklist: open the step's compendium(s). @this {PalladiumCharacterSheet} */
+  static #onChecklistCompendium(event, target) {
+    return openStepCompendiums(target.dataset.step);
+  }
+
+  /** Creation checklist: Reset Character (start creation over). @this {PalladiumCharacterSheet} */
+  static #onResetCharacter() {
+    return resetCharacter(this.actor);
   }
 
   /** @this {PalladiumCharacterSheet} */

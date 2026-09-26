@@ -4,6 +4,7 @@ import * as combat from "./combat.mjs";
 import * as creation from "./creation.mjs";
 import * as dice from "./dice.mjs";
 import * as welcome from "./welcome.mjs";
+import * as reset from "./reset.mjs";
 import * as creationTables from "./creation-tables.mjs";
 import * as audit from "./audit.mjs";
 import * as party from "./party.mjs";
@@ -170,6 +171,8 @@ export function buildApi() {
     rollLevelHitPoints: creation.rollLevelHitPoints,
     printAttribute: creation.printAttribute,
     requestReroll: creation.requestReroll,
+    resetCharacter: reset.resetCharacter,
+    resetsLeft: reset.resetsLeft,
     allowReroll: creation.allowReroll,
     rollAttribute: creation.rollAttribute,
     applyAnimal: animal.applyAnimal,

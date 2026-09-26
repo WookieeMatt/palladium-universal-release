@@ -136,20 +136,17 @@ function exceptionalText(r) {
 
 /**
  * Roll all eight attributes, save them and post one card with the details. Attributes are rolled once;
- * after that a player asks the GM for permission, and a GM is asked to confirm.
+ * to roll again the character is reset (Reset Character, module/reset.mjs).
  * @param {Actor} actor
  * @returns {Promise<object[]|null>}  The results, by attribute
  */
 export async function rollAttributes(actor) {
   const state = actor.system.generation;
+  // Rolled once. The only way to roll again is Reset Character (the end of the Creation Checklist).
+  // (rerollAllowed: an Allow Re-roll card from before 1.31 still works.)
   if ( state?.rolled && !state.rerollAllowed ) {
-    if ( !game.user.isGM ) return requestReroll(actor);
-    const ok = await DialogV2.confirm({
-      classes: ["palladium-universal", "pu-skill-mods"],
-      window: { title: "Re-roll Attributes" },
-      content: `<p>${foundry.utils.escapeHTML(actor.name)}'s attributes have already been rolled. Roll them again and replace the scores?</p>`
-    });
-    if ( !ok ) return null;
+    ui.notifications.info(`${actor.name}'s attributes are already rolled. To start over, use Reset Character at the end of the Creation Checklist.`);
+    return null;
   }
 
   const rolls = [];
@@ -203,7 +200,8 @@ function generationTable(results) {
     <tbody>${rows}</tbody></table><div class="pu-gen-notes">${notes}</div>`;
 }
 
-/** What can be re-rolled with the GM's permission: attributes or Hit Points. */
+/** Before 1.31 a re-roll needed the GM's permission. Kept so macros and old chat cards still work;
+ * the sheet now uses Reset Character instead. */
 const REROLLS = {
   attributes: { label: "Attributes", text: "attributes", flag: "system.generation.rerollAllowed" },
   hp: { label: "Hit Points", text: "Hit Points", flag: "system.generation.hpRerollAllowed" }
@@ -253,7 +251,7 @@ export async function allowReroll(data) {
 
 /**
  * Roll Hit Points at character creation: one 1D6 per level (a new character: one), saved on the sheet so
- * max HP = P.E. + the dice + HP Bonus. Rolled once; a re-roll needs the GM's permission (a GM confirms).
+ * max HP = P.E. + the dice + HP Bonus. Rolled once; to roll again the character is reset (Reset Character).
  * Current HP is set to the new max.
  * @param {Actor} actor
  */
@@ -263,13 +261,8 @@ export async function rollHitPoints(actor) {
   const hp = sys.health.hp;
   const reroll = hp.dice.length > 0;
   if ( reroll && !sys.generation.hpRerollAllowed ) {
-    if ( !game.user.isGM ) return requestReroll(actor, "hp");
-    const ok = await DialogV2.confirm({
-      classes: ["palladium-universal", "pu-skill-mods"],
-      window: { title: "Re-roll Hit Points" },
-      content: `<p>${foundry.utils.escapeHTML(actor.name)}'s Hit Points have already been rolled. Roll them again and replace them?</p>`
-    });
-    if ( !ok ) return null;
+    ui.notifications.info(`${actor.name}'s Hit Points are already rolled. To start over, use Reset Character at the end of the Creation Checklist.`);
+    return null;
   }
   const levels = Math.max(1, sys.identity.level);
   const roll = await new Roll(`${levels}d6`).evaluate();

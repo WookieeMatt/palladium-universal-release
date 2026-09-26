@@ -3,28 +3,39 @@
   <section class="panel pu-checklist">
     <div class="panel-header">
       <h2>Creation Checklist</h2>
-      <span class="hint">{{checklist.done}} of {{checklist.total}} done</span>
-      <button type="button" class="pu-checklist-hide" data-action="checklistToggle" data-tooltip="Hide the checklist (you can bring it back at the bottom of this tab)"><i class="fa-solid fa-eye-slash"></i> Hide</button>
+      <span class="hint">{{#if checklist.complete}}All done{{else}}{{checklist.done}} of {{checklist.total}} done{{/if}}</span>
+      <button type="button" class="pu-checklist-hide" data-action="checklistToggle" data-tooltip="Hide the checklist. You can bring it back from the bottom of this tab."><i class="fa-solid fa-eye-slash"></i> Hide</button>
     </div>
     <ol class="pu-checklist-steps">
       {{#each checklist.steps}}
       <li class="{{#if done}}done{{else}}todo{{/if}}">
         <i class="fa-solid {{#if done}}fa-circle-check{{else}}fa-circle{{/if}}"></i>
         {{#if done}}<span class="pu-step">{{label}}</span>
-        {{else}}<a class="pu-step" data-action="checklistGo" data-tab="{{tab}}" data-tooltip="Go to this step">{{label}}</a>{{/if}}
+        {{else}}<a class="pu-step" data-action="checklistGo" data-tab="{{tab}}" data-tooltip="Go to the tab for this step">{{label}}</a>{{/if}}
         <span class="pu-step-detail">{{detail}}</span>
-        {{#if roll}}<a class="pu-step-roll" data-action="creationRoll" data-table="{{roll}}" data-tooltip="Roll it on the book's table (optional; click again to re-roll)"><i class="fa-solid fa-dice"></i></a>{{/if}}
+        <span class="pu-step-tools">{{#unless done}}
+          {{#if compendium}}<button type="button" class="pu-step-tool" data-action="checklistCompendium" data-step="{{key}}" data-tooltip="{{compendium.hint}}" aria-label="Open the compendium"><i class="fa-solid fa-book-open"></i></button>{{/if}}
+          {{#if roll}}<button type="button" class="pu-step-tool" data-action="creationRoll" data-table="{{roll}}" data-tooltip="Optional: roll it on the book's table. Click again to roll again." aria-label="Roll"><i class="fa-solid fa-dice"></i></button>{{/if}}
+          {{#if action}}<button type="button" class="pu-step-tool" data-action="{{action}}" data-hp="roll" data-tooltip="{{actionHint}}" aria-label="Roll"><i class="fa-solid fa-dice"></i></button>{{/if}}
+        {{/unless}}</span>
       </li>
       {{/each}}
     </ol>
+    {{#if reset}}
+    <div class="pu-reset-row">
+      <button type="button" class="pu-reset-character" data-action="resetCharacter" data-tooltip="{{reset.hint}}" {{#unless reset.enabled}}disabled{{/unless}}>
+        <i class="fa-solid fa-rotate-left"></i> Reset Character</button>
+      <span class="hint">Start character creation over · {{reset.text}}</span>
+    </div>
+    {{/if}}
   </section>
   {{/if}}
   <section class="panel">
     <div class="panel-header">
       <h2>Attributes</h2>
       <span class="hint">Click an attribute to show it in chat.</span>
-      <button type="button" class="pu-roll-attributes{{#if generation.locked}} locked{{/if}}" data-action="rollAttributes"
-        data-tooltip="{{generation.hint}}"><i class="fa-solid {{generation.icon}}"></i> {{generation.label}}</button>
+      {{#if generation}}<button type="button" class="pu-roll-attributes" data-action="rollAttributes"
+        data-tooltip="{{generation.hint}}"><i class="fa-solid {{generation.icon}}"></i> {{generation.label}}</button>{{/if}}
     </div>
     <table class="attribute-table">
       <thead>
@@ -53,8 +64,8 @@
     <div class="panel-header">
       <h2>Health &amp; Damage</h2>
       <button type="button" class="pu-roll-attributes pu-heal" data-action="restAndHeal" data-tooltip="Rest &amp; Heal (p.92): Hit Points by treatment and days, 5 S.D.C. per hour of rest"><i class="fa-solid fa-kit-medical"></i> Heal</button>
-      <button type="button" class="pu-roll-attributes pu-roll-hp{{#if hpRoll.locked}} locked{{/if}}{{#if hpRoll.levelUp}} level-up{{/if}}"
-        data-action="rollHitPoints" data-hp="{{hpRoll.action}}" data-tooltip="{{hpRoll.hint}}"><i class="fa-solid {{hpRoll.icon}}"></i> {{hpRoll.label}}</button>
+      {{#if hpRoll}}<button type="button" class="pu-roll-attributes pu-roll-hp{{#if hpRoll.locked}} locked{{/if}}{{#if hpRoll.levelUp}} level-up{{/if}}"
+        data-action="rollHitPoints" data-hp="{{hpRoll.action}}" data-tooltip="{{hpRoll.hint}}"><i class="fa-solid {{hpRoll.icon}}"></i> {{hpRoll.label}}</button>{{/if}}
     </div>
     <div class="health-grid">
       <div class="field">

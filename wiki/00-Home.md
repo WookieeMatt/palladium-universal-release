@@ -5,7 +5,7 @@ Palladium Universal is a Foundry VTT **v14** game system for **Teenage Mutant Ni
 This guide ships with the system: in Foundry, open the **Compendium Packs** sidebar and look for **Palladium Universal Guide**.
 
 ## Pages
-1. **Getting Started**: installing, creating a world, the document types.
+1. **Getting Started**: the welcome cards, the recommended modules, the document types.
 2. **Character Creation**: Core tab, backgrounds, animals, Bio-E and mutation.
 3. **Combat**: combat bonuses, attacks, defending, maneuvers, conditions, damage and armor, actions per round.
 4. **Powers**: magic (Wizards and Time Lords), psionics, strangeness, Horror Factor, time travel saves.

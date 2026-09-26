@@ -28,9 +28,11 @@ import { buildApi } from "./api.mjs";
 import { registerTcriDice, TCRI_FINISHES } from "./dice-so-nice.mjs";
 import { resetWelcome, welcomeOnce } from "./welcome.mjs";
 import { initAudit, registerAuditSettings } from "./audit.mjs";
+import { registerResetSettings } from "./reset.mjs";
 
 Hooks.once("init", function () {
   registerAuditSettings();
+  registerResetSettings();
   registerPartySettings();
   initPartyView();
   initMoney();
