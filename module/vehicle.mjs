@@ -252,7 +252,8 @@ async function operate({ name, data, owner, readouts = [], extra = "", item }) {
   const notes = [`<span class="${success ? "pu-success" : "pu-failure"}">${success ? "Works" : "Malfunction!"}</span>`];
   if ( !success && data.malfunction ) notes.push(`<div class="pu-malfunction">${data.malfunction}</div>`);
   if ( table ) notes.push(table.html);
-  playAnimation(owner?.getActiveTokens?.().length ? owner : speaker, item ?? { name }, { kind: "device" });
+  playAnimation(owner?.getActiveTokens?.().length ? owner : speaker, success ? (item ?? { name }) : { name: "Palladium: Malfunction" },
+    { kind: "device", deviceType: data.deviceType });
   await postCard(speaker, { title: `Operates ${name}`, item, label: "Operate", inlineRolls: true, result: roll.total,
     rolls: [roll, ...(table?.rolls ?? [])],
     lines: [[skillLabel, `${skill}%`], ...(readout ? [[readout.name, `+${bonus}%`]] : []), ["Chance", `${target}%`], ["d100", roll.total],

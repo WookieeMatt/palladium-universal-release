@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.37.0
+- **Animation presets**: the first time Automated Animations loads in a world, the system adds 187 entries to its menus: every weapon, natural weapon, spell, psionic power, mutant power and device in the TMNT compendium, guns (no more hand-made *bullet* entry), explosives, and the maneuvers. Entries you already have are never replaced. **Reinstall Animation Presets** (System Settings) adds any that are missing; **Install Animation Presets** turns the automatic install off.
+- **JB2A Animation Pack** setting: *Automatic* (premium when enabled, else free), *Free* or *Premium*. Every preset works with both packs.
+- More things animate: black powder misfires and explosions, Horror Factor cards, Temporal Mishaps, a failed device roll (malfunction), and **conditions** (Stunned, Horrified, Blind, Held, Entangled, Paralyzed, Pain, Deafened, Unconscious, Coma) as token effects that last as long as the condition.
+- Fixed: Automated Animations' *mistystep* preset (used for anything with "time", "portal" or "dimension" in its name) lets the player pick a spot and **moves the token**, and its *fireball* preset needs a placed template. The system now uses harmless effects instead. A spell or power cast with nobody targeted shows its sign on the caster instead of doing nothing.
+- Verified on Foundry 14.370.
+
 ## 1.36.0
 - **Roll Attributes asks first**: the dice (**Book: 3D6**, 16+ explodes +1D6, or **Custom**: your own expression, exploding trigger and bonus die, when the GM's new *Attribute Dice* setting allows it) and the placement (**Random** in order, or **I'll place them myself**: roll all eight, then put each result on the attribute you want). Custom dice are noted on the chat card and in the audit; hand placement on the chat card. Still rolled once.
 - **Bio tab**: Appearance, Personality, Background & History and Notes (moved from the Gear tab), all on the Printable Sheet.

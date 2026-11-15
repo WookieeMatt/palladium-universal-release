@@ -50,13 +50,17 @@ Install and enable **Automated Animations**, **Sequencer** and **JB2A** (the fre
 | Maneuvers (Tackle, Throw, Jump Kick…) | Unarmed strike |
 | Casting a spell, using a psionic power | The spell or power |
 | An item's 🎲 roll (grenades, powers…) | The item |
-| Operating a device or time machine | A teleport flash |
+| Operating a device or time machine | A time machine, dimensional or device effect; a failed roll plays a malfunction puff |
+| A black powder misfire, a Horror Factor card, a Temporal Mishap | A smoke puff or explosion, a fright effect, a time swirl |
+| A condition (Stunned, Horrified, Blind, Held, Entangled, Paralyzed, Pain, Deafened, Unconscious, Coma) | A token effect that stays for as long as the condition is on and ends when it is removed |
 
 Damage, saves and skill checks don't animate. Select your token and target first.
 
-**How animations are chosen:** Automated Animations looks for an entry in its *Global Automatic Recognition* menu named after the item first (so you can give any item its own animation there, or on the item's own A-A tab). If there isn't one, the system's **trigger set** points TMNT names at the built-in entries: katana/sword → *sword*, sai/knife/tanto → *dagger*, bo/staff/nunchaku/tonfa → *greatclub*, spear/naginata → *spear*, kama/axe → *handaxe*, bows → *bow*, bite → *bite*, claws → *claw*, healing → *curewounds*, teleport/time/dimension → *mistystep*, grenades → *fireball*, and so on.
+**Presets:** the first time Automated Animations loads in a world, the system adds its own entries to Automated Animations' *Global Automatic Recognition* menus: one for every weapon, natural weapon, spell, psionic power, mutant power and device in the TMNT compendium, plus guns, explosives and the effects above. Nothing you have already set up is replaced (an entry with the same name is skipped), and you can change any of them in Automated Animations' menus. **Configure Settings → System Settings → Reinstall Animation Presets** adds any that are missing, for example after you switch JB2A packs; **Install Animation Presets** turns the automatic install off.
 
-**Guns:** Automated Animations has no built-in gun entry. Add one Range entry named **bullet** in its Global Automatic Recognition menu (pick a JB2A bullet animation) and every firearm and black powder weapon uses it.
+**JB2A pack:** **Configure Settings → System Settings → JB2A Animation Pack** chooses where Automated Animations draws from: *Automatic* (the premium *jb2a_patreon* pack when it is enabled, otherwise the free *JB2A_DnD5e*), *Free* or *Premium*. Every preset works with either pack. Changing it reloads the game.
+
+**How animations are chosen:** Automated Animations looks for an entry in its menus named after the item first (so you can give any item its own animation there, or on the item's own A-A tab). If there isn't one, the system's **trigger set** points TMNT names at entries: katana/sword → *sword*, sai/knife/tanto → *dagger*, bo/staff/nunchaku/tonfa → *greatclub*, spear/naginata → *spear*, kama/axe → *handaxe*, bows → *bow*, bite → *bite*, claws → *claw*, healing → *curewounds*, guns → *bullet*, grenades → *Palladium: Explosive*, teleport/time/dimension → *Palladium: Teleport*, and so on. A gun gets the preset bullet animation unless you add your own entry named **bullet** or **gun**.
 
 Turn animations off with **Configure Settings → System Settings → Automated Animations**. Nothing happens if the module isn't active.
 

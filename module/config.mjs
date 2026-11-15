@@ -803,21 +803,27 @@ export const ANIMATION_TRIGGERS = [
   { match: /bow|arrow|yumi/i, names: ["bow"] },
   { match: /pistol|revolver|rifle|musket|shotgun|gun|carbine|smg|uzi|arquebus|blunderbuss|flintlock|matchlock|wheellock/i, names: ["bullet", "gun"] },
   { match: /laser|blaster|\bray\b|beam/i, names: ["scorchingray"] },
-  { match: /grenade|bomb|explosive|dynamite|missile|rocket/i, names: ["fireball"] },
+  { match: /grenade|bomb|explosive|dynamite|missile|rocket/i, names: ["Palladium: Explosive"] },
   // Powers and effects
   { match: /fire|flame|burn|inferno/i, names: ["firebolt"] },
   { match: /lightning|electric|shock|bolt/i, names: ["witchbolt"] },
   { match: /ice|frost|cold|freez/i, names: ["rayoffrost"] },
   { match: /heal|cure|mend|restor/i, names: ["curewounds"] },
-  { match: /teleport|\btime\b|temporal|dimension|gate|portal|warp/i, names: ["mistystep"] },
+  { match: /teleport|\btime\b|temporal|dimension|gate|portal|warp/i, names: ["Palladium: Teleport"] },
   { match: /energy|blast|psionic|mental|mind|telekin|radiation/i, names: ["magicmissile", "eldritchblast"] }
 ];
 
-/** Fallbacks by what's being used, when no rule matches the name. */
+/**
+ * Fallbacks by what's being used, when no rule matches the name. "bullet" and "gun" are for the GM's own Automated
+ * Animations entries; the "Palladium: ..." names are the presets the system installs (animation-presets.mjs).
+ * Automated Animations' "mistystep" and "fireball" are template presets (one moves the token, the other needs a
+ * placed template), so the system never asks for them.
+ */
 export const ANIMATION_FALLBACKS = {
-  natural: ["unarmedstrike"], melee: ["sword"], thrown: ["dagger"], bow: ["bow"], firearm: ["bullet", "gun"],
-  blackPowder: ["bullet", "gun"], explosive: ["fireball"], energy: ["scorchingray"],
-  maneuver: ["unarmedstrike"], spell: ["magicmissile"], psionic: ["magicmissile"], device: ["mistystep"]
+  natural: ["unarmedstrike"], melee: ["sword"], thrown: ["dagger"], bow: ["bow"], firearm: ["bullet", "gun", "Palladium: Firearm"],
+  blackPowder: ["bullet", "gun", "Palladium: Black Powder"], explosive: ["Palladium: Explosive"], energy: ["scorchingray"],
+  maneuver: ["unarmedstrike"], spell: ["magicmissile", "Palladium: Spell"], psionic: ["magicmissile", "Palladium: Psionic"],
+  device: ["Palladium: Device"]
 };
 
 /* -------------------------------------------- */

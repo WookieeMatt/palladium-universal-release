@@ -27,6 +27,7 @@ import { initSkillModifiers } from "./skill-modifiers.mjs";
 import { onRenderChatMessage } from "./combat.mjs";
 import { onDeleteCombat, onUpdateCombat } from "./actions.mjs";
 import { buildApi } from "./api.mjs";
+import { registerAnimationHooks, registerAnimationSettings } from "./animations.mjs";
 import { registerTcriDice, TCRI_FINISHES } from "./dice-so-nice.mjs";
 import { resetWelcome, welcomeOnce } from "./welcome.mjs";
 import { initAudit, registerAuditSettings } from "./audit.mjs";
@@ -136,6 +137,7 @@ Hooks.once("init", function () {
     type: Boolean,
     default: true
   });
+  registerAnimationSettings();
 
   // Team Character generation (p.12): teammates share their highest exceptional bonus die.
   game.settings.register("palladium-universal", "teamGeneration", {
@@ -262,6 +264,9 @@ Hooks.on("renderJournalEntryPageSheet", styleJournal);
 
 // Buttons on attack and damage chat cards
 Hooks.on("renderChatMessageHTML", onRenderChatMessage);
+
+// Automated Animations: JB2A pack choice and animation presets
+registerAnimationHooks();
 
 // Characters and NPCs: the default portrait and token is the mutant turtle (world setting "defaultArt":
 // black and white, color, or Foundry's mystery man), and new ones get a round token with the green ring.

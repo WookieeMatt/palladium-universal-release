@@ -383,6 +383,7 @@ export async function rollMisfire(actor, weapon, weather = "dry") {
       <i class="fa-solid fa-burst"></i> ${l}</button></div>`).join(""),
     flags: { "palladium-universal": { card: "mishap", actorUuid: actor.uuid } }
   });
+  playAnimation(actor, { name: ["overloaded", "explosion"].includes(mishap.key) ? "Palladium: Explosion" : "Palladium: Misfire" });
   if ( ["overloaded", "explosion"].includes(mishap.key) && actor.isOwner ) {
     await weapon.update({ "system.equipped": false, name: `${weapon.name} (destroyed)` });
   }
@@ -769,6 +770,7 @@ export async function rollHorrorFactor(actor, hf = null, source = "") {
 export function requestHorrorSaves(actor) {
   const hf = actor.system.horrorFactor;
   const flags = { "palladium-universal": { card: "horror", actorUuid: actor.uuid, hf, source: actor.name } };
+  playAnimation(actor, { name: "Palladium: Horror Factor" });
   return postCard(actor, { title: `Horror Factor ${hf}`, flags,
     body: `<p class="pu-text">Everyone who sees ${actor.name} must roll above ${hf} (d20 + save vs Strangeness) or be Horrified for one round.</p>`,
     buttons: `<div class="pu-buttons"><button type="button" data-pu-action="horror-save"><i class="fa-solid fa-ghost"></i> Save vs H.F. ${hf}</button></div>` });

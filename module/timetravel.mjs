@@ -1,4 +1,5 @@
 import { postCard } from "./dice.mjs";
+import { playAnimation } from "./animations.mjs";
 
 /**
  * Time travel tables (Transdimensional TMNT p.33, p.41, p.49, p.53–54, p.86–87).
@@ -34,6 +35,7 @@ export async function temporalMishap() {
  */
 export async function rollTemporalMishap(actor, title = "Temporal Mishap") {
   const { html, rolls, row } = await temporalMishap();
+  playAnimation(actor, { name: "Palladium: Temporal Mishap" });
   return postCard(actor, { title, label: "Mishap", result: row?.label ?? rolls[0].total, rolls, inlineRolls: true,
     lines: rolls.map((r, i) => [i ? "Follow-up d100" : "d100", r.total]), notes: [html] });
 }
